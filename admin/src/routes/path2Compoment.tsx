@@ -3,6 +3,8 @@ import Login from '../pages/admin/common/Login';
 // import Register from '../pages/admin/common/Register';
 import ImagesManage from '@/pages/admin/imagesManage';
 import customer from '@/pages/admin/customer';
+import Orders from '@/pages/admin/orders';
+
 const path2components = [
     {
         path: '/',
@@ -27,6 +29,10 @@ const path2components = [
     {
         path: '/product/image-manange',
         component: ImagesManage
+    },
+    {
+        path: '/produce-plan/orders',
+        component: Orders,
     }
 ]
 
