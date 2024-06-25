@@ -20,7 +20,7 @@ export class OrderService {
     return this.orderRepository.find();
   }
 
-  async findOne(id: string): Promise<Order> {
+  async findOne(id: number): Promise<Order> {
     return this.orderRepository.findOneBy({ id });
   }
 

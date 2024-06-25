@@ -11,6 +11,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { OrderModule } from './order/order.module';
 import { MachinesModule } from './machines/machines.module';
+import { MoldModule } from './mold/mold.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { MachinesModule } from './machines/machines.module';
     ProductModule,
     ProdInfoModule,
     OrderModule,
-    MachinesModule
+    MachinesModule,
+    MoldModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,

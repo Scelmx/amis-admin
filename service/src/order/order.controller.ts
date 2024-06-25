@@ -23,7 +23,7 @@ export class OrderController {
   }
 
   @Get('/find')
-  findOne(@Query() query: { id: string }) {
+  findOne(@Query() query: { id: number }) {
     return this.orderService.findOne(query.id);
   }
 

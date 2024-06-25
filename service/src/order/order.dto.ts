@@ -9,7 +9,7 @@ export class CreateOrderDto {
 }
 
 export class UpdateOrderDto {
-  readonly id: string;
+  readonly id: number;
   readonly createdAt: number;
   readonly deliveryAt: number;
   readonly materialId: string;
