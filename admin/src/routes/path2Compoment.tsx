@@ -4,6 +4,7 @@ import Login from '../pages/admin/common/Login';
 import ImagesManage from '@/pages/admin/imagesManage';
 import customer from '@/pages/admin/customer';
 import Orders from '@/pages/admin/orders';
+import { ProduceDispatch } from '@/pages/admin/produceDispatch';
 
 const path2components = [
     {
@@ -33,6 +34,10 @@ const path2components = [
     {
         path: '/produce-plan/orders',
         component: Orders,
+    },
+    {
+        path: '/produce-plan/index',
+        component: ProduceDispatch
     }
 ]
 

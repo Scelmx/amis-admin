@@ -1,5 +1,262 @@
 {
     "type": "page",
-    "title": "订单列表",
-    "body": []
+    "title": "订单管理",
+    "body": [
+        {
+            "type": "crud",
+            "syncLocation": false,
+            "api": {
+                "method": "get",
+                "url": "/api/order/list"
+            },
+            "columns": [
+                {
+                    "name": "id",
+                    "label": "ID",
+                    "type": "text",
+                    "id": "u:884583b1759b"
+                },
+                {
+                    "name": "materialId",
+                    "label": "物料信息",
+                    "type": "text",
+                    "id": "u:0988a64ec07f",
+                    "placeholder": "-"
+                },
+                {
+                    "name": "rawType",
+                    "label": "原料类型",
+                    "type": "text",
+                    "id": "u:76d4c0f8f55c",
+                    "placeholder": "-"
+                },
+                {
+                    "name": "deliveryAt",
+                    "label": "交付时间",
+                    "type": "text",
+                    "id": "u:2fa4170c2a66",
+                    "placeholder": "-"
+                },
+                {
+                    "name": "nums",
+                    "label": "数量",
+                    "type": "text",
+                    "id": "u:4f6b205268ea",
+                    "placeholder": "-"
+                },
+                {
+                    "type": "operation",
+                    "label": "操作",
+                    "buttons": [
+                        {
+                            "label": "编辑",
+                            "type": "button",
+                            "actionType": "dialog",
+                            "level": "link",
+                            "editorSetting": {
+                                "behavior": "update"
+                            },
+                            "dialog": {
+                                "type": "dialog",
+                                "title": "编辑",
+                                "body": [
+                                    {
+                                        "type": "form",
+                                        "api": {
+                                            "method": "get",
+                                            "url": "/api/order/update",
+                                            "requestAdaptor": "",
+                                            "adaptor": "",
+                                            "messages": {}
+                                        },
+                                        "body": [
+                                            {
+                                                "name": "id",
+                                                "label": "ID",
+                                                "id": "u:47a9f8076789",
+                                                "type": "input-text",
+                                                "visible": false
+                                            },
+                                            {
+                                                "name": "materialId",
+                                                "label": "物料信息",
+                                                "id": "u:d0cb1a77a127",
+                                                "placeholder": "-",
+                                                "type": "input-text"
+                                            },
+                                            {
+                                                "name": "rawType",
+                                                "label": "原料类型",
+                                                "id": "u:c24c03200571",
+                                                "placeholder": "-",
+                                                "type": "input-text"
+                                            },
+                                            {
+                                                "name": "deliveryAt",
+                                                "label": "交付时间",
+                                                "id": "u:f42a797fcb89",
+                                                "placeholder": "-",
+                                                "type": "input-text"
+                                            },
+                                            {
+                                                "name": "nums",
+                                                "label": "数量",
+                                                "id": "u:a43c236fd383",
+                                                "placeholder": "-",
+                                                "type": "input-text"
+                                            }
+                                        ],
+                                        "id": "u:9c8128e0d8b4",
+                                        "actions": [
+                                            {
+                                                "type": "submit",
+                                                "label": "提交",
+                                                "primary": true
+                                            }
+                                        ],
+                                        "feat": "Insert",
+                                        "dsType": "api"
+                                    }
+                                ],
+                                "id": "u:98206206f042",
+                                "actions": [
+                                    {
+                                        "type": "button",
+                                        "actionType": "cancel",
+                                        "label": "取消",
+                                        "id": "u:97d5f0f312a5"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "actionType": "confirm",
+                                        "label": "确定",
+                                        "primary": true,
+                                        "id": "u:8f12699a8076"
+                                    }
+                                ]
+                            },
+                            "id": "u:862faf9a66e0"
+                        },
+                        {
+                            "type": "button",
+                            "label": "删除",
+                            "actionType": "ajax",
+                            "level": "link",
+                            "className": "text-danger",
+                            "confirmText": "确定要删除？",
+                            "api": {
+                                "method": "get",
+                                "url": "/api/order/list?id=${id}"
+                            },
+                            "editorSetting": {
+                                "behavior": "delete"
+                            },
+                            "id": "u:ceceb49224ec"
+                        }
+                    ],
+                    "id": "u:c94a97d99709"
+                }
+            ],
+            "bulkActions": [],
+            "itemActions": [],
+            "id": "u:48dbbe9c61d7",
+            "headerToolbar": [
+                {
+                    "label": "新增",
+                    "type": "button",
+                    "actionType": "dialog",
+                    "level": "primary",
+                    "editorSetting": {
+                        "behavior": "create"
+                    },
+                    "dialog": {
+                        "title": "新增",
+                        "body": [
+                            {
+                                "type": "form",
+                                "api": {
+                                    "method": "post",
+                                    "url": "/api/order/add",
+                                    "requestAdaptor": "",
+                                    "adaptor": "",
+                                    "messages": {}
+                                },
+                                "body": [
+                                    {
+                                        "type": "input-text",
+                                        "name": "materialId",
+                                        "label": "物料信息",
+                                        "id": "u:544630ede405"
+                                    },
+                                    {
+                                        "type": "input-text",
+                                        "name": "rawType",
+                                        "label": "原料类型",
+                                        "id": "u:aeafc3c53dbc"
+                                    },
+                                    {
+                                        "type": "input-text",
+                                        "name": "deliveryAt",
+                                        "label": "交付时间",
+                                        "id": "u:535153095d17"
+                                    },
+                                    {
+                                        "type": "input-text",
+                                        "name": "nums",
+                                        "label": "数量",
+                                        "id": "u:06884023a6ba"
+                                    }
+                                ],
+                                "id": "u:6e8c7ea0b745",
+                                "actions": [
+                                    {
+                                        "type": "submit",
+                                        "label": "提交",
+                                        "primary": true
+                                    }
+                                ],
+                                "feat": "Insert",
+                                "dsType": "api"
+                            }
+                        ],
+                        "type": "dialog",
+                        "id": "u:1178ffeb2ef9",
+                        "actions": [
+                            {
+                                "type": "button",
+                                "actionType": "cancel",
+                                "label": "取消",
+                                "id": "u:1986b15a0ec4"
+                            },
+                            {
+                                "type": "button",
+                                "actionType": "confirm",
+                                "label": "确定",
+                                "primary": true,
+                                "id": "u:c8d43edaf89e"
+                            }
+                        ]
+                    },
+                    "id": "u:161d3fac881d"
+                },
+                {
+                    "type": "bulk-actions"
+                }
+            ],
+            "perPageAvailable": [
+                10
+            ],
+            "messages": {},
+            "perPageField": "pageSize"
+        }
+    ],
+    "id": "u:8a6901e85256",
+    "asideResizor": false,
+    "pullRefresh": {
+        "disabled": true
+    },
+    "regions": [
+        "body",
+        "header"
+    ]
 }

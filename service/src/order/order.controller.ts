@@ -3,8 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Param,
-  Delete,
   Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
@@ -34,7 +32,7 @@ export class OrderController {
     return this.orderService.update(updateOrderDto);
   }
 
-  @Delete('/del')
+  @Get('/del')
   remove(@Query() query: { id: string }) {
     return this.orderService.remove(query.id);
   }
