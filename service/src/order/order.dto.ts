@@ -4,6 +4,7 @@ export class CreateOrderDto {
   readonly materialId: string;
   readonly rawType: string;
   readonly nums: number;
+  status: string;
   isDeleted?: number;
 }
 
@@ -14,5 +15,6 @@ export class UpdateOrderDto {
   readonly materialId: string;
   readonly rawType: string;
   readonly nums?: number;
+  status: string;
   isDeleted?: number;
 }

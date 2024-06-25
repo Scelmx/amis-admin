@@ -10,6 +10,7 @@ import { ProdInfoModule } from './prodinfo/prodinfo.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { OrderModule } from './order/order.module';
+import { MachinesModule } from './machines/machines.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { OrderModule } from './order/order.module';
     ProductModule,
     ProdInfoModule,
     OrderModule,
+    MachinesModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,

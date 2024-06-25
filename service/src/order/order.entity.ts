@@ -20,6 +20,9 @@ export class Order {
   @Column('int')
   nums: number;
 
+  @Column({ type: 'varchar', length: 20, enum: ['wait', 'process', 'finish']})
+  status: string;
+
   @Column({ default: 0, comment: '是否删除' })
   is_deleted?: number;
 }
