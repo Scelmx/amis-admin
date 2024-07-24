@@ -35,9 +35,12 @@ export class Order {
   @Column('int')
   nums: number;
 
-  @Column({ type: 'varchar', length: 20, enum: ['wait', 'process', 'finish']})
+  /**
+   * 状态可选值： ['wait', 'process', 'finish']
+   */
+  @Column('varchar', { length: 20 })
   status: string;
 
-  @Column({ default: 0, comment: '是否删除' })
+  @Column('int', { default: 0, comment: '是否删除 0 否 1 是', nullable: true })
   is_deleted?: number;
 }

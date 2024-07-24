@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { MoldService } from './mold.service';
 import { CreateMoldDto, UpdateMoldDto } from './mold.dto';
+import { camelToSnakeCase } from 'src/utils';
 
 @Controller('/molds')
 export class MoldController {
@@ -12,8 +13,8 @@ export class MoldController {
   }
 
   @Get('/list')
-  findAll() {
-    return this.moldService.findAll();
+  findAll(@Query() query: { page: number; pageSize: number, templateModel: string }) {
+    return this.moldService.findAll(query);
   }
 
   @Get('/find')

@@ -1,0 +1,274 @@
+{
+  "type": "page",
+  "title": "模具参数",
+  "body": [
+    {
+      "type": "crud",
+      "id": "u:677421cfcddb",
+      "syncLocation": false,
+      "api": {
+        "method": "get",
+        "url": "/api/feedStock/list"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "label": "ID",
+          "type": "text",
+          "id": "u:ddb068e28faf"
+        },
+        {
+          "name": "name",
+          "label": "原料名称",
+          "type": "text",
+          "id": "u:9796393ca816",
+          "placeholder": "-",
+          "map": {
+            "pw": "皮碗",
+            "oxq": "O型圈",
+            "yxq": "Y型圈"
+          }
+        },
+        {
+          "name": "formationTime",
+          "label": "成型时间",
+          "type": "text",
+          "id": "u:4dbaf5d3bfa9",
+          "placeholder": "-"
+        },
+        {
+          "name": "formationPressure",
+          "label": "成型压力",
+          "type": "text",
+          "id": "u:482d2d5aea34",
+          "placeholder": "-"
+        },
+        {
+          "name": "upperMoldTemperature",
+          "label": "上模温度",
+          "type": "text",
+          "id": "u:7ff3e51eef00",
+          "placeholder": "-"
+        },
+        {
+          "name": "lowerMoldTemperature",
+          "label": "下模温度",
+          "type": "text",
+          "id": "u:a5b512182a10",
+          "placeholder": "-"
+        },
+        {
+          "type": "operation",
+          "label": "操作",
+          "buttons": [
+            {
+              "label": "编辑",
+              "type": "button",
+              "actionType": "dialog",
+              "level": "link",
+              "editorSetting": {
+                "behavior": "update"
+              },
+              "dialog": {
+                "title": "编辑",
+                "body": [
+                  {
+                    "type": "form",
+                    "api": {
+                      "method": "post",
+                      "url": "/api/feedStock/update"
+                    },
+                    "body": [
+                      {
+                        "name": "id",
+                        "label": "ID",
+                        "id": "u:2966a70f8f9a",
+                        "type": "input-text",
+                        "hidden": true
+                      },
+                      {
+                        "name": "name",
+                        "label": "原料名称",
+                        "id": "u:a0badd01a077",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "formationTime",
+                        "label": "成型时间",
+                        "id": "u:0f1d499fc51c",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "formationPressure",
+                        "label": "成型压力",
+                        "id": "u:6086366c4208",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "upperMoldTemperature",
+                        "label": "上模温度",
+                        "id": "u:7eb4983beb8f",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "lowerMoldTemperature",
+                        "label": "下模温度",
+                        "id": "u:590fd58a30f6",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      }
+                    ],
+                    "id": "u:6442e479f67a",
+                    "actions": [
+                      {
+                        "type": "submit",
+                        "label": "提交",
+                        "primary": true
+                      }
+                    ],
+                    "feat": "Insert"
+                  }
+                ],
+                "type": "dialog",
+                "id": "u:6d51bd7c0639",
+                "actions": [
+                  {
+                    "type": "button",
+                    "actionType": "cancel",
+                    "label": "取消",
+                    "id": "u:3d8ed04b3b74"
+                  },
+                  {
+                    "type": "button",
+                    "actionType": "confirm",
+                    "label": "确定",
+                    "primary": true,
+                    "id": "u:98beeaa67956"
+                  }
+                ]
+              },
+              "id": "u:d35050c08f6e"
+            },
+            {
+              "type": "button",
+              "label": "删除",
+              "actionType": "ajax",
+              "level": "link",
+              "className": "text-danger",
+              "confirmText": "确定要删除？",
+              "api": {
+                "method": "get",
+                "url": "/api/feedStock/del?id=${id}"
+              },
+              "editorSetting": {
+                "behavior": "delete"
+              },
+              "id": "u:2fca9b16ac69"
+            }
+          ],
+          "id": "u:eb942ace3a4c"
+        }
+      ],
+      "bulkActions": [],
+      "itemActions": [],
+      "headerToolbar": [
+        {
+          "label": "新增",
+          "type": "button",
+          "actionType": "dialog",
+          "level": "primary",
+          "editorSetting": {
+            "behavior": "create"
+          },
+          "dialog": {
+            "type": "dialog",
+            "title": "新增",
+            "body": [
+              {
+                "type": "form",
+                "api": {
+                  "method": "post",
+                  "url": "/api/feedStock/add"
+                },
+                "body": [
+                  {
+                    "type": "input-text",
+                    "name": "name",
+                    "label": "原料名称",
+                    "id": "u:6be01abccb8d"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "formationTime",
+                    "label": "成型时间",
+                    "id": "u:974494c2d3e3"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "formationPressure",
+                    "label": "成型压力",
+                    "id": "u:f997b34095f7"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "upperMoldTemperature",
+                    "label": "上模温度",
+                    "id": "u:1b84849b2468"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "lowerMoldTemperature",
+                    "label": "下模温度",
+                    "id": "u:e43ae5e66dac"
+                  }
+                ],
+                "id": "u:2a1876186331",
+                "actions": [
+                  {
+                    "type": "submit",
+                    "label": "提交",
+                    "primary": true
+                  }
+                ],
+                "feat": "Insert"
+              }
+            ],
+            "id": "u:1339f391d272",
+            "actions": [
+              {
+                "type": "button",
+                "actionType": "cancel",
+                "label": "取消",
+                "id": "u:de7224df9b4e"
+              },
+              {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:c7c4f59376a9"
+              }
+            ]
+          },
+          "id": "u:7584dd5003bc"
+        },
+        {
+          "type": "bulk-actions"
+        }
+      ],
+      "perPageAvailable": [10],
+      "messages": {},
+      "perPageField": "pageSize"
+    }
+  ],
+  "id": "u:8a6901e85256",
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "regions": ["body", "header"]
+}

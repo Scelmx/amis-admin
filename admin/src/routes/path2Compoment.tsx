@@ -4,7 +4,9 @@ import Login from '../pages/admin/common/Login';
 import ImagesManage from '@/pages/admin/imagesManage';
 import customer from '@/pages/admin/customer';
 import Orders from '@/pages/admin/orders';
+import Mold from '@/pages/admin/molds';
 import { ProduceDispatch } from '@/pages/admin/produceDispatch';
+import MoldsOther from '@/pages/admin/moldsOther';
 
 const path2components = [
     {
@@ -26,6 +28,14 @@ const path2components = [
     {
         path: '/product/index',
         component: Product
+    },
+    {
+        path: '/molds/index',
+        component: Mold,
+    },
+    {
+        path: "/molds-other/index",
+        component: MoldsOther
     },
     {
         path: '/product/image-manange',

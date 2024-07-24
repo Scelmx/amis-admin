@@ -11,7 +11,10 @@ export class Machines {
   @Column({ comment: '额定模数' })
   mode: number;
 
-  @Column({ comment: '产线类型', enum: ['A+B', 'A+C'] })
+  /**
+   * 产线类型 ['A+B', 'A+C']
+   */
+  @Column({ comment: '产线类型' })
   type: string;
 
   @Column({ type: 'varchar', length: 255, comment: '关联订单' })

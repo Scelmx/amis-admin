@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { OrderModule } from './order/order.module';
 import { MachinesModule } from './machines/machines.module';
 import { MoldModule } from './mold/mold.module';
+import { FeedStocksModule } from './feedstock/feedstock.module';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { MoldModule } from './mold/mold.module';
     ProdInfoModule,
     OrderModule,
     MachinesModule,
-    MoldModule
+    MoldModule,
+    FeedStocksModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,

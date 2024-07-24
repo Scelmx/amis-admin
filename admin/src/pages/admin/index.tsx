@@ -82,24 +82,32 @@ export default class Admin extends React.Component<AdminProps, any> {
               {
                 label: '产品图片',
                 path: "/product/image-manange"
+              },
+              {
+                label: '模具管理',
+                path: "/molds/index"
+              },
+              {
+                label: '模具参数',
+                path: "/molds-other/index"
               }
             ],
           },
-          {
-            label: "生产计划",
-            icon: "fa fa-plan",
-            path: "",
-            children: [
-              {
-                label: "订单调度",
-                path: "/produce-plan/index"
-              },
-              {
-                label: '订单列表',
-                path: "/produce-plan/orders"
-              }
-            ]
-          }
+          // {
+          //   label: "生产计划",
+          //   icon: "fa fa-plan",
+          //   path: "",
+          //   children: [
+          //     {
+          //       label: "订单调度",
+          //       path: "/produce-plan/index"
+          //     },
+          //     {
+          //       label: '订单列表',
+          //       path: "/produce-plan/orders"
+          //     }
+          //   ]
+          // }
         ]
       },
     ],
