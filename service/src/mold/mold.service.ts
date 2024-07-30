@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { Mold } from './mold.entity';
-import { CreateMoldDto, ListDto, UpdateMoldDto } from './mold.dto';
+import { CreateMoldDto, UpdateMoldDto } from './mold.dto';
+import { ListDto } from '../common/common.dto';
 import { camelToSnakeCase } from '../utils';
 
 @Injectable()
@@ -30,9 +31,22 @@ export class MoldService {
   }
 
   async findOne(id: number): Promise<Mold> {
-    return this.moldRepository.findOneBy({ id });
+    return this.moldRepository.findOneBy({ id, is_deleted: 0 });
   }
 
+  /** 查找模版编号 */
+  async findOneByTemplateNo(templateNo): Promise<Mold[]> {
+    const where = {
+      template_no: In(templateNo),
+      is_deleted: 0
+    }
+    return this.moldRepository.find({ where });
+  }
+
+  /**
+   * @param updateMoldDto 模具信息
+   * @returns 
+   */
   async update(updateMoldDto: UpdateMoldDto): Promise<Mold> {
     await this.moldRepository.update(
       updateMoldDto.id,
@@ -41,6 +55,7 @@ export class MoldService {
     return this.findOne(updateMoldDto.id);
   }
 
+  /** 删除指定 ID 的模具 */
   async remove(id: number) {
     return this.moldRepository.update(id, { is_deleted: 1 });
   }

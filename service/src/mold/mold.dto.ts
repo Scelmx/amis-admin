@@ -13,6 +13,7 @@ export class CreateMoldDto {
 export class UpdateMoldDto {
   readonly id: number;
   readonly produceName: string;
+  /** 模具号 */
   readonly templateNo: string;
   readonly templateModel: string;
   readonly templateSize: string;
@@ -23,7 +24,29 @@ export class UpdateMoldDto {
   readonly isDeleted?: number;
 }
 
-export class ListDto {
-  page: number;
-  pageSize: number;
+export class CreateWordDto {
+  /**
+   * 模具号
+   */
+  templateNo: string | string[];
+
+  /**
+   * 原料名称
+   */
+  feedstockId: string;
+
+  /**
+   * 班次 0: 白班 1: 夜班
+   */
+  sailings: string;
+
+  /**
+   * 生成日期
+   */
+  createDate: string | number;
+
+  /**
+   * 硫化工
+   */
+  sulfurChemist: string
 }
