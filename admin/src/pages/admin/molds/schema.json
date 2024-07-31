@@ -20,16 +20,9 @@
         {
           "name": "produceName",
           "label": "产品名称",
-          "type": "map",
+          "type": "text",
           "id": "u:15bd7295d1da",
-          "placeholder": "-",
-          "source": {
-            "url": "/api/feedStock/options?isMap=1",
-            "method": "get",
-            "requestAdaptor": "",
-            "adaptor": "",
-            "messages": {}
-          }
+          "placeholder": "-"
         },
         {
           "name": "templateNo",
@@ -76,16 +69,9 @@
         {
           "name": "region",
           "label": "模具区域",
-          "type": "map",
+          "type": "text",
           "id": "u:9801a14e4f6f",
-          "placeholder": "-",
-          "map": {
-            "a": "A区",
-            "b": "B区",
-            "c": "C区",
-            "d": "D区",
-            "e": "E区"
-          }
+          "placeholder": "-"
         },
         {
           "type": "operation",
@@ -125,13 +111,20 @@
                         "id": "u:ee1d3853c1e4",
                         "placeholder": "-",
                         "type": "select",
-                        "source": {
-                          "url": "/api/feedStock/options",
-                          "method": "get",
-                          "requestAdaptor": "",
-                          "adaptor": "",
-                          "messages": {}
-                        }
+                        "options": [
+                          {
+                            "label": "皮碗",
+                            "value": "pw"
+                          },
+                          {
+                            "label": "O型圈",
+                            "value": "oxq"
+                          },
+                          {
+                            "label": "Y型圈",
+                            "value": "yxq"
+                          }
+                        ]
                       },
                       {
                         "name": "templateNo",
@@ -263,7 +256,7 @@
           "label": "新增",
           "type": "button",
           "actionType": "dialog",
-          "level": "primary",
+          "level": "default",
           "editorSetting": {
             "behavior": "create"
           },
@@ -285,13 +278,20 @@
                     "name": "produceName",
                     "label": "产品名称",
                     "id": "u:7df512bdd7ec",
-                    "source": {
-                        "url": "/api/feedStock/options",
-                        "method": "get",
-                        "requestAdaptor": "",
-                        "adaptor": "",
-                        "messages": {}
+                    "options": [
+                      {
+                        "label": "皮碗",
+                        "value": "pw"
+                      },
+                      {
+                        "label": "O型圈",
+                        "value": "oxq"
+                      },
+                      {
+                        "label": "Y型圈",
+                        "value": "yxq"
                       }
+                    ]
                   },
                   {
                     "type": "input-text",
@@ -388,6 +388,142 @@
             ]
           },
           "id": "u:109e298a8840"
+        },
+        {
+          "label": "生成报告",
+          "type": "button",
+          "actionType": "dialog",
+          "level": "primary",
+          "editorSetting": {
+            "behavior": "create"
+          },
+          "dialog": {
+            "type": "dialog",
+            "title": "生成生产记录",
+            "body": [
+              {
+                "type": "form",
+                "api": {
+                  "method": "post",
+                  "url": "/api/molds/createWord",
+                  "requestAdaptor": "",
+                  "messages": {}
+                },
+                "body": [
+                  {
+                    "type": "select",
+                    "name": "templateNo",
+                    "label": "模具号",
+                    "id": "u:0a86aac75ce5",
+                    "required": true,
+                    "multiple": true,
+                    "searchable": true,
+                    "source": {
+                      "url": "/api/molds/list",
+                      "method": "get",
+                      "adaptor": "return payload.data.data"
+                    },
+                    "labelField": "produceName",
+                    "valueField": "templateNo"
+                  },
+                  {
+                    "type": "select",
+                    "name": "feedstockId",
+                    "label": "原料",
+                    "id": "u:7df512bdd7ec",
+                    "multiple": true,
+                    "required": true,
+                    "source": {
+                      "url": "/api/feedStock/list",
+                      "method": "get",
+                      "requestAdaptor": "",
+                      "adaptor": "return payload.data.data",
+                      "messages": {}
+                    },
+                    "labelField": "name",
+                    "valueField": "id"
+                  },
+                  {
+                    "type": "select",
+                    "name": "sailings",
+                    "label": "班次",
+                    "id": "u:bbdfeb1202d1",
+                    "options": [
+                      {
+                        "label": "白班",
+                        "value": "0"
+                      },
+                      {
+                        "label": "夜班",
+                        "value": "1"
+                      }
+                    ],
+                    "multiple": false,
+                    "value": "",
+                    "required": true
+                  },
+                  {
+                    "type": "input-date",
+                    "name": "createDate",
+                    "label": "生成日期",
+                    "id": "u:4eae0123ab50"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "sulfurChemist",
+                    "label": "硫化工",
+                    "id": "u:544ab4e686a3"
+                  }
+                ],
+                "id": "u:32d987bd6858",
+                "actions": [
+                  {
+                    "type": "submit",
+                    "label": "提交",
+                    "primary": true
+                  }
+                ],
+                "onEvent": {
+                  "submitSucc": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "ignoreError": false,
+                        "actionType": "url",
+                        "args": {
+                          "url": "/api/molds/download?filename=${event.data.result.data.data}"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "feat": "Insert"
+              }
+            ],
+            "id": "u:70370ea6368a",
+            "actions": [
+              {
+                "type": "button",
+                "actionType": "cancel",
+                "label": "取消",
+                "id": "u:b508acb5958d"
+              },
+              {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:70a2168109ad"
+              }
+            ],
+            "showCloseButton": true,
+            "closeOnOutside": false,
+            "closeOnEsc": false,
+            "showErrorMsg": true,
+            "showLoading": true,
+            "draggable": false
+          },
+          "id": "u:6235b5955cca"
         },
         {
           "type": "bulk-actions"
