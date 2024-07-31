@@ -117,7 +117,6 @@ export function renderDataToDocx(filePath: string, data) {
   });
 
   doc.render(data);
-
   const buf = doc.getZip().generate({
     type: 'nodebuffer',
     compression: 'DEFLATE',

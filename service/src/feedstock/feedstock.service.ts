@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { FeedStock } from './feedstock.entity';
 import { CreateFeedStockDto, UpdateFeedStockDto } from './feedstock.dto';
 import { ListDto } from '../common/common.dto';
@@ -29,14 +29,20 @@ export class FeedStockService {
     return { count, data }
   }
 
-  async findOne(id: string): Promise<FeedStock> {
+  async findByIds(ids: string[]): Promise<FeedStock[]> {
+    const where = { id: In(ids), is_deleted: 0 };
+    const res = await this.feedStockResponsitory.find({ where: where });
+    return res
+  }
+
+  async findById(id: string): Promise<FeedStock> {
     return this.feedStockResponsitory.findOneBy({ id });
   }
 
   /** 更新订单 */
   async update(updateFeedStockDto: UpdateFeedStockDto): Promise<FeedStock> {
     await this.feedStockResponsitory.update(updateFeedStockDto.id, camelToSnakeCase(updateFeedStockDto));
-    return this.findOne(updateFeedStockDto.id);
+    return this.findById(updateFeedStockDto.id);
   }
 
   /** 标记删除订单 */

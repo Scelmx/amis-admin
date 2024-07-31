@@ -28,7 +28,7 @@ export class CreateWordDto {
   /**
    * 模具号
    */
-  templateNo: string | string[];
+  templateNo: string;
 
   /**
    * 原料名称

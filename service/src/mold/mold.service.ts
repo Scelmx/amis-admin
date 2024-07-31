@@ -31,16 +31,16 @@ export class MoldService {
   }
 
   async findOne(id: number): Promise<Mold> {
-    return this.moldRepository.findOneBy({ id, is_deleted: 0 });
+    return await this.moldRepository.findOneBy({ id, is_deleted: 0 });
   }
 
   /** 查找模版编号 */
-  async findOneByTemplateNo(templateNo): Promise<Mold[]> {
+  async findByTemplateNo(templateNo: string[]): Promise<Mold[]> {
     const where = {
       template_no: In(templateNo),
       is_deleted: 0
     }
-    return this.moldRepository.find({ where });
+    return await this.moldRepository.find({ where: where });
   }
 
   /**
@@ -52,11 +52,11 @@ export class MoldService {
       updateMoldDto.id,
       camelToSnakeCase(updateMoldDto),
     );
-    return this.findOne(updateMoldDto.id);
+    return await this.findOne(updateMoldDto.id);
   }
 
   /** 删除指定 ID 的模具 */
   async remove(id: number) {
-    return this.moldRepository.update(id, { is_deleted: 1 });
+    return await this.moldRepository.update(id, { is_deleted: 1 });
   }
 }

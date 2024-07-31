@@ -8,5 +8,6 @@ import { FeedStock } from './feedstock.entity';
   imports: [TypeOrmModule.forFeature([FeedStock])],
   controllers: [FeedStockController],
   providers: [FeedStockService],
+  exports: [FeedStockService],
 })
 export class FeedStocksModule {}

@@ -11,7 +11,7 @@ import * as path from 'path';
 export class MoldController {
   constructor(
     private readonly moldService: MoldService,
-    private feedstockService: FeedStockService,
+    private readonly feedstockService: FeedStockService,
   ) {}
 
   @Post('/add')
@@ -27,24 +27,20 @@ export class MoldController {
   }
 
   @Post('/createWord')
-  async createWord(@Body() body: CreateWordDto, @Res() response: Response) {
-    const { templateNo, feedstockId, sailings } = body;
-    let templateNos = [];
-    if (Array.isArray(templateNo)) {
-      templateNos = templateNo
-    } else {
-      templateNos = templateNo.split(",")
-    }
+  async createWord(@Body() body: CreateWordDto) {
+    const { templateNo, feedstockId, ...rest } = body;
+    const templateNos = templateNo.split(',');
+    const feedstockIds = feedstockId.split(',');
     /** 获取对应的原料信息 */
-    const feedstockInfo = await this.feedstockService.findOne(feedstockId);
-    if (feedstockInfo) {
+    const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
+    if (!feedstockInfo) {
       return {
         data: '原料信息获取失败',
       };
     }
     /** 获取对应的模具信息 */
-    const templateInfo = await this.moldService.findOneByTemplateNo(templateNo);
-    if (feedstockInfo) {
+    const templateInfo = await this.moldService.findByTemplateNo(templateNos);
+    if (!feedstockInfo) {
       return {
         data: '模具信息获取失败',
       };
@@ -54,26 +50,29 @@ export class MoldController {
       {
         ...snakeToCamelCase(feedstockInfo),
         ...snakeToCamelCase(templateInfo),
+        ...rest
       },
     );
 
     if (!fs.existsSync(filePath)) {
-      return false;
+      return '文件不存在';
     }
 
-    // 设置响应头，指定文件名和内容类型
-    response.setHeader(
-      'Content-Disposition',
-      `attachment; filename="生产记录.docx"`,
-    );
-    response.setHeader(
-      'Content-Type',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    );
+    
+    return { data: fileName }
+  }
 
-    // 创建文件流并发送响应
-    const filestream = fs.createReadStream(filePath);
-    filestream.pipe(response);
+  @Get('/download')
+  async download(
+    @Query() query: { filename: string },
+    @Res() response: Response,
+  ) {
+    const { filename } = query;
+    const filePath = path.join(__dirname, '../dist/assets/output/', `${filename}.docx`);
+    if (!fs.existsSync(filePath)) {
+      return '下载失败';
+    }
+    response.download(filePath);
   }
 
   @Get('/find')

@@ -34,7 +34,7 @@ export class FeedStockController {
 
   @Get('/find')
   findOne(@Query() query: { id: string }) {
-    return this.feedStockService.findOne(query.id);
+    return this.feedStockService.findById(query.id);
   }
 
   @Post('/update')
