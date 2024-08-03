@@ -6,6 +6,7 @@ import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { createBaseNameObj } from './utils';
 
 @Controller('/molds')
 export class MoldController {
@@ -45,12 +46,15 @@ export class MoldController {
         data: '模具信息获取失败',
       };
     }
+    const product1 = createBaseNameObj('product1', { ...feedstockInfo[0], ...templateInfo[0], count: templateInfo[0].hole * templateInfo[0].mode })
+    const product2 = createBaseNameObj('product2', { ...feedstockInfo[1], ...templateInfo[1], count: templateInfo[1].hole * templateInfo[1].mode })
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
-        ...snakeToCamelCase(feedstockInfo),
-        ...snakeToCamelCase(templateInfo),
-        ...rest
+        ...snakeToCamelCase(product1),
+        ...snakeToCamelCase(product2),
+        ...rest,
+        sailings: rest.sailings === '0'
       },
     );
 
@@ -58,7 +62,6 @@ export class MoldController {
       return '文件不存在';
     }
 
-    
     return { data: fileName }
   }
 
