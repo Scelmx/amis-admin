@@ -423,8 +423,9 @@
                       "method": "get",
                       "adaptor": "return payload.data.data"
                     },
-                    "labelField": "produceName",
-                    "valueField": "templateNo"
+                    "labelField": "templateNo",
+                    "valueField": "templateNo",
+                    "menuTpl": "${produceName} <span style='color: #999'>编号：(${templateNo})</span> - <span style='color: #999'>型号：(${templateModel})</span>"
                   },
                   {
                     "type": "select",

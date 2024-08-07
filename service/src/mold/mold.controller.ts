@@ -7,6 +7,7 @@ import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
+import * as dayjs from 'dayjs';
 
 @Controller('/molds')
 export class MoldController {
@@ -46,14 +47,17 @@ export class MoldController {
         data: '模具信息获取失败',
       };
     }
+
+    const product2Params = feedstockInfo?.[1] || feedstockInfo[0]
     const product1 = createBaseNameObj('product1', { ...feedstockInfo[0], ...templateInfo[0], count: templateInfo[0].hole * templateInfo[0].mode })
-    const product2 = createBaseNameObj('product2', { ...feedstockInfo[1], ...templateInfo[1], count: templateInfo[1].hole * templateInfo[1].mode })
+    const product2 = createBaseNameObj('product2', { ...product2Params, ...templateInfo?.[1], count: templateInfo?.[1]?.hole * templateInfo?.[1]?.mode })
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
         ...snakeToCamelCase(product1),
         ...snakeToCamelCase(product2),
         ...rest,
+        createDate: rest?.createDate ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD') : '',
         sailings: rest.sailings === '0'
       },
     );
