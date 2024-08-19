@@ -1,7 +1,8 @@
+import { Common } from '../common/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Order {
+export class Order extends Common {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -11,19 +12,16 @@ export class Order {
   @Column({ comment: '客户' })
   customer_id: number;
 
-  @Column({ comment: '商品名称' })
+  @Column({ comment: '商品名称', nullable: true })
   goods_name: string;
 
-  @Column({ comment: '商品型号' })
+  @Column({ comment: '商品型号', nullable: true })
   goods_model: string;
-
-  @Column({ comment: '创建时间' })
-  created_at: number;
 
   @Column({ comment: '交付时间' })
   delivery_at: number;
 
-  @Column()
+  @Column({ comment: '机器编号' })
   material_id: string;
 
   @Column({ comment: '物料编号', nullable: true })
@@ -38,7 +36,7 @@ export class Order {
   /**
    * 状态可选值： ['wait', 'process', 'finish']
    */
-  @Column('varchar', { length: 20 })
+  @Column('varchar', { length: 20, default: 'wait', comment: '状态' })
   status: string;
 
   @Column('int', { default: 0, comment: '是否删除 0 否 1 是', nullable: true })

@@ -190,6 +190,12 @@
                                     },
                                     {
                                         "type": "input-text",
+                                        "name": "customerId",
+                                        "label": "物料信息",
+                                        "id": "u:544630ede405"
+                                    },
+                                    {
+                                        "type": "input-text",
                                         "name": "rawType",
                                         "label": "原料类型",
                                         "id": "u:aeafc3c53dbc"

@@ -2,6 +2,10 @@ import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ListDto } from '../common/common.dto';
+import { take } from 'rxjs';
+import { FindManyOptions } from 'typeorm';
+import { Common } from '../common/common.entity';
 const Expressions = require('angular-expressions');
 const ImageModule = require('docxtemplater-image-module-free');
 /** 小驼峰转下划线 */
@@ -166,4 +170,17 @@ export function convertUndefinedToEmptyString(obj) {
     }
   }
   return obj;
+}
+
+/** 生成查询条件 */
+export function genWhereObj(params: ListDto, where) {
+  const { page, pageSize } = params
+  const skip = page > 0 ? (page - 1) * pageSize : 0
+  const options: FindManyOptions<Common> = {
+    skip,
+    take: pageSize,
+    order: { created_at: 'DESC' },
+    where: { ...where, is_deleted: 0 }
+  }
+  return options;
 }

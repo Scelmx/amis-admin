@@ -1,25 +1,37 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto, UpdateOrderDto } from './order.dto';
+import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
+import { assignNewOrderToMachines } from './utils';
+import { MachinesService } from '../machines/machines.service';
+import * as dayjs from 'dayjs';
 
 @Controller('/order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(
+    private readonly orderService: OrderService,
+    private readonly machinesService: MachinesService,
+  ) {}
 
   @Get('/list')
-  findAll() {
-    return this.orderService.findAll();
+  findAll(@Query() query: FindAllDto) {
+    return this.orderService.findAll(query);
   }
 
   @Post('/add')
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  async create(@Body() createOrderDto: CreateOrderDto) {
+    const res = await this.orderService.create({ ...createOrderDto, createdAt: dayjs().valueOf() });
+    console.log(res, '111')
+    if (res) {
+      const machineList = await this.machinesService.findAll();
+      const targetMachine = assignNewOrderToMachines(res, machineList);
+      console.log(machineList, targetMachine, '?????')
+      const targetLine = await this.machinesService.updateTargetMachineOrders(targetMachine)
+      if (targetLine) {
+        return res;
+      }
+      return '未找到对应产线'
+    }
+    return '订单创建失败'
   }
 
   @Get('/find')

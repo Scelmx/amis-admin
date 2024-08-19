@@ -34,4 +34,9 @@ export class MachinesService {
   async remove(id: string): Promise<void> {
     await this.machinesResponsitory.update(id, { is_deleted: 1 });
   }
+
+  /** 更新指定机器 */
+  async updateTargetMachineOrders(machine: UpdateMachinesDto) {
+    return await this.machinesResponsitory.update(machine.id, machine)
+  }
 }

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Order } from './order.entity';
-import { CreateOrderDto, UpdateOrderDto } from './order.dto';
+import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
+import { camelToSnakeCase, genWhereObj, snakeToCamelCase } from '../utils';
 
 @Injectable()
 export class OrderService {
@@ -12,12 +13,16 @@ export class OrderService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    const order = this.orderRepository.create(createOrderDto);
+    const order = this.orderRepository.create(camelToSnakeCase(createOrderDto));
     return this.orderRepository.save(order);
   }
 
-  async findAll(): Promise<Order[]> {
-    return this.orderRepository.find();
+  async findAll(query: FindAllDto): Promise<{ count; data: Order[] }> {
+    const { customerId, status, ...rest } = query;
+    const options = genWhereObj(rest, { customer_id: customerId || undefined, status: status || undefined });
+    const count = await this.orderRepository.count(options);
+    const data = await this.orderRepository.find(options);
+    return { count, data };
   }
 
   async findOne(id: number): Promise<Order> {
