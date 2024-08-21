@@ -12,17 +12,17 @@ export class Order extends Common {
   @Column({ comment: '客户' })
   customer_id: number;
 
+  @Column({ comment: '产品类型' })
+  product_type: string;
+
   @Column({ comment: '商品名称', nullable: true })
   goods_name: string;
 
   @Column({ comment: '商品型号', nullable: true })
   goods_model: string;
 
-  @Column({ comment: '交付时间' })
+  @Column({ type: 'bigint', comment: '交付时间' })
   delivery_at: number;
-
-  @Column({ comment: '机器编号' })
-  material_id: string;
 
   @Column({ comment: '物料编号', nullable: true })
   material_no: string;
@@ -33,6 +33,11 @@ export class Order extends Common {
   @Column('int')
   nums: number;
 
+  @Column({ comment: '所需模具' })
+  requireMold: string;
+
+  @Column({ type: 'int', comment: '优先级', nullable: true })
+  priority: number;
   /**
    * 状态可选值： ['wait', 'process', 'finish']
    */

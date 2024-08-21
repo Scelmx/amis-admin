@@ -17,21 +17,44 @@ export class OrderController {
     return this.orderService.findAll(query);
   }
 
+  @Get('/machines')
+  async getMachines() {
+    const machineList: any = await this.machinesService.findAll();
+    console.log(machineList, 111);
+    for (const item of machineList) {
+      const orders = [];
+      for (const orderJson of JSON.parse(item?.orders || '[]')) {
+        const orderList = await this.orderService.findOne(orderJson); // 等待这个异步操作完成
+        // 假设 orderService.findById 返回的是单个订单对象，你可能需要根据实际情况调整
+        orders.push(orderList);
+      }
+      console.log(orders, 'orders')
+      item.orders = orders;
+    }
+    console.log(machineList, 'machineList');
+    return machineList;
+  }
+
   @Post('/add')
-  async create(@Body() createOrderDto: CreateOrderDto) {
-    const res = await this.orderService.create({ ...createOrderDto, createdAt: dayjs().valueOf() });
-    console.log(res, '111')
+  async create(@Body() body: CreateOrderDto) {
+    const res = await this.orderService.create({
+      ...body,
+      createdAt: dayjs().valueOf(),
+      deliveryAt: body.deliveryAt * 1
+    });
+    console.log(res, '111');
     if (res) {
       const machineList = await this.machinesService.findAll();
       const targetMachine = assignNewOrderToMachines(res, machineList);
-      console.log(machineList, targetMachine, '?????')
-      const targetLine = await this.machinesService.updateTargetMachineOrders(targetMachine)
+      console.log(machineList, targetMachine, '?????');
+      const targetLine =
+        await this.machinesService.updateTargetMachineOrders(targetMachine);
       if (targetLine) {
         return res;
       }
-      return '未找到对应产线'
+      return '未找到对应产线';
     }
-    return '订单创建失败'
+    return '订单创建失败';
   }
 
   @Get('/find')

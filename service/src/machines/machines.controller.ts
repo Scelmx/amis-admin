@@ -8,18 +8,15 @@ import {
   import { MachinesService } from './machines.service';
   import { CreateMachinesDto, UpdateMachinesDto } from './machines.dto';
   
-  @Controller('/order')
+  @Controller('/machines')
   export class MachineController {
-    constructor(private readonly machinesService: MachinesService) {}
-  
-    @Get('/list')
-    findAll() {
-      return this.machinesService.findAll();
-    }
+    constructor(
+      private readonly machinesService: MachinesService
+    ) {}
   
     @Post('/add')
     create(@Body() createOrderDto: CreateMachinesDto) {
-      return this.machinesService.create(createOrderDto);
+      return this.machinesService.create({ ...createOrderDto });
     }
   
     @Get('/find')

@@ -1,4 +1,5 @@
 .plan-page{
+    padding: 20px;
     .plan-page_title {
         width: 100%;
         display: flex;
@@ -14,6 +15,26 @@
             overflow: auto;
             display: flex;
             align-items: flex-start;
+            .flex {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .ant-dropdown-button {
+                    display: inline-flex;
+                    width: auto;
+                }
+                .ant-btn-compact-first-item {
+                    display: none;
+                }
+                .ant-btn-compact-last-item {
+                    border-radius: 4px;
+                    height: 24px;
+                    &:hover {
+                        border-radius: 4px !important;
+                        height: 24px;
+                    }
+                }
+            }
             .card-col {
                 width: 240px;
                 padding: 10px 14px;

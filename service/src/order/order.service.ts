@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, In, Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
 import { camelToSnakeCase, genWhereObj, snakeToCamelCase } from '../utils';
@@ -27,6 +27,23 @@ export class OrderService {
 
   async findOne(id: number): Promise<Order> {
     return this.orderRepository.findOneBy({ id });
+  }
+
+  async findById(ids: number[]): Promise<Order[]> {
+    console.log(ids,2222)
+    const placeholders = ids?.map(() => '?').join(', ');
+    console.log(placeholders, 'cccc')
+    const query = `
+      WITH OrderedIds AS (
+        SELECT id, 
+               ROW_NUMBER() OVER (ORDER BY FIELD(id, ${placeholders})) as rownum
+        FROM orders
+        WHERE id IN (${placeholders})
+      )
+      SELECT * FROM OrderedIds
+      ORDER BY rownum;
+    `;
+    return await this.orderRepository.query(query, ids);
   }
 
   /** 更新订单 */

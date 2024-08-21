@@ -13,8 +13,6 @@ export class CreateOrderDto extends CommonDto {
   readonly goodsModel: string;
   // 交付时间
   readonly deliveryAt: number;
-  // 机器编号
-  readonly materialId: string;
   // 物料编号
   readonly rawType: string;
   // 生产数量
@@ -38,8 +36,6 @@ export class UpdateOrderDto extends CommonDto {
   readonly goodsModel: string;
   // 交付时间
   readonly deliveryAt: number;
-  // 机器编号
-  readonly materialId: string;
   // 物料编号
   readonly rawType: string;
   // 生产数量

@@ -1,7 +1,8 @@
+import { Common } from '../common/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Machines {
+export class Machines extends Common {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -17,7 +18,7 @@ export class Machines {
   @Column({ comment: '产线类型' })
   type: string;
 
-  @Column({ type: 'varchar', length: 255, comment: '关联订单' })
+  @Column({ type: 'varchar', length: 255, comment: '关联订单', nullable: true })
   orders: string
 
   @Column({ default: 0, comment: '是否删除' })

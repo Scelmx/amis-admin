@@ -1,20 +1,21 @@
-import { SchemaNode, PlainObject } from "amis-core";
-import { ClassValue } from "amis-core/lib/theme";
 import { Button, Card, Tag } from "amis-ui";
-import { Dropdown, MenuProps, Space } from "antd";
-import React from "react";
+import { AddMachine } from "./AddMachine";
+import { useEffect, useState } from "react";
+import { request } from "@/utils/requestInterceptor";
+import DropdownButton from "antd/es/dropdown/dropdown-button";
 
 export function ProduceDispatch() {
-    const list = [{
-        label: '生产线1',
-        children: [{
-            id: 0,
-            label: '',
-            customerId: ''
-        }]
-    }, {
-        label: ''
-    }]
+    const [machinesList, setMachinesList] = useState<any[]>([])
+
+    useEffect(() => {
+        const init = async () => {
+            const res: any = await request({ url: '/api/order/machines', method: 'get' })
+            if (res) {
+                setMachinesList([...res.data.data])
+            }
+        }
+        init();
+    }, [])
 
     const items = [
         {
@@ -34,23 +35,22 @@ export function ProduceDispatch() {
     return (<div className="plan-page">
         <header className="plan-page_title">
             <h3>生产计划</h3>
-            <Button icon="plus">添加机器 +</Button>
+            <AddMachine></AddMachine>
         </header>
 
         <div className="cards-container">
             <div className="card-row">
-                {list.map((item) => (
-                    <div className="card-col">
-                        <Tag className="card-col_tag" processing>{item.label}</Tag>
-                        {item.children?.map((child) => <Card title={
-                            <div>
-                                <span>订单信息</span>
-                                <>
-                                    {/** 更多操作 */}
-                                    {/** 删除操作 */}
-                                </>
-                            </div>
-                        }>
+                {(machinesList || [])?.map((item: any, index: number) => (
+                    <div key={item.id} className="card-col">
+                        <Tag className="card-col_tag" processing>{item.name || '机器' + index}</Tag>
+                        {(item?.orders || [])?.map((child) => <Card
+                            key={child.id}
+                            title={
+                                <div className="flex">
+                                    <span>订单信息</span>
+                                    <DropdownButton type="text" menu={{ items }}>{null}</DropdownButton>
+                                </div>
+                            }>
                             <div>客户名称：{child?.customerId}</div>
                             <div className="mb-16px mt-4px">交付时间：{child.id}</div>
                             <div className="card-col_tag-row">

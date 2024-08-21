@@ -8,7 +8,7 @@ import dayjs from "dayjs";
  */
 export function getOrderPositions(obj, arr) {
   const result = [];
-  const { deliveryTime, quantity } = obj;
+  const { deliveryAt :deliveryTime, quantity } = obj;
   let conflict = false;
 
   arr.forEach((item) => {

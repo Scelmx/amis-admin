@@ -6,7 +6,7 @@ class Order {
   creationTime;
   materialInfo;
   deliveryTime;
-  rawMaterialType;
+  rawType;
   quantity;
   requireMold;
   priority;
@@ -16,7 +16,7 @@ class Order {
     creationTime,
     deliveryTime,
     materialInfo,
-    rawMaterialType,
+    rawType,
     quantity,
     requireMold,
     priority,
@@ -26,7 +26,7 @@ class Order {
     this.creationTime = creationTime; // 创建时间
     this.deliveryTime = deliveryTime; // 交付时间
     this.materialInfo = materialInfo; // 物料信息
-    this.rawMaterialType = rawMaterialType; // 原料类型
+    this.rawType = rawType; // 原料类型
     this.quantity = quantity; // 数量
     this.requireMold = requireMold; //所需模具
     this.priority = priority; //优先级

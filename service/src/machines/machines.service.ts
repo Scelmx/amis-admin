@@ -17,7 +17,7 @@ export class MachinesService {
   }
 
   async findAll(): Promise<Machines[]> {
-    return this.machinesResponsitory.find();
+    return await this.machinesResponsitory.find();
   }
 
   async findOne(id: string): Promise<Machines> {
