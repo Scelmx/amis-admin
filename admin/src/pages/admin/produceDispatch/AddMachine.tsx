@@ -5,9 +5,12 @@ import { FC, useRef, useState } from "react"
 
 interface AddMachineProps {
     edit?: boolean;
+    buttonText?: string,
+    initialValues?: any
+    confirmCallback?: () => void
 }
 
-export const AddMachine: FC<AddMachineProps> = ({ edit = undefined }) => {
+export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText = '添加机器 +', initialValues = undefined, confirmCallback }) => {
     const [visible, setVisible] = useState(false);
     const [form] = Form.useForm();
 
@@ -59,7 +62,18 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined }) => {
     }
 
     return <>
-        <Button icon="plus" onClick={() => setVisible(true)}>添加机器 +</Button>
+        <div
+            style={!edit ? {
+                border: '1px solid #e8e9eb',
+                padding: '4px 8px',
+                fontSize: '14px',
+                lineHeight: '22px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+            } : undefined}
+            onClick={() => setVisible(true)}>
+                {buttonText}
+        </div>
         {visible ? <Modal
             title={edit ? '编辑机器' : "添加机器"}
             cancelText="取消"
@@ -71,18 +85,21 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined }) => {
                 form={form}
                 labelAlign="right"
                 labelCol={{ flex: '110px' }}
+                initialValues={initialValues}
                 onFinish={async (value) => {
                     const res = await request({
                         url: edit ? '/api/machines/update' : '/api/machines/add',
                         method: 'POST',
                         data: {
                             ...value,
+                            id: edit ? initialValues.id : undefined,
                             hole: value.hole * 1,
                             mode: value.mode * 1
                         }
                     })
                     if (res) {
                         setVisible(false);
+                        confirmCallback?.();
                     }
                 }}
             >
