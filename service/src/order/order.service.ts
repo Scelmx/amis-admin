@@ -30,9 +30,7 @@ export class OrderService {
   }
 
   async findById(ids: number[]): Promise<Order[]> {
-    console.log(ids,2222)
     const placeholders = ids?.map(() => '?').join(', ');
-    console.log(placeholders, 'cccc')
     const query = `
       WITH OrderedIds AS (
         SELECT id, 
@@ -48,12 +46,12 @@ export class OrderService {
 
   /** 更新订单 */
   async update(updateOrderDto: UpdateOrderDto): Promise<Order> {
-    await this.orderRepository.update(updateOrderDto.id, updateOrderDto);
+    await this.orderRepository.update(updateOrderDto.id, camelToSnakeCase(updateOrderDto));
     return this.findOne(updateOrderDto.id);
   }
 
   /** 标记删除订单 */
-  async remove(id: string): Promise<void> {
-    await this.orderRepository.update(id, { is_deleted: 1 });
+  async remove(id: string) {
+    return await this.orderRepository.update(id, { is_deleted: 1 });
   }
 }

@@ -34,7 +34,7 @@ export class Order extends Common {
   nums: number;
 
   @Column({ comment: '所需模具' })
-  requireMold: string;
+  require_mold: string;
 
   @Column({ type: 'int', comment: '优先级', nullable: true })
   priority: number;

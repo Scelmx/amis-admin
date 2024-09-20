@@ -5,14 +5,16 @@ export class CreateOrderDto extends CommonDto {
   readonly orderNo: number;
   // 客户ID
   readonly customerId: number;
-  // 创建时间
-  readonly createdAt: number;
   // 商品名称
   readonly goodsName: string;
   // 商品型号
   readonly goodsModel: string;
   // 交付时间
   readonly deliveryAt: number;
+  // 模具类型
+  readonly requireMold: string;
+
+  readonly priority?: number;
   // 物料编号
   readonly rawType: string;
   // 生产数量
@@ -28,8 +30,6 @@ export class UpdateOrderDto extends CommonDto {
   readonly orderNo: number;
   // 客户ID
   readonly customerId: number;
-  // 创建时间
-  readonly createdAt: number;
   // 商品名称
   readonly goodsName: string;
   // 商品型号
@@ -38,6 +38,11 @@ export class UpdateOrderDto extends CommonDto {
   readonly deliveryAt: number;
   // 物料编号
   readonly rawType: string;
+  // 模具类型
+  readonly requireMold: string;
+
+  readonly priority?: number;
+
   // 生产数量
   readonly nums: number;
   // 订单状态

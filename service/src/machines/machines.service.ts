@@ -17,7 +17,7 @@ export class MachinesService {
   }
 
   async findAll(): Promise<Machines[]> {
-    return await this.machinesResponsitory.find();
+    return await this.machinesResponsitory.find({ where: { is_deleted: 0 } });
   }
 
   async findOne(id: string): Promise<Machines> {

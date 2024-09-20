@@ -51,10 +51,25 @@
                   },
                   {
                     "type": "select",
+                    "name": "productType",
+                    "label": "产品类型",
+                    "id": "u:c98fc2f2de19",
+                    "row": 1,
+                    "source": "get:/api/order/product"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "requireMold",
+                    "label": "模具类型",
+                    "id": "u:c98fc2f2de19",
+                    "row": 1
+                  },
+                  {
+                    "type": "select",
                     "name": "rawType",
                     "label": "原料类型",
                     "id": "u:aeafc3c53dbc",
-                    "row": 1,
+                    "row": 2,
                     "multiple": false,
                     "options": [
                       {
@@ -84,7 +99,7 @@
                     "name": "deliveryAt",
                     "label": "交付时间",
                     "id": "u:535153095d17",
-                    "row": 2,
+                    "row": 3,
                     "valueFormat": "x"
                   },
                   {
@@ -92,7 +107,12 @@
                     "name": "nums",
                     "label": "数量",
                     "id": "u:06884023a6ba",
-                    "row": 3
+                    "row": 4
+                  },{
+                    "type": "select",
+                    "name": "priority",
+                    "label": "优先级",
+                    "value": "2"
                   }
                 ],
                 "id": "u:6e8c7ea0b745",
@@ -139,7 +159,9 @@
           "type": "bulk-actions"
         }
       ],
-      "perPageAvailable": [10],
+      "perPageAvailable": [
+        10
+      ],
       "messages": {},
       "perPageField": "pageSize",
       "columns": [
@@ -150,8 +172,15 @@
           "id": "u:884583b1759b"
         },
         {
-          "name": "materialId",
-          "label": "物料信息",
+          "name": "productType",
+          "label": "产品类型",
+          "type": "text",
+          "id": "u:0988a64ec07f",
+          "placeholder": "-"
+        },
+        {
+          "name": "requireMold",
+          "label": "模具类型",
           "type": "text",
           "id": "u:0988a64ec07f",
           "placeholder": "-"
@@ -159,14 +188,21 @@
         {
           "name": "rawType",
           "label": "原料类型",
-          "type": "text",
+          "type": "map",
           "id": "u:76d4c0f8f55c",
-          "placeholder": "-"
+          "placeholder": "-",
+          "map": {
+            "gj": "硅胶",
+            "djj": "丁腈胶",
+            "fxj": "氟橡胶",
+            "syyb": "三元乙丙",
+            "trxj": "天然橡胶"
+          }
         },
         {
           "name": "deliveryAt",
           "label": "交付时间",
-          "type": "text",
+          "type": "date",
           "id": "u:2fa4170c2a66",
           "placeholder": "-"
         },
@@ -197,10 +233,14 @@
                   {
                     "type": "form",
                     "api": {
-                      "method": "get",
+                      "method": "post",
                       "url": "/api/order/update",
                       "requestAdaptor": "",
                       "adaptor": "",
+                      "data": {
+                        "deliveryAt": "${deliveryAt * 1000}",
+                        "&": "$$"
+                      },
                       "messages": {}
                     },
                     "body": [
@@ -212,32 +252,82 @@
                         "visible": false
                       },
                       {
-                        "name": "materialId",
-                        "label": "物料信息",
-                        "id": "u:d0cb1a77a127",
-                        "placeholder": "-",
-                        "type": "input-text"
+                        "type": "select",
+                        "name": "customerId",
+                        "label": "客户名称",
+                        "id": "u:544630ede405",
+                        "row": 0,
+                        "multiple": false,
+                        "source": {
+                          "method": "get",
+                          "url": "/api/customer/list",
+                          "requestAdaptor": "",
+                          "adaptor": "",
+                          "messages": {}
+                        }
                       },
                       {
+                        "type": "select",
+                        "name": "productType",
+                        "label": "产品类型",
+                        "id": "u:c98fc2f2de19",
+                        "row": 1,
+                        "source": "get:/api/order/product"
+                      },
+                      {
+                        "type": "input-text",
+                        "name": "requireMold",
+                        "label": "模具类型",
+                        "id": "u:c98fc2f2de19",
+                        "row": 1
+                      },
+                      {
+                        "type": "select",
                         "name": "rawType",
                         "label": "原料类型",
-                        "id": "u:c24c03200571",
-                        "placeholder": "-",
-                        "type": "input-text"
+                        "id": "u:aeafc3c53dbc",
+                        "row": 2,
+                        "multiple": false,
+                        "options": [
+                          {
+                            "label": "硅胶",
+                            "value": "gj"
+                          },
+                          {
+                            "label": "丁腈胶",
+                            "value": "djj"
+                          },
+                          {
+                            "label": "三元乙丙",
+                            "value": "syyb"
+                          },
+                          {
+                            "label": "氟橡胶",
+                            "value": "fxj"
+                          },
+                          {
+                            "label": "天然橡胶",
+                            "value": "trxj"
+                          }
+                        ]
                       },
                       {
+                        "type": "input-date",
                         "name": "deliveryAt",
                         "label": "交付时间",
-                        "id": "u:f42a797fcb89",
-                        "placeholder": "-",
-                        "type": "input-text"
+                        "id": "u:535153095d17",
+                        "row": 3
                       },
                       {
+                        "type": "input-text",
                         "name": "nums",
                         "label": "数量",
-                        "id": "u:a43c236fd383",
-                        "placeholder": "-",
-                        "type": "input-text"
+                        "id": "u:06884023a6ba",
+                        "row": 4
+                      }, {
+                        "type": "select",
+                        "name": "priority",
+                        "label": "优先级"
                       }
                     ],
                     "id": "u:9c8128e0d8b4",
@@ -280,7 +370,7 @@
               "confirmText": "确定要删除？",
               "api": {
                 "method": "get",
-                "url": "/api/order/list?id=${id}"
+                "url": "/api/order/del?id=${id}"
               },
               "editorSetting": {
                 "behavior": "delete"
@@ -297,5 +387,8 @@
   "pullRefresh": {
     "disabled": true
   },
-  "regions": ["body", "header"]
+  "regions": [
+    "body",
+    "header"
+  ]
 }
