@@ -49,6 +49,8 @@ export class UpdateOrderDto extends CommonDto {
   status: string;
   // 是否删除
   isDeleted?: number;
+  
+  machineId?: string;
 }
 
 export class FindAllDto extends ListDto {

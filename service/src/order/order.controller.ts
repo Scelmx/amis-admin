@@ -27,7 +27,7 @@ export class OrderController {
 
   @Get('/machines')
   async getMachines() {
-    return await this.getMachinesOrders()
+    return await this.getMachinesOrders();
   }
 
   async getMachinesOrders() {
@@ -42,18 +42,18 @@ export class OrderController {
       console.log(orders, 'orders');
       item.orders = orders;
     }
-    return machineList
+    return machineList;
   }
-  
+
   /** 更新机器对应的订单 */
   async updateMachineOrder(body) {
-    const machineList = await this.getMachinesOrders()
+    const machineList = await this.getMachinesOrders();
     const targetMachine = assignNewOrderToMachines(
       snakeToCamelCase(body),
       machineList,
     );
     const targetLine =
-        await this.machinesService.updateTargetMachineOrders(targetMachine);
+      await this.machinesService.updateTargetMachineOrders(targetMachine);
     return targetLine;
   }
 
@@ -66,7 +66,7 @@ export class OrderController {
       priority: body?.priority || 2,
     });
     if (res) {
-      const targetLine = this.updateMachineOrder(res)
+      const targetLine = this.updateMachineOrder(res);
       if (targetLine) {
         return res;
       }
@@ -95,7 +95,18 @@ export class OrderController {
 
   @Post('/update')
   async update(@Body() body: UpdateOrderDto) {
-    const res = await this.updateMachineOrder(body)
+    if (body.status === 'finish') {
+      const { machineId, ...rest } = body
+      await this.orderService.update(rest);
+      const res = await this.machinesService.findOne(machineId);
+      return await this.machinesService.update({
+        ...res,
+        orders: JSON.stringify(JSON.parse(res.orders || '[]').filter(
+          (item) => item !== body.id,
+        )),
+      });
+    }
+    const res = await this.updateMachineOrder(body);
     if (res) {
       return await this.orderService.update(body);
     }

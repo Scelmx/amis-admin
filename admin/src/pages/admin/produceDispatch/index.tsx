@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { request } from "@/utils/requestInterceptor";
 import DropdownButton from "antd/es/dropdown/dropdown-button";
 import { Button, Modal } from "antd";
+import dayjs from "dayjs";
+import { orderStatusColorMap, orderStatusMap } from "./const";
 
 export function ProduceDispatch() {
     const [machinesList, setMachinesList] = useState<any[]>([])
     const [showTwin, setShowTwin] = useState<boolean>(false);
     const [active, setActive] = useState<any>();
+    const [customer, setCustomer] = useState<any>({});
 
     const getMachines = async () => {
         const res: any = await request({ url: '/api/order/machines', method: 'get' })
@@ -17,7 +20,18 @@ export function ProduceDispatch() {
         }
     }
 
+    const getCustemers = async () => {
+        const res: any = await request({ url: '/api/customer/list', method: 'get' })
+        if (res) {
+            setCustomer(res.data.data?.reduce((target, item) => {
+                target[item.value] = item.label
+                return target
+            }, {}))
+        }
+    }
+
     useEffect(() => {
+        getCustemers();
         getMachines();
     }, [])
 
@@ -55,6 +69,17 @@ export function ProduceDispatch() {
 
     const updateOrderInMachine = async (machineId: number) => {
         const res = await request({ url: `/api/machine/update?id=${active.id}&machineId=${machineId}`, method: 'get' })
+        if (res.data) {
+            getMachines();
+        }
+    }
+    
+    const updateOrder = async (order: any) => {
+        const res = await request({ url: '/api/order/update', method: 'post', data: {
+            id: order.id,
+            status: "finish",
+            machineId: order.machineId
+        } })
         if (res.data) {
             getMachines();
         }
@@ -98,11 +123,11 @@ export function ProduceDispatch() {
                                         <span>订单信息</span>
                                     </div>
                                 }>
-                                <div>客户名称：{child?.customerId}</div>
-                                <div className="mb-16px mt-4px">交付时间：{child.id}</div>
+                                <div>客户名称：{customer?.[child?.customerId]}</div>
+                                <div className="mb-16px mt-4px">交付时间：{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</div>
                                 <div className="card-col_tag-row">
-                                    <Tag>状态：{child.id}</Tag>
-                                    <Button onClick={(value: any) => updateOrder(value)} type="primary" size="small">完成</Button>
+                                    <Tag color={orderStatusColorMap[child.status]}>状态：{orderStatusMap[child.status]}</Tag>
+                                    <Button onClick={(value: any) => updateOrder({ ...child, machineId: item.id })} type="primary" size="small">完成</Button>
                                 </div>
                             </Card>
                             )}
