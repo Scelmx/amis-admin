@@ -11,8 +11,3 @@ export class ProdInfoDto {
     realCenter2: string; // 真圆心
     isDeleted?: number;
 }
-
-export class ListDto {
-    page: number;
-    pageSize: number;
-}

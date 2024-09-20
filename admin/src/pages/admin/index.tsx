@@ -29,8 +29,6 @@ type NavItem = {
 };
 
 function isActive(link: any, location: any) {
-  // console.log("link", link);
-  // console.log("location", location);
   let path = link.path;
 
   const ret = matchPath(location.pathname, {
@@ -61,8 +59,6 @@ export interface AdminProps extends RouteComponentProps<any> {
 @inject("store")
 @observer
 export default class Admin extends React.Component<AdminProps, any> {
-
-
   state = {
     pathname: "",
     hasLoadMenu: false,
@@ -86,79 +82,39 @@ export default class Admin extends React.Component<AdminProps, any> {
               {
                 label: '产品图片',
                 path: "/product/image-manange"
+              },
+              {
+                label: '模具管理',
+                path: "/molds/index"
+              },
+              {
+                label: '模具参数',
+                path: "/molds-other/index"
               }
             ],
+          },
+          {
+            label: "生产计划",
+            icon: "fa fa-plan",
+            path: "",
+            children: [
+              {
+                label: "订单调度",
+                path: "/produce-plan/index"
+              },
+              {
+                label: '订单列表',
+                path: "/produce-plan/orders"
+              }
+            ]
           }
         ]
       },
-      
     ],
   };
 
-  // logout = () => {
-  //   appStore.userStore.logout();
-  //   const history = this.props.history;
-  //   history.replace(`/login`);
-  // };
-
-  // componentDidMount() {
-  //   const history = this.props.history;
-  //   console.log("componentDidMount, store.user:", appStore.userStore.name);
-  //   if (!appStore.userStore.isAuthenticated) {
-  //     toast["error"]("用户未登陆，请先登陆！", "消息");
-  //     history.replace(`/login`);
-  //   }
-  //   this.refreshMenu();
-  // }
-
-  // componentDidUpdate() {
-  //   this.refreshMenu();
-  // }
-
-  // refreshMenu = () => {
-  //   let pathname = this.props.location.pathname;
-  //   console.log("location:", pathname);
-  //   console.log("store.user:", appStore.userStore.name);
-  //   if (
-  //     pathname != "login" &&
-  //     pathname != "/" &&
-  //     !this.state.hasLoadMenu &&
-  //     appStore.userStore.isAuthenticated
-  //   ) {
-  //     this.setState({
-  //       navigations: [
-  //         {
-  //           label: "导航",
-  //           children: [
-  //             {
-  //               label: "客户管理",
-  //               icon: "fa fa-user",
-  //               path: "/customer",
-  //               children: [
-  //                 {
-  //                   label: "客户列表",
-  //                   path: "/customer/index",
-  //                 },
-  //               ],
-  //             }
-  //           ]
-  //         },
-  //       ],
-  //       hasLoadMenu: true,
-  //     });
-  //   }
-  // };
-
   renderHeader() {
     const store = this.props.store;
-
-    // const items = [
-    //   {
-    //     key: "1",
-    //     label: <span onClick={this.logout}>退出登录</span>,
-    //   },
-    // ];
-
     return (
       <div>
         <div className={`cxd-Layout-brandBar`}>
@@ -169,7 +125,6 @@ export default class Admin extends React.Component<AdminProps, any> {
             <i className="fa fa-bars text-white"></i>
           </button>
           <div className={`cxd-Layout-brand`}>
-            {/* <i className="fa fa-paw"></i> */}
             <span className="hidden-folded m-l-sm">智能运维</span>
           </div>
         </div>
@@ -290,7 +245,7 @@ export default class Admin extends React.Component<AdminProps, any> {
   render() {
     const store = this.props.store;
     let pathname = this.props.location.pathname;
-    console.log("location:", pathname);
+
     if (pathname == "login" || pathname == "/") {
       return (
         <Switch>

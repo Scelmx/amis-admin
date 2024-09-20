@@ -1,0 +1,91 @@
+.plan-page{
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    .plan-page_title {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 40px;
+        line-height: 40px;
+        font-size: 16px;
+    }
+    .cards-container {
+        overflow: hidden;
+        height: 100%;
+        .card-row {
+            overflow-x: auto;
+            display: flex;
+            height: 90%;
+            align-items: flex-start;
+            .flex {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                .ant-dropdown-button {
+                    display: inline-flex;
+                    width: auto;
+                }
+                .ant-btn-compact-first-item {
+                    display: none;
+                }
+                .ant-btn-compact-last-item {
+                    border-radius: 4px;
+                    height: 24px;
+                    &:hover {
+                        border-radius: 4px !important;
+                        height: 24px;
+                    }
+                }
+            }
+            .card-col {
+                width: 240px;
+                height: 100%;
+                padding: 10px 14px;
+                padding-bottom: 4px;
+                border-radius: 8px;
+                overflow: hidden;
+                &:hover {
+                    background: rgba(43,47,54, .06);
+                }
+                .card-col_tag {
+                    display: inline-block;
+                    border-radius: 4px;
+                    background-color: var(--primary);
+                    color: var(--white);
+                }
+                .card-col_content {
+                    height: 100%;
+                    overflow-y: auto;
+                    &:empty {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-top: -60px;
+                        &::before {
+                            content: '该机器暂无订单';
+                            color: #a7a3a5;
+                        }
+                    }
+                }
+                .card-col_tag-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+        }
+    }
+}
+.mb-16px {
+    margin-bottom: 16px;
+}
+.mt-4px {
+    margin-top: 4px;
+}
+.dropdown-del-btn {
+    color: red;
+}

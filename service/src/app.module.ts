@@ -9,6 +9,10 @@ import { getMulterConfig } from './injectable/upload';
 import { ProdInfoModule } from './prodinfo/prodinfo.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { OrderModule } from './order/order.module';
+import { MachinesModule } from './machines/machines.module';
+import { MoldModule } from './mold/mold.module';
+import { FeedStocksModule } from './feedstock/feedstock.module';
 
 @Module({
   imports: [
@@ -29,7 +33,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     }),
     CustomerModule,
     ProductModule,
-    ProdInfoModule
+    ProdInfoModule,
+    OrderModule,
+    MachinesModule,
+    MoldModule,
+    FeedStocksModule
   ],
   providers: [{
     provide: APP_INTERCEPTOR,

@@ -1,11 +1,16 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {toast} from "amis";
 
+interface ResponseData {
+    status: number;
+    msg: string;
+    data: any;
+}
 /**
  * 全局请求拦截，方便对错误进行统一处理
  * @param config
  */
-export function request(config: AxiosRequestConfig) {
+export function request(config: AxiosRequestConfig): Promise<ResponseData> {
     let instance = axios.create();
     return new Promise((resolve, reject) => {
         let onSuccess = (res:any) => {

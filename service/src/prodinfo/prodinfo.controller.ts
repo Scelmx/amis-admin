@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProdInfoService } from './prodinfo.service';
-import { ProdInfoDto, ListDto } from './prodinfo.dto';
+import { ProdInfoDto } from './prodinfo.dto';
+import { ListDto } from '../common/common.dto';
 import { ProdInfo } from './prodinfo.entity';
 import { camelToSnakeCase } from '../utils';
 import { FileInterceptor } from '@nestjs/platform-express';

@@ -1,0 +1,565 @@
+{
+  "type": "page",
+  "title": "模具管理",
+  "body": [
+    {
+      "type": "crud",
+      "id": "u:578462f31962",
+      "syncLocation": false,
+      "api": {
+        "method": "get",
+        "url": "/api/molds/list"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "label": "ID",
+          "type": "text",
+          "id": "u:70f19a69b959"
+        },
+        {
+          "name": "produceName",
+          "label": "产品名称",
+          "type": "text",
+          "id": "u:15bd7295d1da",
+          "placeholder": "-"
+        },
+        {
+          "name": "templateNo",
+          "label": "模具编号",
+          "type": "text",
+          "id": "u:b5ab7aab3a6f",
+          "placeholder": "-"
+        },
+        {
+          "name": "templateModel",
+          "label": "模具型号",
+          "type": "text",
+          "id": "u:b6a3be4e0119",
+          "placeholder": "-"
+        },
+        {
+          "name": "templateSize",
+          "label": "模具大小",
+          "type": "text",
+          "id": "u:411f9c79ffb4",
+          "placeholder": "-"
+        },
+        {
+          "name": "hole",
+          "label": "孔数",
+          "type": "text",
+          "id": "u:f1ea7852cab4",
+          "placeholder": "-"
+        },
+        {
+          "name": "mode",
+          "label": "班产额额定模数",
+          "type": "text",
+          "id": "u:36b92f8c89e4",
+          "placeholder": "-"
+        },
+        {
+          "name": "halfDayNums",
+          "label": "班产数量",
+          "type": "text",
+          "id": "u:1a492da6ca66",
+          "placeholder": "-"
+        },
+        {
+          "name": "region",
+          "label": "模具区域",
+          "type": "text",
+          "id": "u:9801a14e4f6f",
+          "placeholder": "-"
+        },
+        {
+          "type": "operation",
+          "label": "操作",
+          "buttons": [
+            {
+              "label": "编辑",
+              "type": "button",
+              "actionType": "dialog",
+              "level": "link",
+              "editorSetting": {
+                "behavior": "update"
+              },
+              "dialog": {
+                "title": "编辑",
+                "body": [
+                  {
+                    "type": "form",
+                    "api": {
+                      "method": "post",
+                      "url": "/api/molds/update",
+                      "requestAdaptor": "",
+                      "adaptor": "",
+                      "messages": {}
+                    },
+                    "body": [
+                      {
+                        "name": "id",
+                        "label": "ID",
+                        "id": "u:09cd77631d63",
+                        "type": "input-text",
+                        "hidden": true
+                      },
+                      {
+                        "name": "produceName",
+                        "label": "产品名称",
+                        "id": "u:ee1d3853c1e4",
+                        "placeholder": "-",
+                        "type": "select",
+                        "options": [
+                          {
+                            "label": "皮碗",
+                            "value": "pw"
+                          },
+                          {
+                            "label": "O型圈",
+                            "value": "oxq"
+                          },
+                          {
+                            "label": "Y型圈",
+                            "value": "yxq"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "templateNo",
+                        "label": "模具编号",
+                        "id": "u:89bab318dea4",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "templateModel",
+                        "label": "模具型号",
+                        "id": "u:f6b73cacd24e",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "templateSize",
+                        "label": "模具大小",
+                        "id": "u:4e81585babc3",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "hole",
+                        "label": "孔数",
+                        "id": "u:d78a42bc26ca",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "mode",
+                        "label": "班产额额定模数",
+                        "id": "u:a29ebf6ee98c",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "halfDayNums",
+                        "label": "班产数量",
+                        "id": "u:b3a986858264",
+                        "placeholder": "-",
+                        "type": "input-text"
+                      },
+                      {
+                        "name": "region",
+                        "label": "模具区域",
+                        "id": "u:c7348d9d83ee",
+                        "placeholder": "-",
+                        "type": "select",
+                        "options": [
+                          {
+                            "label": "A区",
+                            "value": "a"
+                          },
+                          {
+                            "label": "B区",
+                            "value": "b"
+                          },
+                          {
+                            "label": "C区",
+                            "value": "c"
+                          },
+                          {
+                            "label": "D区",
+                            "value": "d"
+                          },
+                          {
+                            "label": "E区",
+                            "value": "e"
+                          }
+                        ]
+                      }
+                    ],
+                    "id": "u:9e279d4f1f10",
+                    "actions": [
+                      {
+                        "type": "submit",
+                        "label": "提交",
+                        "primary": true
+                      }
+                    ],
+                    "feat": "Insert"
+                  }
+                ],
+                "type": "dialog",
+                "id": "u:f6fa1a6fda7f",
+                "actions": [
+                  {
+                    "type": "button",
+                    "actionType": "cancel",
+                    "label": "取消",
+                    "id": "u:50808f956ca7"
+                  },
+                  {
+                    "type": "button",
+                    "actionType": "confirm",
+                    "label": "确定",
+                    "primary": true,
+                    "id": "u:596999135613"
+                  }
+                ]
+              },
+              "id": "u:0ea335f866e7"
+            },
+            {
+              "type": "button",
+              "label": "删除",
+              "actionType": "ajax",
+              "level": "link",
+              "className": "text-danger",
+              "confirmText": "确定要删除？",
+              "api": {
+                "method": "get",
+                "url": "/api/molds/del?id=${id}"
+              },
+              "editorSetting": {
+                "behavior": "delete"
+              },
+              "id": "u:1d55f220d0a9"
+            }
+          ],
+          "id": "u:8bc3dceb8fa2"
+        }
+      ],
+      "bulkActions": [],
+      "itemActions": [],
+      "headerToolbar": [
+        {
+          "label": "新增",
+          "type": "button",
+          "actionType": "dialog",
+          "level": "default",
+          "editorSetting": {
+            "behavior": "create"
+          },
+          "dialog": {
+            "title": "新增",
+            "body": [
+              {
+                "type": "form",
+                "api": {
+                  "method": "post",
+                  "url": "/api/molds/add",
+                  "requestAdaptor": "",
+                  "adaptor": "",
+                  "messages": {}
+                },
+                "body": [
+                  {
+                    "type": "select",
+                    "name": "produceName",
+                    "label": "产品名称",
+                    "id": "u:7df512bdd7ec",
+                    "options": [
+                      {
+                        "label": "皮碗",
+                        "value": "pw"
+                      },
+                      {
+                        "label": "O型圈",
+                        "value": "oxq"
+                      },
+                      {
+                        "label": "Y型圈",
+                        "value": "yxq"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "templateNo",
+                    "label": "模具编号",
+                    "id": "u:688cf448f7e5"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "templateModel",
+                    "label": "模具型号",
+                    "id": "u:941746dc6da7"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "templateSize",
+                    "label": "模具大小",
+                    "id": "u:5c0779ba2fd5"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "hole",
+                    "label": "孔数",
+                    "id": "u:056130d4d080"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "mode",
+                    "label": "班产额额定模数",
+                    "id": "u:ffbbfe58aaff"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "halfDayNums",
+                    "label": "班产数量",
+                    "id": "u:cd493b5bc293"
+                  },
+                  {
+                    "type": "select",
+                    "name": "region",
+                    "label": "模具区域",
+                    "id": "u:bbdfeb1202d1",
+                    "options": [
+                      {
+                        "label": "A区",
+                        "value": "a"
+                      },
+                      {
+                        "label": "B区",
+                        "value": "b"
+                      },
+                      {
+                        "label": "C区",
+                        "value": "c"
+                      },
+                      {
+                        "label": "D区",
+                        "value": "d"
+                      },
+                      {
+                        "label": "E区",
+                        "value": "e"
+                      }
+                    ]
+                  }
+                ],
+                "id": "u:32d987bd6858",
+                "actions": [
+                  {
+                    "type": "submit",
+                    "label": "提交",
+                    "primary": true
+                  }
+                ],
+                "feat": "Insert"
+              }
+            ],
+            "type": "dialog",
+            "id": "u:12d93db2a692",
+            "actions": [
+              {
+                "type": "button",
+                "actionType": "cancel",
+                "label": "取消",
+                "id": "u:eb2fe1d2c26a"
+              },
+              {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:f4acf3b59848"
+              }
+            ]
+          },
+          "id": "u:109e298a8840"
+        },
+        {
+          "label": "生成报告",
+          "type": "button",
+          "actionType": "dialog",
+          "level": "primary",
+          "editorSetting": {
+            "behavior": "create"
+          },
+          "dialog": {
+            "type": "dialog",
+            "title": "生成生产记录",
+            "body": [
+              {
+                "type": "form",
+                "api": {
+                  "method": "post",
+                  "url": "/api/molds/createWord",
+                  "requestAdaptor": "",
+                  "messages": {}
+                },
+                "body": [
+                  {
+                    "type": "select",
+                    "name": "templateNo",
+                    "label": "模具号",
+                    "id": "u:0a86aac75ce5",
+                    "required": true,
+                    "multiple": true,
+                    "searchable": true,
+                    "source": {
+                      "url": "/api/molds/list",
+                      "method": "get",
+                      "adaptor": "return payload.data.data"
+                    },
+                    "labelField": "templateNo",
+                    "valueField": "templateNo",
+                    "menuTpl": "${produceName} <span style='color: #999'>编号：(${templateNo})</span> - <span style='color: #999'>型号：(${templateModel})</span>"
+                  },
+                  {
+                    "type": "select",
+                    "name": "feedstockId",
+                    "label": "原料",
+                    "id": "u:7df512bdd7ec",
+                    "multiple": true,
+                    "required": true,
+                    "source": {
+                      "url": "/api/feedStock/list",
+                      "method": "get",
+                      "requestAdaptor": "",
+                      "adaptor": "return payload.data.data",
+                      "messages": {}
+                    },
+                    "labelField": "name",
+                    "valueField": "id"
+                  },
+                  {
+                    "type": "select",
+                    "name": "sailings",
+                    "label": "班次",
+                    "id": "u:bbdfeb1202d1",
+                    "options": [
+                      {
+                        "label": "白班",
+                        "value": "0"
+                      },
+                      {
+                        "label": "夜班",
+                        "value": "1"
+                      }
+                    ],
+                    "multiple": false,
+                    "value": "",
+                    "required": true
+                  },
+                  {
+                    "type": "input-date",
+                    "name": "createDate",
+                    "label": "生成日期",
+                    "id": "u:4eae0123ab50"
+                  },
+                  {
+                    "type": "input-text",
+                    "name": "sulfurChemist",
+                    "label": "硫化工",
+                    "id": "u:544ab4e686a3"
+                  }
+                ],
+                "id": "u:32d987bd6858",
+                "actions": [
+                  {
+                    "type": "submit",
+                    "label": "提交",
+                    "primary": true
+                  }
+                ],
+                "onEvent": {
+                  "submitSucc": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "ignoreError": false,
+                        "actionType": "url",
+                        "args": {
+                          "url": "/api/molds/download?filename=${event.data.result.data.data}"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "feat": "Insert"
+              }
+            ],
+            "id": "u:70370ea6368a",
+            "actions": [
+              {
+                "type": "button",
+                "actionType": "cancel",
+                "label": "取消",
+                "id": "u:b508acb5958d"
+              },
+              {
+                "type": "button",
+                "actionType": "confirm",
+                "label": "确定",
+                "primary": true,
+                "id": "u:70a2168109ad"
+              }
+            ],
+            "showCloseButton": true,
+            "closeOnOutside": false,
+            "closeOnEsc": false,
+            "showErrorMsg": true,
+            "showLoading": true,
+            "draggable": false
+          },
+          "id": "u:6235b5955cca"
+        },
+        {
+          "type": "bulk-actions"
+        }
+      ],
+      "perPageAvailable": [10],
+      "messages": {},
+      "perPageField": "pageSize",
+      "filter": {
+        "id": "u:6fc19c736ddd",
+        "actions": [
+          {
+            "type": "submit",
+            "label": "搜索",
+            "primary": true,
+            "id": "u:dd42620da6e3"
+          }
+        ],
+        "feat": "Insert",
+        "body": [
+          {
+            "type": "input-text",
+            "label": "模具型号",
+            "name": "templateModel",
+            "id": "u:761ab531b636",
+            "size": "sm"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "u:8a6901e85256",
+  "asideResizor": false,
+  "pullRefresh": {
+    "disabled": true
+  },
+  "regions": ["body", "header"]
+}
