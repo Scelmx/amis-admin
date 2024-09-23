@@ -8,23 +8,13 @@ export class Machines extends Common {
 
   @Column({ comment: '名称' })
   name: string;
-
-  @Column({ comment: '孔数' })
-  hole: number;
-
-  @Column({ comment: '额定模数' })
-  mode: number;
-
   /**
    * 产线类型 ['A+B', 'A+C']
    */
   @Column({ comment: '产线类型' })
   type: string;
 
-  @Column({ comment: '班产' })
-  dayNums: number;
-
-  @Column({ comment: '模具信息' })
+  @Column({ comment: '模具信息', nullable: true })
   mold: string;
 
   @Column({

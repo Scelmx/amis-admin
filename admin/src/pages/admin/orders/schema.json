@@ -58,11 +58,12 @@
                     "source": "get:/api/order/product"
                   },
                   {
-                    "type": "input-text",
+                    "type": "select",
                     "name": "requireMold",
                     "label": "模具类型",
                     "id": "u:c98fc2f2de19",
-                    "row": 1
+                    "row": 1,
+                    "source": "get:/api/molds/list?type=options"
                   },
                   {
                     "type": "select",
@@ -181,9 +182,9 @@
         {
           "name": "requireMold",
           "label": "模具类型",
-          "type": "text",
+          "type": "map",
           "id": "u:0988a64ec07f",
-          "placeholder": "-"
+          "source": "get:/api/molds/list?type=enum"
         },
         {
           "name": "rawType",
@@ -275,11 +276,12 @@
                         "source": "get:/api/order/product"
                       },
                       {
-                        "type": "input-text",
+                        "type": "select",
                         "name": "requireMold",
                         "label": "模具类型",
                         "id": "u:c98fc2f2de19",
-                        "row": 1
+                        "row": 1,
+                        "source": "get:/api/molds/list?type=options"
                       },
                       {
                         "type": "select",

@@ -17,8 +17,12 @@ export class MoldService {
     const mold = this.moldRepository.create(camelToSnakeCase(createMoldDto));
     return this.moldRepository.save(mold);
   }
+  
+  async findAll() {
+    return await this.moldRepository.find({ where: { is_deleted: 0 } });
+  }
 
-  async findAll(params?: ListDto & { templateModel: string }): Promise<{ count, data: Mold[] }> {
+  async page(params?: ListDto & { templateModel: string }): Promise<{ count, data: Mold[] }> {
     const { page = 1, pageSize = 10, templateModel = undefined } = params ?? {};
     const skip = page > 0 ? (page - 1) * pageSize : 0;
     const where = { 

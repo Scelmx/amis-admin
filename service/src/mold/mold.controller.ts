@@ -21,13 +21,24 @@ export class MoldController {
     return this.moldService.create(createMoldDto);
   }
 
-  @Get('/list')
-  findAll(
+  @Get('/page')
+  page(
     @Query() query: { page: number; pageSize: number; templateModel: string },
   ) {
-    return this.moldService.findAll(query);
+    return this.moldService.page(query);
   }
-
+  
+  @Get('/list')
+  async findAll(@Query() type: 'enum' | 'options') {
+    const res = await this.moldService.findAll();
+    if (type === 'enum') {
+      return res.reduce((target: any, item) => {
+        target[item.id] = item.produce_name
+      }, {})
+    }
+    return res.map(item => ({ label: item.produce_name, value: item.id }))
+  }
+  
   @Post('/createWord')
   async createWord(@Body() body: CreateWordDto) {
     const { templateNo, feedstockId, ...rest } = body;

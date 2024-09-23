@@ -1,7 +1,7 @@
 import { Button } from "amis-ui";
 import { Form, Input, Select, Modal } from "antd"
 import { request } from "../../../utils/requestInterceptor";
-import { FC, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 
 interface AddMachineProps {
     edit?: boolean;
@@ -13,6 +13,27 @@ interface AddMachineProps {
 export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText = '添加机器 +', initialValues = undefined, confirmCallback }) => {
     const [visible, setVisible] = useState(false);
     const [form] = Form.useForm();
+    const [moldOptions, setMoldOptions] = useState(false);
+
+    const getMoldList = async () => {
+        const { data: res }: any = await request({
+            url: '/api/molds/list',
+            method: 'get',
+            params: {
+                type: 'options'
+            }
+        })
+        if (res.data) {
+            setMoldOptions(res.data)
+        }
+    }
+
+    useEffect(() => {
+        const init = async () => {
+            await getMoldList()
+        }
+        init();
+    }, [])
 
     const handleOk = () => {
         form.submit();
@@ -27,18 +48,24 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
         label: '机器名称',
         type: 'input'
     }, {
-        key: 'hole',
-        label: '孔数',
-        type: 'input'
-    }, {
-        key: 'mode',
-        label: '额定模数',
-        type: 'input'
+        key: 'mold',
+        label: '关联模具',
+        type: 'select',
+        options: moldOptions,
     }, {
         key: 'type',
         label: '产线类型',
         type: 'select',
         options: [{
+            label: 'A',
+            value: 'A'
+        }, {
+            label: 'B',
+            value: 'C'
+        }, {
+            label: 'C',
+            value: 'C'
+        }, {
             label: 'A+B',
             value: 'A+B'
         }, {
@@ -72,7 +99,7 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                 cursor: 'pointer',
             } : undefined}
             onClick={() => setVisible(true)}>
-                {buttonText}
+            {buttonText}
         </div>
         {visible ? <Modal
             title={edit ? '编辑机器' : "添加机器"}
@@ -93,8 +120,7 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                         data: {
                             ...value,
                             id: edit ? initialValues.id : undefined,
-                            hole: value.hole * 1,
-                            mode: value.mode * 1
+                            mold: value.mold * 1
                         }
                     })
                     if (res) {
