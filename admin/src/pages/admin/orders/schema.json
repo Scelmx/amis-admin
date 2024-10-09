@@ -63,7 +63,7 @@
                     "label": "模具类型",
                     "id": "u:c98fc2f2de19",
                     "row": 1,
-                    "source": "get:/api/molds/list?type=options"
+                    "source": "/api/molds/list?type=options"
                   },
                   {
                     "type": "select",
@@ -109,11 +109,26 @@
                     "label": "数量",
                     "id": "u:06884023a6ba",
                     "row": 4
-                  },{
+                  },
+                  {
                     "type": "select",
                     "name": "priority",
                     "label": "优先级",
-                    "value": "2"
+                    "value": "2",
+                    "options": [
+                      {
+                        "label": "高",
+                        "value": 1
+                      },
+                      {
+                        "label": "中",
+                        "value": 2
+                      },
+                      {
+                        "label": "低",
+                        "value": 3
+                      }
+                    ]
                   }
                 ],
                 "id": "u:6e8c7ea0b745",
@@ -160,9 +175,7 @@
           "type": "bulk-actions"
         }
       ],
-      "perPageAvailable": [
-        10
-      ],
+      "perPageAvailable": [10],
       "messages": {},
       "perPageField": "pageSize",
       "columns": [
@@ -175,16 +188,23 @@
         {
           "name": "productType",
           "label": "产品类型",
-          "type": "text",
+          "type": "map",
           "id": "u:0988a64ec07f",
-          "placeholder": "-"
+          "placeholder": "-",
+          "map": {
+            "oxq_dp": "O型圈/垫片",
+            "mfq": "密封圈",
+            "gym8": "工业膜8寸",
+            "gym4": "工业膜4寸",
+            "xmj": "小模具"
+          }
         },
         {
           "name": "requireMold",
           "label": "模具类型",
           "type": "map",
           "id": "u:0988a64ec07f",
-          "source": "get:/api/molds/list?type=enum"
+          "source": "/api/molds/list?type=enum"
         },
         {
           "name": "rawType",
@@ -281,7 +301,7 @@
                         "label": "模具类型",
                         "id": "u:c98fc2f2de19",
                         "row": 1,
-                        "source": "get:/api/molds/list?type=options"
+                        "source": "/api/molds/list?type=options"
                       },
                       {
                         "type": "select",
@@ -326,10 +346,25 @@
                         "label": "数量",
                         "id": "u:06884023a6ba",
                         "row": 4
-                      }, {
+                      },
+                      {
                         "type": "select",
                         "name": "priority",
-                        "label": "优先级"
+                        "label": "优先级",
+                        "options": [
+                          {
+                            "label": "高",
+                            "value": 1
+                          },
+                          {
+                            "label": "中",
+                            "value": 2
+                          },
+                          {
+                            "label": "低",
+                            "value": 3
+                          }
+                        ]
                       }
                     ],
                     "id": "u:9c8128e0d8b4",
@@ -389,8 +424,5 @@
   "pullRefresh": {
     "disabled": true
   },
-  "regions": [
-    "body",
-    "header"
-  ]
+  "regions": ["body", "header"]
 }

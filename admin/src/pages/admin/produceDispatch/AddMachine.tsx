@@ -2,6 +2,7 @@ import { Button } from "amis-ui";
 import { Form, Input, Select, Modal } from "antd"
 import { request } from "../../../utils/requestInterceptor";
 import { FC, useEffect, useRef, useState } from "react"
+import { multiply } from "lodash";
 
 interface AddMachineProps {
     edit?: boolean;
@@ -13,24 +14,33 @@ interface AddMachineProps {
 export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText = '添加机器 +', initialValues = undefined, confirmCallback }) => {
     const [visible, setVisible] = useState(false);
     const [form] = Form.useForm();
-    const [moldOptions, setMoldOptions] = useState(false);
+    const [moldOptions, setMoldOptions] = useState([]);
+    const [machinesTypeOptions, setMachinesTypeOptions] = useState([]);
 
     const getMoldList = async () => {
         const { data: res }: any = await request({
-            url: '/api/molds/list',
-            method: 'get',
-            params: {
-                type: 'options'
-            }
+            url: '/api/molds/list?type=options',
+            method: 'get'
         })
         if (res.data) {
             setMoldOptions(res.data)
         }
     }
 
+    const getMachinesType = async () => {
+        const { data: res }: any = await request({
+            url: '/api/machines/list?type=options',
+            method: 'get'
+        })
+        if (res.data) {
+            setMachinesTypeOptions(res.data)
+        }
+    }
+
     useEffect(() => {
         const init = async () => {
             await getMoldList()
+            await getMachinesType()
         }
         init();
     }, [])
@@ -56,34 +66,13 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
         key: 'type',
         label: '产线类型',
         type: 'select',
-        options: [{
-            label: 'A',
-            value: 'A'
-        }, {
-            label: 'B',
-            value: 'C'
-        }, {
-            label: 'C',
-            value: 'C'
-        }, {
-            label: 'A+B',
-            value: 'A+B'
-        }, {
-            label: 'A+C',
-            value: 'A+C'
-        }]
+        mode: 'multiple',
+        options: machinesTypeOptions
     }]
 
     const getFormItem = () => {
         if (edit) {
-            return [...items, {
-                key: 'type',
-                label: '产线类型',
-                type: 'select',
-                showSearch: true,
-                multiply: true,
-                options: []
-            }]
+            return [...items]
         }
         return items
     }
@@ -120,7 +109,7 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                         data: {
                             ...value,
                             id: edit ? initialValues.id : undefined,
-                            mold: value.mold * 1
+                            mold: value.mold
                         }
                     })
                     if (res) {
@@ -129,11 +118,17 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                     }
                 }}
             >
-                {getFormItem().map((item: any) => {
+                {getFormItem()?.map((item: any) => {
                     const { type, key, label } = item
                     return <Form.Item name={key} label={label}>
-                        {type === 'input' ? <Input /> : null}
-                        {type === 'select' ? <Select options={item?.options ?? []} showSearch={item?.showSearch} /> : null}
+                        {type === 'input' ? <Input allowClear /> : null}
+                        {type === 'select' ? <Select
+                            allowClear
+                            options={item?.options ?? []}
+                            mode={item?.mode}
+                            showSearch={item?.showSearch}
+                            
+                        /> : null}
                     </Form.Item>
                 })}
             </Form>

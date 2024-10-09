@@ -4,7 +4,8 @@ import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
 import { assignNewOrderToMachines } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
-import { snakeToCamelCase } from '../utils';
+import { ObjToArray, snakeToCamelCase } from '../utils';
+import { PRODUCT_TYPE_MAP } from '../utils/const';
 
 @Controller('/order')
 export class OrderController {
@@ -39,8 +40,8 @@ export class OrderController {
         // 假设 orderService.findById 返回的是单个订单对象，你可能需要根据实际情况调整
         orders.push(orderList);
       }
-      console.log(orders, 'orders');
       item.orders = orders;
+      item.type = JSON.parse(item.type)
     }
     return machineList;
   }
@@ -77,15 +78,9 @@ export class OrderController {
 
   /** 获取产品类型列表 */
   @Get('/product')
-  async getProductList() {
-    const machineList = await this.machinesService.findAll();
-    const list = machineList
-      .map((item) => item.type)
-      .filter((item, index, arr) => arr.indexOf(item) === index);
-    return list.map((item) => ({
-      label: item,
-      value: item,
-    }));
+  async getProductList(@Query() query: { type: 'enum' | 'options' }) {
+    const { type } = query;
+    return type === 'enum' ? PRODUCT_TYPE_MAP : ObjToArray(PRODUCT_TYPE_MAP)
   }
 
   @Get('/find')

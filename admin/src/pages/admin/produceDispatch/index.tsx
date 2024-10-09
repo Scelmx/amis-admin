@@ -154,6 +154,7 @@ export function ProduceDispatch() {
                 const res = await request({ url: '/api/machines/del?id=' + active.id, method: 'get' })
                 if (res.data) {
                     setShowTwin(false)
+                    getMachines();
                 }
             }}>
             你确定要删除该机器吗？

@@ -20,9 +20,10 @@
         {
           "name": "produceName",
           "label": "产品名称",
-          "type": "text",
+          "type": "map",
           "id": "u:15bd7295d1da",
-          "placeholder": "-"
+          "placeholder": "-",
+          "source": "/api/molds/list?type=enum"
         },
         {
           "name": "templateNo",
@@ -111,20 +112,7 @@
                         "id": "u:ee1d3853c1e4",
                         "placeholder": "-",
                         "type": "select",
-                        "options": [
-                          {
-                            "label": "皮碗",
-                            "value": "pw"
-                          },
-                          {
-                            "label": "O型圈",
-                            "value": "oxq"
-                          },
-                          {
-                            "label": "Y型圈",
-                            "value": "yxq"
-                          }
-                        ]
+                        "source": "/api/molds/list?type=options"
                       },
                       {
                         "name": "templateNo",
@@ -278,20 +266,7 @@
                     "name": "produceName",
                     "label": "产品名称",
                     "id": "u:7df512bdd7ec",
-                    "options": [
-                      {
-                        "label": "皮碗",
-                        "value": "pw"
-                      },
-                      {
-                        "label": "O型圈",
-                        "value": "oxq"
-                      },
-                      {
-                        "label": "Y型圈",
-                        "value": "yxq"
-                      }
-                    ]
+                    "source": "/api/molds/list?type=options"
                   },
                   {
                     "type": "input-text",

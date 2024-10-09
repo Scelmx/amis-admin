@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
 import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import { renderDataToDocx, snakeToCamelCase } from '../utils';
+import { ObjToArray, renderDataToDocx, snakeToCamelCase } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
 import * as dayjs from 'dayjs';
+import { MOLD_TYPE_MAP } from '../utils/const';
 
 @Controller('/molds')
 export class MoldController {
@@ -29,14 +30,15 @@ export class MoldController {
   }
   
   @Get('/list')
-  async findAll(@Query() type: 'enum' | 'options') {
+  async findAll(@Query() query: { type: 'enum' | 'options' }) {
     const res = await this.moldService.findAll();
-    if (type === 'enum') {
+    if (query.type === 'enum') {
       return res.reduce((target: any, item) => {
-        target[item.id] = item.produce_name
+        target[item.produce_name] = MOLD_TYPE_MAP[item.produce_name]
+        return target
       }, {})
     }
-    return res.map(item => ({ label: item.produce_name, value: item.id }))
+    return ObjToArray(MOLD_TYPE_MAP)
   }
   
   @Post('/createWord')

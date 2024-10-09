@@ -184,3 +184,18 @@ export function genWhereObj(params: ListDto, where) {
   }
   return options;
 }
+
+/**
+ * 对象转options
+ * @param obj enum对象 | 对象
+ * @returns <{ label: string, value: string }[]>
+ */
+export function ObjToArray(obj) {
+  return Object.keys(obj).reduce((acc, key) => {
+    acc.push({
+      label: obj[key],
+      value: key
+    });
+    return acc;
+  }, []);
+}
