@@ -31,12 +31,8 @@ export class MoldController {
   
   @Get('/list')
   async findAll(@Query() query: { type: 'enum' | 'options' }) {
-    const res = await this.moldService.findAll();
     if (query.type === 'enum') {
-      return res.reduce((target: any, item) => {
-        target[item.produce_name] = MOLD_TYPE_MAP[item.produce_name]
-        return target
-      }, {})
+      return MOLD_TYPE_MAP
     }
     return ObjToArray(MOLD_TYPE_MAP)
   }

@@ -72,28 +72,7 @@
                     "id": "u:aeafc3c53dbc",
                     "row": 2,
                     "multiple": false,
-                    "options": [
-                      {
-                        "label": "硅胶",
-                        "value": "gj"
-                      },
-                      {
-                        "label": "丁腈胶",
-                        "value": "djj"
-                      },
-                      {
-                        "label": "三元乙丙",
-                        "value": "syyb"
-                      },
-                      {
-                        "label": "氟橡胶",
-                        "value": "fxj"
-                      },
-                      {
-                        "label": "天然橡胶",
-                        "value": "trxj"
-                      }
-                    ]
+                    "source": "/api/order/rawType?type=options"
                   },
                   {
                     "type": "input-date",
@@ -191,13 +170,7 @@
           "type": "map",
           "id": "u:0988a64ec07f",
           "placeholder": "-",
-          "map": {
-            "oxq_dp": "O型圈/垫片",
-            "mfq": "密封圈",
-            "gym8": "工业膜8寸",
-            "gym4": "工业膜4寸",
-            "xmj": "小模具"
-          }
+          "source": "/api/machines/list?type=enum"
         },
         {
           "name": "requireMold",
@@ -212,13 +185,7 @@
           "type": "map",
           "id": "u:76d4c0f8f55c",
           "placeholder": "-",
-          "map": {
-            "gj": "硅胶",
-            "djj": "丁腈胶",
-            "fxj": "氟橡胶",
-            "syyb": "三元乙丙",
-            "trxj": "天然橡胶"
-          }
+          "source": "/api/order/rawType?type=enum"
         },
         {
           "name": "deliveryAt",
@@ -310,28 +277,7 @@
                         "id": "u:aeafc3c53dbc",
                         "row": 2,
                         "multiple": false,
-                        "options": [
-                          {
-                            "label": "硅胶",
-                            "value": "gj"
-                          },
-                          {
-                            "label": "丁腈胶",
-                            "value": "djj"
-                          },
-                          {
-                            "label": "三元乙丙",
-                            "value": "syyb"
-                          },
-                          {
-                            "label": "氟橡胶",
-                            "value": "fxj"
-                          },
-                          {
-                            "label": "天然橡胶",
-                            "value": "trxj"
-                          }
-                        ]
+                        "source": "/api/order/rawType?type=options"
                       },
                       {
                         "type": "input-date",

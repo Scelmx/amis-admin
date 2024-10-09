@@ -37,6 +37,6 @@ export class MachinesService {
 
   /** 更新指定机器 */
   async updateTargetMachineOrders(machine: UpdateMachinesDto) {
-    return await this.machinesResponsitory.update(machine.id, machine)
+    return await this.machinesResponsitory.update(machine?.id, machine)
   }
 }

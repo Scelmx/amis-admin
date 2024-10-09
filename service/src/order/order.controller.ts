@@ -5,7 +5,7 @@ import { assignNewOrderToMachines } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
 import { ObjToArray, snakeToCamelCase } from '../utils';
-import { PRODUCT_TYPE_MAP } from '../utils/const';
+import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
 
 @Controller('/order')
 export class OrderController {
@@ -111,5 +111,11 @@ export class OrderController {
   @Get('/del')
   async remove(@Query() query: { id: string }) {
     return await this.orderService.remove(query.id);
+  }
+
+  @Get('/rawType')
+  async getRawType(@Query() query: { type: 'enum' | 'options' }) {
+    const { type } = query;
+    return type === 'enum' ? RAW_TYPE_MAP : ObjToArray(RAW_TYPE_MAP)
   }
 }
