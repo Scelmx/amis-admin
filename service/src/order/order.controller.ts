@@ -134,6 +134,7 @@ export class OrderController {
 
   @Get('/del')
   async remove(@Query() query: { id: string }) {
+    const machineList = await this.getMachinesOrders();
     const res = await this.orderService.remove(query.id);
     return returnData(res); 
   }
