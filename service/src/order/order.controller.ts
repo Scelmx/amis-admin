@@ -78,7 +78,10 @@ export class OrderController {
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
     if (machineInfo.machine) {
+      /** 找到可以生产的机器然后创建订单 */
       const res = await this.orderService.create(data);
+      /** 为什么要这样做, 因为插入机器需要订单ID */
+      /** 更新机器订单信息  */
       const targetLine = insertOrderToMachine({
         ...machineInfo,
         newOrder: res,
