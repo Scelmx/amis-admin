@@ -40,7 +40,7 @@ export class FeedStockController {
   }
 
   @Get('/find')
-  async findOne(@Query() query: { id: string }) {
+  async findOne(@Query() query: { id: number }) {
     const res = await this.feedStockService.findById(query.id);
     return returnData(res);
   }
@@ -52,7 +52,7 @@ export class FeedStockController {
   }
 
   @Get('/del')
-  async remove(@Query() query: { id: string }) {
+  async remove(@Query() query: { id: number }) {
     const res = await this.feedStockService.remove(query.id);
     return returnData(res);
   }

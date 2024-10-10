@@ -3,9 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Machines extends Common {
-  @PrimaryGeneratedColumn()
-  id: string;
-
   @Column({ comment: '名称' })
   name: string;
   /**
@@ -24,7 +21,4 @@ export class Machines extends Common {
     nullable: true,
   })
   orders: string;
-
-  @Column({ default: 0, comment: '是否删除' })
-  is_deleted?: number;
 }

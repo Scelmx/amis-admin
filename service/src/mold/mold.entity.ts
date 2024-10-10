@@ -1,36 +1,31 @@
+import { Common } from '../common/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Mold {
-  /**
-   * 模具ID
-   */
-  @PrimaryGeneratedColumn({ comment: '模具ID' })
-  id: number;
-
+export class Mold extends Common {
   /**
    * 产品名称
    */
-  @Column({ comment: '产品名称' })
-  produce_name: string;
+  @Column({ name: 'produce_name', comment: '产品名称' })
+  produceName: string;
 
   /**
    * 模具编号
    */
-  @Column({ comment: '模具编号' })
-  template_no: string;
+  @Column({ name: 'template_no', comment: '模具编号' })
+  templateNo: string;
 
   /**
    * 模具型号
    */
-  @Column({ comment: '模具型号' })
-  template_model: string;
+  @Column({ name: 'template_model', comment: '模具型号' })
+  templateModel: string;
 
   /**
    * 模具大小
    */
-  @Column({ comment: '模具大小' })
-  template_size: string;
+  @Column({ name: 'template_size', comment: '模具大小' })
+  templateSize: string;
 
   /**
    * 孔数
@@ -47,15 +42,12 @@ export class Mold {
   /**
    * 班产数
    */
-  @Column({ type: 'int', comment: '班产数量' })
-  half_day_nums: number;
+  @Column({ name: 'half_day_nums', type: 'int', comment: '班产数量' })
+  halfDayNums: number;
 
   /**
    * 模具区域
    */
   @Column({ type: 'varchar', comment: '班产数量' })
   region: string;
-
-  @Column('int', { comment: '是否删除 0 否 1 是', nullable: true, default: 0 })
-  is_deleted: number;
 }

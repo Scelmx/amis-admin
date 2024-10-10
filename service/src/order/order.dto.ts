@@ -2,7 +2,7 @@ import { CommonDto, ListDto } from "../common/common.dto";
 
 export class CreateOrderDto extends CommonDto {
   // 订单编号
-  readonly orderNo: number;
+  readonly orderNo: string;
   // 客户ID
   readonly customerId: number;
   // 商品名称
@@ -27,7 +27,7 @@ export class CreateOrderDto extends CommonDto {
 
 export class UpdateOrderDto extends CommonDto {
   readonly id: number;
-  readonly orderNo: number;
+  readonly orderNo: string;
   // 客户ID
   readonly customerId: number;
   // 商品名称
@@ -50,7 +50,7 @@ export class UpdateOrderDto extends CommonDto {
   // 是否删除
   isDeleted?: number;
   
-  machineId?: string;
+  machineId?: number;
 }
 
 export class FindAllDto extends ListDto {

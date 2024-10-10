@@ -18,7 +18,7 @@ export class MachineController {
   }
 
   @Get('/find')
-  async findOne(@Query() query: { id: string }) {
+  async findOne(@Query() query: { id: number }) {
     const res = await this.machinesService.findOne(query.id);
     return returnData(res);
   }
@@ -33,7 +33,7 @@ export class MachineController {
   }
 
   @Get('/del')
-  async remove(@Query() query: { id: string }) {
+  async remove(@Query() query: { id: number }) {
     const res = await this.machinesService.remove(query.id);
     return returnData(res);
   }

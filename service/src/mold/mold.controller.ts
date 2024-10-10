@@ -43,7 +43,7 @@ export class MoldController {
   async createWord(@Body() body: CreateWordDto) {
     const { templateNo, feedstockId, ...rest } = body;
     const templateNos = templateNo.split(',');
-    const feedstockIds = feedstockId.split(',');
+    const feedstockIds = feedstockId.split(',') as unknown as number[];
     /** 获取对应的原料信息 */
     const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
     if (!feedstockInfo) {

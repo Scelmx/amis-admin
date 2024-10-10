@@ -1,37 +1,32 @@
+import { Common } from '../common/common.entity';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class ProdInfo {
-  @PrimaryGeneratedColumn()
-  id?: number;
-
+export class ProdInfo extends Common {
   @Column()
   ptype: string;
 
-  @Column()
-  image_left: string; // 'l': 左侧图片, 'r': 右侧图片
+  @Column({ name: 'image_left' })
+  imageLeft: string; // 'l': 左侧图片, 'r': 右侧图片
 
-  @Column()
-  image_right: string;
+  @Column({ name: 'image_right' })
+  imageRight: string;
 
-  @Column()
-  center_x1: string; // 圆心x
+  @Column({ name: 'center_x1' })
+  centerX1: string; // 圆心x
 
-  @Column({ nullable: true })
-  center_x2?: string; 
+  @Column({ name: 'center_x2', nullable: true })
+  centerX2?: string; 
 
-  @Column()
-  center_y1: string; // 
+  @Column({ name: 'center_y1' })
+  centerY1: string; // 
 
-  @Column({ nullable: true })
-  center_y2?: string; // 圆心Y2
+  @Column({ name: 'center_y2',nullable: true })
+  centerY2?: string; // 圆心Y2
 
-  @Column()
-  real_center1: string; // 真圆心
+  @Column({ name: 'real_center1' })
+  realCenter1: string; // 真圆心
 
-  @Column({ nullable: true })
-  real_center2?: string; // 真圆心
-
-  @Column({ default: 0, comment: '是否删除 0 否 1 是' })
-  is_deleted: number;
+  @Column({ name: 'real_center2', nullable: true })
+  realCenter2?: string; // 真圆心
 }

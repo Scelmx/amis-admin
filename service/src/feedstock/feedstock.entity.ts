@@ -1,40 +1,35 @@
+import { Common } from '../common/common.entity';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class FeedStock {
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  /** 
+export class FeedStock extends Common {
+  /**
    * 原料名称
    */
   @Column('varchar', { comment: '原料名称' })
   name: string;
 
-  /** 
+  /**
    * 成型时间
    */
-  @Column('varchar', { comment: '成型时间' })
-  formation_time: string;
+  @Column('varchar', { name: 'formation_time', comment: '成型时间' })
+  formationTime: string;
 
   /**
    * 成型压力
    */
-  @Column('varchar', { comment: '成型压力' })
-  formation_pressure: string;
+  @Column('varchar', { name: 'formation_pressure', comment: '成型压力' })
+  formationPressure: string;
 
   /**
    * 上模温度
    */
-  @Column('varchar', { comment: '上模温度' })
-  upper_mold_temperature: string;
+  @Column('varchar', { name: 'upper_mold_temperature', comment: '上模温度' })
+  upperMoldTemperature: string;
 
   /**
    * 下模温度
    */
-  @Column('varchar', { comment: '下模温度' })
-  lower_mold_temperature: string;
-
-  @Column('int', { comment: '是否删除', default: 0, nullable: true })
-  is_deleted: number;
+  @Column('varchar', { name: 'lower_mold_temperature', comment: '下模温度' })
+  lowerMoldTemperature: string;
 }

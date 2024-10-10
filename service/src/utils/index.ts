@@ -172,15 +172,20 @@ export function convertUndefinedToEmptyString(obj) {
   return obj;
 }
 
-/** 生成查询条件 */
-export function genWhereObj(params: ListDto, where) {
-  const { page, pageSize } = params
+/**
+ * 列表页查询条件生成函数
+ * @param params 分页参数
+ * @param where 查询条件
+ * @returns 
+ */
+export function genWhereObj(params: ListDto, where?: any, order?: any) {
+  const { page = 1, pageSize = 10 } = params
   const skip = page > 0 ? (page - 1) * pageSize : 0
   const options: FindManyOptions<Common> = {
     skip,
     take: pageSize,
-    order: { created_at: 'DESC' },
-    where: { ...where, is_deleted: 0 }
+    order: order || { id: 'DESC' },
+    where: { ...(where || {}), isDeleted: 0 }
   }
   return options;
 }

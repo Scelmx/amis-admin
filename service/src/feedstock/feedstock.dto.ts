@@ -8,7 +8,7 @@ export class CreateFeedStockDto {
 }
 
 export class UpdateFeedStockDto {
-  id: string;
+  id: number;
   name: string;
   formationTime: string;
   formationPressure: string;

@@ -4,14 +4,22 @@ import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
 import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
-import { ObjToArray, returnData, snakeToCamelCase, toJSON, toString } from '../utils';
+import {
+  ObjToArray,
+  returnData,
+  snakeToCamelCase,
+  toJSON,
+  toString,
+} from '../utils';
 import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
+import { SortInfoService } from '../sortInfo/sortInfo.service';
 
 @Controller('/order')
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,
     private readonly machinesService: MachinesService,
+    private readonly sortInfoService: SortInfoService,
   ) {}
 
   @Get('/list')
@@ -20,7 +28,7 @@ export class OrderController {
     return returnData({
       ...res,
       data: res.data?.map((item) => {
-        item.delivery_at /= 1000;
+        item.deliveryAt /= 1000;
         return item;
       }),
     });
@@ -98,7 +106,9 @@ export class OrderController {
   @Get('/product')
   async getProductList(@Query() query: { type: 'enum' | 'options' }) {
     const { type } = query;
-    return returnData(type === 'enum' ? PRODUCT_TYPE_MAP : ObjToArray(PRODUCT_TYPE_MAP));
+    return returnData(
+      type === 'enum' ? PRODUCT_TYPE_MAP : ObjToArray(PRODUCT_TYPE_MAP),
+    );
   }
 
   @Get('/find')
@@ -112,12 +122,14 @@ export class OrderController {
       const { machineId, ...rest } = body;
       await this.orderService.update(rest);
       const res = await this.machinesService.findOne(machineId);
-      return returnData(await this.machinesService.update({
-        ...res,
-        orders: toString(
-          toJSON(res.orders || '[]').filter((item) => item !== body.id),
-        ),
-      }));
+      return returnData(
+        await this.machinesService.update({
+          ...res,
+          orders: toString(
+            toJSON(res.orders || '[]').filter((item) => item !== body.id),
+          ),
+        }),
+      );
     }
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);
@@ -133,15 +145,18 @@ export class OrderController {
   }
 
   @Get('/del')
-  async remove(@Query() query: { id: string }) {
-    const machineList = await this.getMachinesOrders();
-    const res = await this.orderService.remove(query.id);
-    return returnData(res); 
+  async remove(@Query() query: { id: number }) {
+    await this.orderService.remove(query.id);
+    await this.sortInfoService.remove({
+      orderId: query.id,
+    });
   }
 
   @Get('/rawType')
   async getRawType(@Query() query: { type: 'enum' | 'options' }) {
     const { type } = query;
-    return returnData(type === 'enum' ? RAW_TYPE_MAP : ObjToArray(RAW_TYPE_MAP));
+    return returnData(
+      type === 'enum' ? RAW_TYPE_MAP : ObjToArray(RAW_TYPE_MAP),
+    );
   }
 }

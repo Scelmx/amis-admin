@@ -3,6 +3,7 @@ import { Product } from './product.entity';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { downloadProductDocxDto, getProductListDto } from './product.dto';
+import { genWhereObj } from 'src/utils';
 
 @Injectable()
 export class ProductService {
@@ -12,14 +13,11 @@ export class ProductService {
     ) {}
 
     /** 获取产品列表 */
-    async getProductList(query: Pick<getProductListDto, 'customerId'>): Promise<{ count, data: Product[] }> {
-        const { customerId } = query;
-        const options: FindManyOptions<Product> = {
-            where: { customer_id: customerId, is_deleted: 0 },
-            order: { id: 'DESC' }
-        };
-        const count = await this.productRepository.count(options);
-        const data = await this.productRepository.find(options);
+    async getProductList(query: getProductListDto): Promise<{ count, data: Product[] }> {
+        const { customerId, ...otherParams } = query;
+        const where = genWhereObj(otherParams, { customerId })
+        const count = await this.productRepository.count(where);
+        const data = await this.productRepository.find(where);
         return { count, data }
     }
 
@@ -34,7 +32,7 @@ export class ProductService {
 
     /** 标记删除客户 */
     async removeProduct(id: number) {
-        return await this.productRepository.update({ id }, { is_deleted: 1 })
+        return await this.productRepository.update({ id }, { isDeleted: 1 })
     }
 
     /** 更新产品 */

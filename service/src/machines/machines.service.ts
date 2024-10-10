@@ -17,22 +17,22 @@ export class MachinesService {
   }
 
   async findAll(): Promise<Machines[]> {
-    return await this.machinesResponsitory.find({ where: { is_deleted: 0 } });
+    return await this.machinesResponsitory.find({ where: { isDeleted: 0 } });
   }
 
-  async findOne(id: string): Promise<Machines> {
+  async findOne(id: number): Promise<Machines> {
     return await this.machinesResponsitory.findOneBy({ id });
   }
 
   /** 更新订单 */
   async update(updateOrderDto: UpdateMachinesDto): Promise<Machines> {
     await this.machinesResponsitory.update(updateOrderDto.id, updateOrderDto);
-    return await this.findOne(updateOrderDto.id);
+    return await this.findOne(updateOrderDto?.id);
   }
 
   /** 标记删除订单 */
-  async remove(id: string): Promise<void> {
-    await this.machinesResponsitory.update(id, { is_deleted: 1 });
+  async remove(id: number): Promise<void> {
+    await this.machinesResponsitory.update(id, { isDeleted: 1 });
   }
 
   /** 更新指定机器 */
