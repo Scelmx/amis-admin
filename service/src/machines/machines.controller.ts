@@ -2,35 +2,45 @@ import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { MachinesService } from './machines.service';
 import { CreateMachinesDto, UpdateMachinesDto } from './machines.dto';
 import { PRODUCT_TYPE_MAP } from '../utils/const';
-import { ObjToArray } from '../utils';
+import { ObjToArray, returnData } from '../utils';
 
 @Controller('/machines')
 export class MachineController {
   constructor(private readonly machinesService: MachinesService) {}
 
   @Post('/add')
-  create(@Body() createOrderDto: CreateMachinesDto) {
-    return this.machinesService.create({ ...createOrderDto, type: JSON.stringify(createOrderDto.type) });
+  async create(@Body() createOrderDto: CreateMachinesDto) {
+    const res = await this.machinesService.create({
+      ...createOrderDto,
+      type: JSON.stringify(createOrderDto.type),
+    });
+    return returnData(res)
   }
 
   @Get('/find')
-  findOne(@Query() query: { id: string }) {
-    return this.machinesService.findOne(query.id);
+  async findOne(@Query() query: { id: string }) {
+    const res = await this.machinesService.findOne(query.id);
+    return returnData(res);
   }
 
   @Post('/update')
-  update(@Body() updateOrderDto: UpdateMachinesDto) {
-    return this.machinesService.update({ ...updateOrderDto, type: JSON.stringify(updateOrderDto.type) });
+  async update(@Body() updateOrderDto: UpdateMachinesDto) {
+    const res = await this.machinesService.update({
+      ...updateOrderDto,
+      type: JSON.stringify(updateOrderDto.type),
+    });
+    return returnData(res);
   }
 
   @Get('/del')
-  remove(@Query() query: { id: string }) {
-    return this.machinesService.remove(query.id);
+  async remove(@Query() query: { id: string }) {
+    const res = await this.machinesService.remove(query.id);
+    return returnData(res);
   }
 
   @Get('/list')
   findAll(@Query() query: { type: 'enum' | 'options' }) {
     const { type } = query;
-    return type === 'enum' ? PRODUCT_TYPE_MAP : ObjToArray(PRODUCT_TYPE_MAP)
+    return returnData(type === 'enum' ? PRODUCT_TYPE_MAP : ObjToArray(PRODUCT_TYPE_MAP));
   }
 }

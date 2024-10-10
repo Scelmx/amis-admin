@@ -29,16 +29,16 @@ export class ProductService {
 
     /** 添加产品 */
     async addProduct(product: Product): Promise<Product> {
-        return this.productRepository.save(product)
+        return await this.productRepository.save(product)
     }
 
     /** 标记删除客户 */
     async removeProduct(id: number) {
-        return this.productRepository.update({ id }, { is_deleted: 1 })
+        return await this.productRepository.update({ id }, { is_deleted: 1 })
     }
 
     /** 更新产品 */
     async updateProduct(product: Product) {
-        return this.productRepository.update({ id: product.id }, product);
+        return await this.productRepository.update({ id: product.id }, product);
     }
 }

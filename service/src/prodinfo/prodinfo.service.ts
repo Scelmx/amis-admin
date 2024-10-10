@@ -28,7 +28,7 @@ export class ProdInfoService {
 
     /** 标记删除客户 */
     async removeProdInfo(id: number) {
-        return this.imagesRepository.update({ id }, { is_deleted: 1 })
+        return await this.imagesRepository.update({ id }, { is_deleted: 1 })
     }
 
     /** 添加图片 */
@@ -37,7 +37,6 @@ export class ProdInfoService {
     }
 
     async updateProdInfo(images: ProdInfo) {
-        const originProdInfo: ProdInfo = await this.imagesRepository.findOneBy({ id: images.id });
-        return this.imagesRepository.update(originProdInfo, images)
+        return await this.imagesRepository.update(images.id, images)
     }
 }

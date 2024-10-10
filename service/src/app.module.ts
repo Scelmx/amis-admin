@@ -30,6 +30,7 @@ import { FeedStocksModule } from './feedstock/feedstock.module';
       database: 'autodocx',
       autoLoadEntities: true, // 自动链接被 forFeature 注册的实体
       synchronize: true,
+      logging: true
     }),
     CustomerModule,
     ProductModule,

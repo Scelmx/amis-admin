@@ -9,16 +9,17 @@ export class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map(data => {
         // 这里可以根据需要修改响应数据的结构
-        if (!!data) {
+        if (!!data?.data) {
           return {
+            ...data,
             status: 0,
             msg: 'success',
-            data: Array.isArray(data) ? [...data.map((item) => snakeToCamelCase(item))] : { ...snakeToCamelCase(data) }
+            data: Array.isArray(data?.data) ? [...data?.data.map((item) => snakeToCamelCase(item))] : { ...snakeToCamelCase(data.data) }
           }
         }
         return {
           status: 1,
-          msg: 'error',
+          msg: data.msg || '操作失败',
           data: '失败'
         }
       })

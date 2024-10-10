@@ -11,7 +11,7 @@ export class CustomerService {
     ) {}
 
     /** 获取全部客户列表 */
-    getCustomerList(where): Promise<Customer[]> {
+    async getCustomerList(where): Promise<Customer[]> {
         const { page, pageSize, ctName } = where; 
         const skip = page > 0 ? (page - 1) * pageSize : 0;
         const options: FindManyOptions<Customer> = {
@@ -20,31 +20,26 @@ export class CustomerService {
             skip,
             take: pageSize
         };
-        return this.customerRepository.find(options);
+        return await this.customerRepository.find(options);
     }
 
     /** 通过Id查找客户 */
-    getCustomerById(id: number): Promise<Customer> {
-        return this.customerRepository.findOneBy({ id });
+    async getCustomerById(id: number): Promise<Customer> {
+        return await this.customerRepository.findOneBy({ id });
     }
 
     /** 标记删除客户 */
     async removeCustomer(id: number) {
-        return this.customerRepository.update({ id }, { ct_is_delete: 1 })
+        return await this.customerRepository.update({ id }, { ct_is_delete: 1 })
     }
-    
 
     /** 更新产品 */
     async updateCustomer(customer: Customer) {
-        return this.customerRepository.update({ id: customer.id }, customer);
+        return await this.customerRepository.update({ id: customer.id }, customer);
     }
 
     /** 添加客户 */
-    addCustomer(customer: Customer): Promise<Customer> {
-        try {
-            return this.customerRepository.save(customer);
-        } catch (err) {
-            console.log(err, '????');
-        }
+    async  addCustomer(customer: Customer): Promise<Customer> {
+        return await this.customerRepository.save(customer);
     }
 }

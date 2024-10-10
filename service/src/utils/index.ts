@@ -199,3 +199,43 @@ export function ObjToArray(obj) {
     return acc;
   }, []);
 }
+
+
+/**
+ * 字符串转JSON
+ * @param str string
+ * @returns JSON 对象
+ */
+export const toJSON = (str: string) => {
+  try {
+    return JSON.parse(str);
+  } catch (error) {
+    return str;
+  }
+}
+
+/**
+ * 对象转字符串
+ * @param obj any
+ * @returns string
+ */
+export const toString = (obj: any) => {
+  try {
+    return JSON.stringify(obj);
+  } catch (error) {
+    return obj;
+  }
+}
+
+/**
+ * 范围数据格式化函数
+ * @param data any
+ * @param msg 错误提示
+ * @returns 
+ */
+export const returnData = (data?: any, msg?: string) => {
+  return {
+    data,
+    msg
+  }
+}

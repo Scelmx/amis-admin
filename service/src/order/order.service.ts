@@ -14,7 +14,7 @@ export class OrderService {
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
     const order = this.orderRepository.create(camelToSnakeCase(createOrderDto));
-    return this.orderRepository.save(order);
+    return await this.orderRepository.save(order);
   }
 
   async findAll(query: FindAllDto): Promise<{ count; data: Order[] }> {
@@ -26,7 +26,7 @@ export class OrderService {
   }
 
   async findOne(id: number): Promise<Order> {
-    return this.orderRepository.findOneBy({ id });
+    return await this.orderRepository.findOneBy({ id });
   }
 
   async findById(ids: number[]): Promise<Order[]> {
@@ -47,7 +47,7 @@ export class OrderService {
   /** 更新订单 */
   async update(updateOrderDto: UpdateOrderDto): Promise<Order> {
     await this.orderRepository.update(updateOrderDto.id, camelToSnakeCase(updateOrderDto));
-    return this.findOne(updateOrderDto.id);
+    return await this.findOne(updateOrderDto.id);
   }
 
   /** 标记删除订单 */

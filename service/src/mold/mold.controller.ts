@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
 import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import { ObjToArray, renderDataToDocx, snakeToCamelCase } from '../utils';
+import { ObjToArray, renderDataToDocx, returnData, snakeToCamelCase } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import * as fs from 'fs';
@@ -18,25 +18,27 @@ export class MoldController {
   ) {}
 
   @Post('/add')
-  create(@Body() createMoldDto: CreateMoldDto) {
-    return this.moldService.create(createMoldDto);
+  async create(@Body() createMoldDto: CreateMoldDto) {
+    const res = await this.moldService.create(createMoldDto);
+    return returnData(res);
   }
 
   @Get('/page')
-  page(
+  async page(
     @Query() query: { page: number; pageSize: number; templateModel: string },
   ) {
-    return this.moldService.page(query);
+    const res = await this.moldService.page(query);
+    return returnData(res);
   }
-  
+
   @Get('/list')
-  async findAll(@Query() query: { type: 'enum' | 'options' }) {
+  findAll(@Query() query: { type: 'enum' | 'options' }) {
     if (query.type === 'enum') {
-      return MOLD_TYPE_MAP
+      return returnData(MOLD_TYPE_MAP);
     }
-    return ObjToArray(MOLD_TYPE_MAP)
+    return returnData(ObjToArray(MOLD_TYPE_MAP));
   }
-  
+
   @Post('/createWord')
   async createWord(@Body() body: CreateWordDto) {
     const { templateNo, feedstockId, ...rest } = body;
@@ -45,37 +47,42 @@ export class MoldController {
     /** 获取对应的原料信息 */
     const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
     if (!feedstockInfo) {
-      return {
-        data: '原料信息获取失败',
-      };
+      return returnData(null, '原料信息获取失败')
     }
     /** 获取对应的模具信息 */
     const templateInfo = await this.moldService.findByTemplateNo(templateNos);
     if (!feedstockInfo) {
-      return {
-        data: '模具信息获取失败',
-      };
+      return returnData(null, '模具信息获取失败')
     }
 
-    const product2Params = feedstockInfo?.[1] || feedstockInfo[0]
-    const product1 = createBaseNameObj('product1', { ...feedstockInfo[0], ...templateInfo[0], count: templateInfo[0].hole * templateInfo[0].mode })
-    const product2 = createBaseNameObj('product2', { ...product2Params, ...templateInfo?.[1], count: templateInfo?.[1]?.hole * templateInfo?.[1]?.mode })
+    const product2Params = feedstockInfo?.[1] || feedstockInfo[0];
+    const product1 = createBaseNameObj('product1', {
+      ...feedstockInfo[0],
+      ...templateInfo[0],
+      count: templateInfo[0].hole * templateInfo[0].mode,
+    });
+    const product2 = createBaseNameObj('product2', {
+      ...product2Params,
+      ...templateInfo?.[1],
+      count: templateInfo?.[1]?.hole * templateInfo?.[1]?.mode,
+    });
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
         ...snakeToCamelCase(product1),
         ...snakeToCamelCase(product2),
         ...rest,
-        createDate: rest?.createDate ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD') : '',
-        sailings: rest.sailings === '0'
+        createDate: rest?.createDate
+          ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD')
+          : '',
+        sailings: rest.sailings === '0',
       },
     );
 
     if (!fs.existsSync(filePath)) {
-      return '文件不存在';
+      return returnData(null, '文件不存在');
     }
-
-    return { data: fileName }
+    return returnData(fileName)
   }
 
   @Get('/download')
@@ -84,25 +91,32 @@ export class MoldController {
     @Res() response: Response,
   ) {
     const { filename } = query;
-    const filePath = path.join(__dirname, '../dist/assets/output/', `${filename}.docx`);
+    const filePath = path.join(
+      __dirname,
+      '../dist/assets/output/',
+      `${filename}.docx`,
+    );
     if (!fs.existsSync(filePath)) {
-      return '下载失败';
+      return { msg: '下载失败' };
     }
     response.download(filePath);
   }
 
   @Get('/find')
-  findOne(@Query() query: { id: number }) {
-    return this.moldService.findOne(query.id);
+  async findOne(@Query() query: { id: number }) {
+    const res = await this.moldService.findOne(query.id);
+    return returnData(res);
   }
 
   @Post('/update')
-  update(@Body() updateMoldDto: UpdateMoldDto) {
-    return this.moldService.update(updateMoldDto);
+  async update(@Body() updateMoldDto: UpdateMoldDto) {
+    const res = await this.moldService.update(updateMoldDto);
+    return returnData(res);
   }
 
   @Get('/del')
-  remove(@Query() query: { id: number }) {
-    return this.moldService.remove(query.id);
+  async remove(@Query() query: { id: number }) {
+    const res = await this.moldService.remove(query.id);
+    return returnData(res)
   }
 }

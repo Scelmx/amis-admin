@@ -1,4 +1,5 @@
 import * as dayjs from "dayjs";
+import { toJSON, toString } from "../utils";
 
 /**
  * 获取对象在每个item的orders数组中，根据time和duration属性计算最晚开始时间后的位置下标
@@ -20,13 +21,7 @@ export function getOrderPositions(obj, arr) {
       .subtract(parseFloat(duration) + 2, 'day')
       .valueOf();
     const { orders: orderList = [] } = item;
-    let orders = [];
-    try {
-      orders = JSON.parse(orderList)
-    } catch (err) {
-      console.log(err)
-    }
-
+    let orders = toJSON(orderList);
     // 如果订单列表长度为0
     if (orders?.length === 0 || !orders) {
       result.push({
@@ -37,7 +32,6 @@ export function getOrderPositions(obj, arr) {
       return;
     }
 
-    console.log(orders, "********");
     // 计算机器中排队的每个订单的最晚开始时间和结束时间
     const ordersWithTimes = orders?.map((order) => {
       const startTime = dayjs(order.deliveryTime)
@@ -166,8 +160,16 @@ export function assignNewOrderToMachines(newOrder, machines) {
   );
   console.log('targetMachine:', targetMachine);
   console.log('newOrder:', newOrder);
-  targetMachine.orders = JSON.stringify(targetMachine?.orders 
-    ? targetMachine.orders.splice(position?.index + 1, 0, newOrder.id) 
-    : targetMachine.orders = [newOrder?.id]);
-  return targetMachine;
+  return {
+    machine: targetMachine,
+    position,
+  };
 }
+
+/** 将新订单插入到指定机器的对应位置 */
+export const insertOrderToMachine = ({machine, position, newOrder }) => {
+  machine.orders = toString(machine?.orders && machine.orders?.length > 0 
+    ? machine.orders.splice(position?.index + 1, 0, newOrder.id) 
+    : machine.orders = [newOrder?.id]);
+  return machine;
+};

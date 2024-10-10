@@ -13,7 +13,7 @@ export class MachinesService {
 
   async create(createOrderDto: CreateMachinesDto): Promise<Machines> {
     const order = this.machinesResponsitory.create(createOrderDto);
-    return this.machinesResponsitory.save(order);
+    return await this.machinesResponsitory.save(order);
   }
 
   async findAll(): Promise<Machines[]> {
@@ -21,13 +21,13 @@ export class MachinesService {
   }
 
   async findOne(id: string): Promise<Machines> {
-    return this.machinesResponsitory.findOneBy({ id });
+    return await this.machinesResponsitory.findOneBy({ id });
   }
 
   /** 更新订单 */
   async update(updateOrderDto: UpdateMachinesDto): Promise<Machines> {
     await this.machinesResponsitory.update(updateOrderDto.id, updateOrderDto);
-    return this.findOne(updateOrderDto.id);
+    return await this.findOne(updateOrderDto.id);
   }
 
   /** 标记删除订单 */

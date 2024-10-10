@@ -15,7 +15,7 @@ export class FeedStockService {
 
   async create(createFeedStockDto: CreateFeedStockDto): Promise<FeedStock> {
     const order = this.feedStockResponsitory.create(camelToSnakeCase(createFeedStockDto));
-    return this.feedStockResponsitory.save(order);
+    return await this.feedStockResponsitory.save(order);
   }
 
   async findAll(params?: ListDto): Promise<{ count, data: FeedStock[] }> {
@@ -36,13 +36,13 @@ export class FeedStockService {
   }
 
   async findById(id: string): Promise<FeedStock> {
-    return this.feedStockResponsitory.findOneBy({ id });
+    return await this.feedStockResponsitory.findOneBy({ id });
   }
 
   /** 更新订单 */
   async update(updateFeedStockDto: UpdateFeedStockDto): Promise<FeedStock> {
     await this.feedStockResponsitory.update(updateFeedStockDto.id, camelToSnakeCase(updateFeedStockDto));
-    return this.findById(updateFeedStockDto.id);
+    return await this.findById(updateFeedStockDto.id);
   }
 
   /** 标记删除订单 */

@@ -15,7 +15,7 @@ export class MoldService {
 
   async create(createMoldDto: CreateMoldDto): Promise<Mold> {
     const mold = this.moldRepository.create(camelToSnakeCase(createMoldDto));
-    return this.moldRepository.save(mold);
+    return await this.moldRepository.save(mold);
   }
   
   async findAll() {
