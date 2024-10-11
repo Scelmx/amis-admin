@@ -1,18 +1,18 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
+import { FindAllDto } from './order.dto';
 import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
 import {
   ObjToArray,
   returnData,
-  snakeToCamelCase,
   toJSON,
   toString,
 } from '../utils';
 import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
 import { SortInfoService } from '../sortInfo/sortInfo.service';
+import { Order } from './order.entity';
 
 @Controller('/order')
 export class OrderController {
@@ -59,7 +59,7 @@ export class OrderController {
     const machineList = await this.getMachinesOrders();
     /** 找到对应业务线 */
     const result = assignNewOrderToMachines(
-      snakeToCamelCase(body),
+      body,
       machineList,
     );
     return result;
@@ -75,7 +75,7 @@ export class OrderController {
   }
 
   @Post('/add')
-  async create(@Body() body: CreateOrderDto) {
+  async create(@Body() body: Order) {
     const data = {
       ...body,
       createdAt: dayjs().valueOf(),
@@ -117,19 +117,9 @@ export class OrderController {
   }
 
   @Post('/update')
-  async update(@Body() body: UpdateOrderDto) {
+  async update(@Body() body: Order) {
     if (body.status === 'finish') {
-      const { machineId, ...rest } = body;
-      await this.orderService.update(rest);
-      const res = await this.machinesService.findOne(machineId);
-      return returnData(
-        await this.machinesService.update({
-          ...res,
-          orders: toString(
-            toJSON(res.orders || '[]').filter((item) => item !== body.id),
-          ),
-        }),
-      );
+
     }
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);

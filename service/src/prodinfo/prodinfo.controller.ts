@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ProdInfoService } from './prodinfo.service';
-import { ProdInfoDto } from './prodinfo.dto';
-import { ListDto } from '../common/common.dto';
+import { PageDto } from './prodinfo.dto';
 import { ProdInfo } from './prodinfo.entity';
-import { camelToSnakeCase, returnData } from '../utils';
+import { returnData } from '../utils';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { getMulterConfig } from '../injectable/upload';
 
@@ -12,7 +11,7 @@ export class ProdInfoController {
     constructor(private prodInfoService: ProdInfoService) {}
 
     @Get('/list')
-    async getProdInfoList(@Query() query: { ptype: string } & ListDto) {
+    async getProdInfoList(@Query() query: PageDto) {
         return returnData(await this.prodInfoService.getProdInfoList(query));
     }
 
@@ -27,9 +26,8 @@ export class ProdInfoController {
     }
 
     @Post('/update')
-    async updateProdInfo(@Body() body: ProdInfoDto) {
-        const image = { ...camelToSnakeCase(body) }
-        const res = await this.prodInfoService.updateProdInfo(image as ProdInfo)
+    async updateProdInfo(@Body() body: ProdInfo) {
+        const res = await this.prodInfoService.updateProdInfo(body)
         return returnData(res);
     }
 
@@ -44,9 +42,8 @@ export class ProdInfoController {
     }
 
     @Post('/add')
-    async addProdInfo(@Body() body: ProdInfoDto) {
-        const image = { ...camelToSnakeCase(body) }
-        const res = await this.prodInfoService.addProdInfo(image as ProdInfo)
+    async addProdInfo(@Body() body: ProdInfo) {
+        const res = await this.prodInfoService.addProdInfo(body)
         return returnData(res)
     }
 }

@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { FeedStock } from './feedstock.entity';
-import { CreateFeedStockDto, UpdateFeedStockDto } from './feedstock.dto';
 import { ListDto } from '../common/common.dto';
-import { camelToSnakeCase, genWhereObj } from '../utils';
+import { genWhereObj } from '../utils';
 
 @Injectable()
 export class FeedStockService {
@@ -13,9 +12,8 @@ export class FeedStockService {
     private readonly feedStockResponsitory: Repository<FeedStock>,
   ) {}
 
-  async create(createFeedStockDto: CreateFeedStockDto): Promise<FeedStock> {
-    const order = this.feedStockResponsitory.create(camelToSnakeCase(createFeedStockDto));
-    return await this.feedStockResponsitory.save(order);
+  async create(feedstock: FeedStock): Promise<FeedStock> {
+    return await this.feedStockResponsitory.save(feedstock);
   }
 
   async findAll(params?: ListDto): Promise<{ count, data: FeedStock[] }> {
@@ -36,9 +34,8 @@ export class FeedStockService {
   }
 
   /** 更新订单 */
-  async update(updateFeedStockDto: UpdateFeedStockDto): Promise<FeedStock> {
-    await this.feedStockResponsitory.update(updateFeedStockDto.id, camelToSnakeCase(updateFeedStockDto));
-    return await this.findById(updateFeedStockDto.id);
+  async update(feedstock: FeedStock) {
+    return await this.feedStockResponsitory.update(feedstock.id, feedstock);
   }
 
   /** 标记删除订单 */

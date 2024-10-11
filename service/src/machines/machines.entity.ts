@@ -1,5 +1,5 @@
 import { Common } from '../common/common.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 @Entity()
 export class Machines extends Common {

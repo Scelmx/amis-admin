@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Machines } from './machines.entity';
-import { CreateMachinesDto, UpdateMachinesDto } from './machines.dto';
 
 @Injectable()
 export class MachinesService {
@@ -11,9 +10,8 @@ export class MachinesService {
     private readonly machinesResponsitory: Repository<Machines>,
   ) {}
 
-  async create(createOrderDto: CreateMachinesDto): Promise<Machines> {
-    const order = this.machinesResponsitory.create(createOrderDto);
-    return await this.machinesResponsitory.save(order);
+  async create(machine: Machines): Promise<Machines> {
+    return await this.machinesResponsitory.save(machine);
   }
 
   async findAll(): Promise<Machines[]> {
@@ -25,9 +23,8 @@ export class MachinesService {
   }
 
   /** 更新订单 */
-  async update(updateOrderDto: UpdateMachinesDto): Promise<Machines> {
-    await this.machinesResponsitory.update(updateOrderDto.id, updateOrderDto);
-    return await this.findOne(updateOrderDto?.id);
+  async update(machine: Machines){
+    return await this.machinesResponsitory.update(machine.id, machine);
   }
 
   /** 标记删除订单 */
@@ -36,7 +33,7 @@ export class MachinesService {
   }
 
   /** 更新指定机器 */
-  async updateTargetMachineOrders(machine: UpdateMachinesDto) {
+  async updateTargetMachineOrders(machine: Machines) {
     return await this.machinesResponsitory.update(machine?.id, machine)
   }
 }

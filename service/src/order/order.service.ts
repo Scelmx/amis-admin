@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Order } from './order.entity';
-import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
-import { camelToSnakeCase, genWhereObj } from '../utils';
+import { FindAllDto } from './order.dto';
+import { genWhereObj } from '../utils';
 
 @Injectable()
 export class OrderService {
@@ -12,8 +12,7 @@ export class OrderService {
     private readonly orderRepository: Repository<Order>,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    const order = this.orderRepository.create(camelToSnakeCase(createOrderDto));
+  async create(order: Order): Promise<Order> {
     return await this.orderRepository.save(order);
   }
 
@@ -45,8 +44,8 @@ export class OrderService {
   }
 
   /** 更新订单 */
-  async update(updateOrderDto: UpdateOrderDto) {
-    return await this.orderRepository.update(updateOrderDto.id, updateOrderDto);
+  async update(order: Order) {
+    return await this.orderRepository.update(order.id, order);
   }
 
   /** 标记删除订单 */

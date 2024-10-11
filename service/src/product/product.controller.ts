@@ -14,7 +14,6 @@ import {
   getProductListDto,
 } from './product.dto';
 import {
-  camelToSnakeCase,
   convertUndefinedToEmptyString,
   getRandomList,
   renderDataToDocx,
@@ -141,16 +140,14 @@ export class ProductController {
   }
 
   @Post('/add')
-  async addProduct(@Body() body: ProductDto) {
-    const data = { ...(camelToSnakeCase(body) as Product) };
-    const res = await this.productService.addProduct(data);
+  async addProduct(@Body() body: Product) {
+    const res = await this.productService.addProduct({ ...body });
     return returnData(res);
   }
 
   @Post('/update')
-  async updateProduct(@Body() body: Partial<ProductDto> & { id: number }) {
-    const product = { ...(camelToSnakeCase(body) as Product) };
-    const res = await this.productService.updateProduct(product);
+  async updateProduct(@Body() body: Product) {
+    const res = await this.productService.updateProduct(body);
     return returnData(res);
   }
 }

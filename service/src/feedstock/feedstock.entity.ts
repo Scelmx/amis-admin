@@ -1,5 +1,5 @@
 import { Common } from '../common/common.entity';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 @Entity()
 export class FeedStock extends Common {

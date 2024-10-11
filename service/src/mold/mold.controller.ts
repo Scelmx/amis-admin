@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
-import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import { ObjToArray, renderDataToDocx, returnData, snakeToCamelCase } from '../utils';
+import { CreateWordDto } from './mold.dto';
+import { ObjToArray, renderDataToDocx, returnData } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import * as fs from 'fs';
@@ -9,6 +9,7 @@ import * as path from 'path';
 import { createBaseNameObj } from './utils';
 import * as dayjs from 'dayjs';
 import { MOLD_TYPE_MAP } from '../utils/const';
+import { Mold } from './mold.entity';
 
 @Controller('/molds')
 export class MoldController {
@@ -18,8 +19,8 @@ export class MoldController {
   ) {}
 
   @Post('/add')
-  async create(@Body() createMoldDto: CreateMoldDto) {
-    const res = await this.moldService.create(createMoldDto);
+  async create(@Body() mold: Mold) {
+    const res = await this.moldService.create(mold);
     return returnData(res);
   }
 
@@ -69,8 +70,8 @@ export class MoldController {
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
-        ...snakeToCamelCase(product1),
-        ...snakeToCamelCase(product2),
+        ...product1,
+        ...product2,
         ...rest,
         createDate: rest?.createDate
           ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD')
@@ -109,8 +110,8 @@ export class MoldController {
   }
 
   @Post('/update')
-  async update(@Body() updateMoldDto: UpdateMoldDto) {
-    const res = await this.moldService.update(updateMoldDto);
+  async update(@Body() mold: Mold) {
+    const res = await this.moldService.update(mold);
     return returnData(res);
   }
 

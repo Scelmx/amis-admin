@@ -1,9 +1,9 @@
-import { Injectable, Response } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Product } from './product.entity';
-import { FindManyOptions, Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { downloadProductDocxDto, getProductListDto } from './product.dto';
-import { genWhereObj } from 'src/utils';
+import { genWhereObj } from '../utils';
 
 @Injectable()
 export class ProductService {
