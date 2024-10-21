@@ -12,5 +12,6 @@ import { FeedStocksModule } from '../feedstock/feedstock.module';
   ],
   controllers: [MoldController],
   providers: [MoldService],
+  exports: [MoldService]
 })
 export class MoldModule {}

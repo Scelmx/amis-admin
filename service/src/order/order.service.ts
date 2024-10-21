@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { FindAllDto } from './order.dto';
 import { genWhereObj } from '../utils';
@@ -18,7 +18,10 @@ export class OrderService {
 
   async findAll(query: FindAllDto): Promise<{ count; data: Order[] }> {
     const { customerId, status, ...rest } = query;
-    const options = genWhereObj(rest, { customerId: customerId || undefined, status: status || undefined });
+    const options = genWhereObj(rest, {
+      customerId: customerId || undefined,
+      status: status || undefined,
+    });
     const count = await this.orderRepository.count(options);
     const data = await this.orderRepository.find(options);
     return { count, data };
@@ -28,19 +31,9 @@ export class OrderService {
     return await this.orderRepository.findOneBy({ id });
   }
 
-  async findById(ids: number[]): Promise<Order[]> {
-    const placeholders = ids?.map(() => '?').join(', ');
-    const query = `
-      WITH OrderedIds AS (
-        SELECT id, 
-               ROW_NUMBER() OVER (ORDER BY FIELD(id, ${placeholders})) as rownum
-        FROM orders
-        WHERE id IN (${placeholders})
-      )
-      SELECT * FROM OrderedIds
-      ORDER BY rownum;
-    `;
-    return await this.orderRepository.query(query, ids);
+  async findById(ids: number[]) {
+    const where = { id: In(ids), isDeleted: 0 };
+    return await this.orderRepository.find({ where })
   }
 
   /** 更新订单 */

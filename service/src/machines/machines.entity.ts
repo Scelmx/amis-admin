@@ -22,5 +22,5 @@ export class Machines extends Common {
     nullable: true,
   })
   @OneToMany(() => SortInfo, (sort) => sort.machineId)
-  orders: string;
+  orders: Array<SortInfo>;
 }

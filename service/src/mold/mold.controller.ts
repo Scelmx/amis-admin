@@ -33,11 +33,19 @@ export class MoldController {
   }
 
   @Get('/list')
-  findAll(@Query() query: { type: 'enum' | 'options' }) {
+  async findAll(@Query() query: { type: 'enum' | 'options' }) {
+    const res = await this.moldService.findAll();
     if (query.type === 'enum') {
-      return returnData(MOLD_TYPE_MAP);
+      return returnData(
+        res.reduce((target, item) => {
+          target[item.id] = item.produceName;
+          return target;
+        }, {}),
+      );
     }
-    return returnData(ObjToArray(MOLD_TYPE_MAP));
+    return returnData(
+      res.map((item) => ({ label: item.produceName, value: item.id })),
+    );
   }
 
   @Post('/createWord')

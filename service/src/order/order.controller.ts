@@ -37,13 +37,27 @@ export class OrderController {
 
   @Get('/machines')
   async getMachines() {
-    const res = await this.machinesService.findAll();
+    const res = await this.getAllMachine();
     return returnData(res);
+  }
+
+  /** 获取全部机器 */
+  async getAllMachine() {
+    const machineList = await this.machinesService.findAll();
+    for await (const item of machineList) {
+      const orderIds = item.orders.map((sortInfo) => sortInfo.orderId);
+      if (orderIds && orderIds.length) {
+        const order = await this.orderService.findById(orderIds)
+        item.orders = item.orders.map((item, index) => ({ ...item, ...order[index] }))
+      }
+      item.type = toJSON(item.type);
+    }
+    return machineList;
   }
 
   /** 查找符合条件的机器 */
   async findTargetMachine(body) {
-    const machineList = await this.machinesService.findAll();
+    const machineList = await this.getAllMachine()
     /** 找到对应业务线 */
     const result = assignNewOrderToMachines(
       body,

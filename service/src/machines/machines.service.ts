@@ -17,14 +17,13 @@ export class MachinesService {
 
   async findAll() {
     const res = await this.machinesResponsitory
-      .createQueryBuilder('machines')
-      .leftJoinAndSelect('machines.orders', 'sortinfo')
-      .where('machines.isDeleted = :isDeleted', { isDeleted: 0 })
-      .getMany();
-    return res.map(item => {
-      item.type = toJSON(item.type)
-      return item
-    });
+    .createQueryBuilder('machines')
+    .leftJoinAndSelect('machines.orders', 'sortinfo')
+    .where('machines.isDeleted = :isDeleted', { isDeleted: 0 })
+    .orderBy('sortinfo.position', 'ASC') 
+    .getMany();
+
+    return res
   }
 
   async findOne(id: number): Promise<Machines> {
