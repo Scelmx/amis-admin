@@ -10,7 +10,7 @@ import { orderStatusColorMap, orderStatusMap } from "./const";
 export function ProduceDispatch() {
     const [machinesList, setMachinesList] = useState<any[]>([])
     const [showTwin, setShowTwin] = useState<boolean>(false);
-    const [active, setActive] = useState<any>();
+    const [active, setActive] = useState<any>({});
     const [customer, setCustomer] = useState<any>({});
 
     const getMachines = async () => {
@@ -50,7 +50,7 @@ export function ProduceDispatch() {
             key: '2',
             label: <AddMachine
                 buttonText="编辑"
-                initialValues={active}
+                initialValues={{ ...active, mold: active.mold?.id }}
                 edit={true}
                 confirmCallback={getMachines}>    
             </AddMachine>
