@@ -1,15 +1,10 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { FindAllDto } from './order.dto';
-import { assignNewOrderToMachines } from './utils';
+import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
-import {
-  ObjToArray,
-  returnData,
-  toJSON,
-  toString,
-} from '../utils';
+import { ObjToArray, returnData, toJSON, toString } from '../utils';
 import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
 import { SortInfoService } from '../sortInfo/sortInfo.service';
 import { Order } from './order.entity';
@@ -49,10 +44,13 @@ export class OrderController {
     for await (const item of machineList) {
       const orderIds = item.orders.map((sortInfo) => sortInfo.orderId);
       if (orderIds && orderIds.length) {
-        const order = await this.orderService.findById(orderIds)
-        item.orders = item.orders.map((item, index) => ({ ...item, ...order[index] }))
+        const order = await this.orderService.findById(orderIds);
+        item.orders = item.orders.map((item, index) => ({
+          ...item,
+          ...order[index],
+        }));
       }
-      item.mold = await this.moldService?.findOne(item.mold)
+      item.mold = await this.moldService?.findOne(item.mold);
       item.type = toJSON(item.type);
     }
     return machineList;
@@ -60,12 +58,9 @@ export class OrderController {
 
   /** 查找符合条件的机器 */
   async findTargetMachine(body) {
-    const machineList = await this.getAllMachine()
+    const machineList = await this.getAllMachine();
     /** 找到对应业务线 */
-    const result = assignNewOrderToMachines(
-      body,
-      machineList,
-    );
+    const result = assignNewOrderToMachines(body, machineList);
     return result;
   }
 
@@ -92,16 +87,27 @@ export class OrderController {
     if (machineInfo.data.machine && machineInfo.data.machine.length) {
       /** 找到可以生产的机器然后创建订单 */
       const order = await this.orderService.create(data);
+
       /** 创建订单排序信息 */
       const sortInfo = await this.sortInfoService.add({
         machineId: machineInfo.data.machine.id,
         orderId: order.id,
         position: machineInfo.data.position.index,
-        status: machineInfo.data.position.index === 0 ? STATUS_ENUM.process : STATUS_ENUM.wait,
+        status:
+          machineInfo.data.position.index === 0
+            ? STATUS_ENUM.process
+            : STATUS_ENUM.wait,
         isBlack: 0,
-      })
+      });
+
       /** 为什么要这样做, 因为插入机器需要订单ID */
       /** 更新机器订单信息  */
+      const res = insertOrderToMachine({
+        ...machineInfo.data,
+        newOrder: order,
+      });
+      await this.sortInfoService.updateMany(res.orders);
+
       if (order && sortInfo) {
         return returnData(order);
       }
@@ -128,18 +134,26 @@ export class OrderController {
   async update(@Body() body: Order) {
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);
+    console.log(machineInfo, '----');
     if (machineInfo.data.machine && machineInfo.data.machine.length) {
       const order = await this.orderService.update(body);
-      const sortInfo = await this.sortInfoService.updateByOrderId({
-        machineId: machineInfo.data.machine.id,
-        orderId: body.id,
-        position: machineInfo.data.position.index,
-      })
 
-      if (sortInfo && order) {
-        return returnData(sortInfo);
+      const res = insertOrderToMachine({
+        ...machineInfo.data,
+        newOrder: order,
+      });
+      await this.sortInfoService.updateMany(res.orders);
+
+      // const sortInfo = await this.sortInfoService.updateByOrderId({
+      //   machineId: machineInfo.data.machine.id,
+      //   orderId: body.id,
+      //   position: machineInfo.data.position.index,
+      // });
+
+      if (order) {
+        return returnData(order);
       }
-      return returnData(null, '自动排班或者订单更新失败')
+      return returnData(null, '自动排班或者订单更新失败');
     }
     return returnData(null, '业务线查找失败');
   }

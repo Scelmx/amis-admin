@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SortInfo } from './sortInfo.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import {
   SortInfoDto,
   FindSortInfoAllDto,
@@ -49,5 +49,13 @@ export class SortInfoService {
   async updateByOrderId(params: UpdateSortInfoDto) {
     const { orderId } = params;
     return await this.SortInfoRepository.update({ orderId }, params);
+  }
+
+  async updateMany(order: UpdateSortInfoDto[]) {
+    const ids = order.map(item => item.id);
+    const query = `UPDATE sortinfo SET position = CASE id 
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.position}`).join(' ')}
+    END WHERE id IN (${ids.join(',')})`
+    return await this.SortInfoRepository.query(query);
   }
 }

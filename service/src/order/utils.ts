@@ -73,11 +73,12 @@ export function getOrderPositions(obj, arr) {
 
 /** 查看当前订单是否适合分配到机器中 */
 export function assignNewOrderToMachines(newOrder, machines) {
+  debugger;
   let msg = "执行成功";
   let targetMachine: any = [];
   let position: any = {};
   // 找到所有生产这类产品的机器
-  let allTargetMachines = machines?.filter((machine) => machine.type.indexOf(newOrder?.type) > -1);
+  let allTargetMachines = machines?.filter((machine) => machine.type.includes(newOrder?.productType));
   console.log('newOrder:', newOrder);
   console.log("====>machines", machines);
   console.log('allTargetMachines:', allTargetMachines);
