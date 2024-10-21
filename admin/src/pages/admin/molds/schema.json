@@ -467,7 +467,7 @@
                         "ignoreError": false,
                         "actionType": "url",
                         "args": {
-                          "url": "/api/molds/download?filename=${event.data.result.data.data}"
+                          "url": "/api/molds/download?filename=${event.data.result.data}"
                         }
                       }
                     ]

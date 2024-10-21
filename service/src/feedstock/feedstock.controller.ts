@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { FeedStockService } from './feedstock.service';
-import { CreateFeedStockDto, UpdateFeedStockDto } from './feedstock.dto';
 import { returnData } from '../utils';
+import { FeedStock } from './feedstock.entity';
 
 @Controller('/feedStock')
 export class FeedStockController {
@@ -34,25 +34,25 @@ export class FeedStockController {
   }
 
   @Post('/add')
-  async create(@Body() createOrderDto: CreateFeedStockDto) {
-    const res = await this.feedStockService.create(createOrderDto);
+  async create(@Body() feedStock: FeedStock) {
+    const res = await this.feedStockService.create(feedStock);
     return returnData(res);
   }
 
   @Get('/find')
-  async findOne(@Query() query: { id: string }) {
+  async findOne(@Query() query: { id: number }) {
     const res = await this.feedStockService.findById(query.id);
     return returnData(res);
   }
 
   @Post('/update')
-  async update(@Body() updateOrderDto: UpdateFeedStockDto) {
-    const res = await this.feedStockService.update(updateOrderDto);
+  async update(@Body() feedStock: FeedStock) {
+    const res = await this.feedStockService.update(feedStock);
     return returnData(res)
   }
 
   @Get('/del')
-  async remove(@Query() query: { id: string }) {
+  async remove(@Query() query: { id: number }) {
     const res = await this.feedStockService.remove(query.id);
     return returnData(res);
   }

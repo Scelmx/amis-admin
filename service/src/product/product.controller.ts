@@ -1,27 +1,25 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import { Response } from 'express';
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import { Product } from './product.entity';
+import { ProductService } from './product.service';
+import { ProdInfoService } from '../prodinfo/prodinfo.service';
+import { CustomerService } from '../customer/customer.service';
+import { Pd, ProductName } from './const';
+import { generateRolerance } from './utils';
 import {
   ProductDto,
   downloadProductDocxDto,
   getProductListDto,
 } from './product.dto';
-import { ProductService } from './product.service';
-import { ProdInfoService } from '../prodinfo/prodinfo.service';
-import { Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
-import { Pd, ProductName } from './const';
-import { Product } from './product.entity';
-import { generateRolerance } from './utils';
 import {
-  camelToSnakeCase,
   convertUndefinedToEmptyString,
   getRandomList,
   renderDataToDocx,
   returnData,
-  snakeToCamelCase,
 } from '../utils/index';
 import * as dayjs from 'dayjs';
-import { CustomerService } from '../customer/customer.service';
 
 @Controller('/product')
 export class ProductController {
@@ -33,7 +31,7 @@ export class ProductController {
 
   @Get('/list')
   async getProducts(@Query() query: getProductListDto) {
-    const res = await this.productService.getProductList(query)
+    const res = await this.productService.getProductList(query);
     return returnData(res);
   }
 
@@ -58,7 +56,7 @@ export class ProductController {
   @Get('/del')
   async delProduct(@Query() query: { id: number }) {
     const { id } = query;
-    const res = await this.productService.removeProduct(id)
+    const res = await this.productService.removeProduct(id);
     return returnData(res);
   }
 
@@ -67,18 +65,18 @@ export class ProductController {
     @Query() query: downloadProductDocxDto,
     @Res() response: Response,
   ) {
-    let res: Product = await this.productService.getProductById(query);
+    let res = await this.productService.getProductById(query);
     let customer = await this.customerService.getCustomerById(res.id);
     let prodInfoList = await this.prodInfoService.getProdInfoByType({
       ptype: res.ptype,
     });
 
     if (!res || !prodInfoList) return '';
-    const result: ProductDto = snakeToCamelCase(res);
+    const result = res;
     const docData = generateRolerance(result as unknown as ProductDto);
 
     prodInfoList = getRandomList(prodInfoList).map((item, index) => {
-      const res = snakeToCamelCase(item);
+      const res = item;
       const halfKey = 'half';
       const key = ['size1', 'size2', 'size3'];
       res[key[0]] = docData[key[0] + index].toFixed(3) + '';
@@ -112,7 +110,7 @@ export class ProductController {
       {
         ...docData,
         ...obj,
-        ...snakeToCamelCase(customer),
+        ...customer,
         orderNo: result.orderNo.replace(',', '\n'),
         prodInfoList,
         productName: ProductName[result.ptype],
@@ -142,16 +140,14 @@ export class ProductController {
   }
 
   @Post('/add')
-  async addProduct(@Body() body: ProductDto) {
-    const data = { ...(camelToSnakeCase(body) as Product) };
-    const res = await this.productService.addProduct(data)
+  async addProduct(@Body() body: Product) {
+    const res = await this.productService.addProduct({ ...body });
     return returnData(res);
   }
 
   @Post('/update')
-  async updateProduct(@Body() body: Partial<ProductDto> & { id: number }) {
-    const product = { ...(camelToSnakeCase(body) as Product) };
-    const res = await this.productService.updateProduct(product)
+  async updateProduct(@Body() body: Product) {
+    const res = await this.productService.updateProduct(body);
     return returnData(res);
   }
 }

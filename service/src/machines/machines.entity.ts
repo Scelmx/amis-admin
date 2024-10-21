@@ -1,11 +1,9 @@
+import { SortInfo } from '../sortInfo/sortInfo.entity';
 import { Common } from '../common/common.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Machines extends Common {
-  @PrimaryGeneratedColumn()
-  id: string;
-
   @Column({ comment: '名称' })
   name: string;
   /**
@@ -15,7 +13,7 @@ export class Machines extends Common {
   type: string;
 
   @Column({ comment: '模具信息', nullable: true })
-  mold: string;
+  mold: number;
 
   @Column({
     type: 'varchar',
@@ -23,8 +21,6 @@ export class Machines extends Common {
     comment: '关联订单',
     nullable: true,
   })
-  orders: string;
-
-  @Column({ default: 0, comment: '是否删除' })
-  is_deleted?: number;
+  @OneToMany(() => SortInfo, (sort) => sort.machineId)
+  orders: Array<SortInfo>;
 }

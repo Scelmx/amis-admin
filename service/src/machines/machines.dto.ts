@@ -11,7 +11,7 @@ export class CreateMachinesDto {
 }
 
 export class UpdateMachinesDto {
-  id: string;
+  id: number;
   readonly name: string;
   // 可生产的产品类型
   readonly type: string;

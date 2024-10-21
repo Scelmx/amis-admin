@@ -1,3 +1,5 @@
+import { ListDto } from "../common/common.dto";
+
 export class ProductDto {
   id?: number;
   orderNo?: string
@@ -33,10 +35,8 @@ export class ProductDto {
   realSize3Down: string;
 }
 
-export class getProductListDto {
+export class getProductListDto extends ListDto {
   customerId?: number; // 客户名称
-  page: number;
-  pageSize: number;
 }
 
 export class downloadProductDocxDto {

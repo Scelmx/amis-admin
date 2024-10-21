@@ -16,7 +16,7 @@ export class CustomerController {
         ? res
         : res?.map((item: Customer) => {
             return {
-              label: item.ct_name,
+              label: item.ctName,
               value: item.id,
             };
           }),
@@ -25,10 +25,7 @@ export class CustomerController {
 
   @Post('/add')
   async addCustomer(@Body() body: addCustomerDto) {
-    const res = await this.customerService.addCustomer({
-      ct_name: body.customerName,
-      ct_is_delete: body.isDeleted ? 1 : 0,
-    });
+    const res = await this.customerService.addCustomer(body);
     return returnData(res);
   }
 
@@ -36,8 +33,8 @@ export class CustomerController {
   async updateCustomer(@Body() body: addCustomerDto & { id: number }) {
     const res = await this.customerService.updateCustomer({
       id: body.id,
-      ct_name: body.customerName,
-      ct_is_delete: body.isDeleted ? 1 : 0,
+      ctName: body.customerName,
+      isDeleted: body.isDeleted ? 1 : 0,
     });
     return returnData(res);
   }

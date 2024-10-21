@@ -158,7 +158,6 @@ export function assignNewOrderToMachines(newOrder, machines) {
     }
   };
 }
-
 /** 将新订单插入到指定机器的对应位置 */
 export const insertOrderToMachine = ({machine, position, newOrder }) => {
   let orders = machine?.orders && machine.orders?.length > 0

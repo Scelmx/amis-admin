@@ -1,19 +1,16 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
-import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import {
-  ObjToArray,
-  renderDataToDocx,
-  returnData,
-  snakeToCamelCase,
-} from '../utils';
+import { CreateWordDto } from './mold.dto';
+import { ObjToArray, renderDataToDocx, returnData } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
+import { Mold } from './mold.entity';
+import { MOLD_TYPE_MAP } from '../utils/const';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
 import * as dayjs from 'dayjs';
-import { MOLD_TYPE_MAP } from '../utils/const';
+
 
 @Controller('/molds')
 export class MoldController {
@@ -23,8 +20,8 @@ export class MoldController {
   ) {}
 
   @Post('/add')
-  async create(@Body() createMoldDto: CreateMoldDto) {
-    const res = await this.moldService.create(createMoldDto);
+  async create(@Body() mold: Mold) {
+    const res = await this.moldService.create(mold);
     return returnData(res);
   }
 
@@ -42,21 +39,29 @@ export class MoldController {
     if (query.type === 'enum') {
       return returnData(
         res.reduce((target, item) => {
-          target[item.id] = item.produce_name;
+          target[item.produceName] = item.produceName;
           return target;
         }, {}),
       );
     }
     return returnData(
-      res.map((item) => ({ label: item.produce_name, value: item.id })),
+      res.map((item) => ({ label: item.templateNo, value: item.id })),
     );
+  }
+
+  @Get('/types')
+  async getTypes(@Query() query: { type: 'enum' | 'options' }) {
+    if (query.type === 'enum') {
+      return returnData(MOLD_TYPE_MAP);
+    }
+    return returnData(ObjToArray(MOLD_TYPE_MAP));
   }
 
   @Post('/createWord')
   async createWord(@Body() body: CreateWordDto) {
     const { templateNo, feedstockId, ...rest } = body;
     const templateNos = templateNo.split(',');
-    const feedstockIds = feedstockId.split(',');
+    const feedstockIds = feedstockId.split(',') as unknown as number[];
     /** 获取对应的原料信息 */
     const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
     if (!feedstockInfo) {
@@ -82,8 +87,8 @@ export class MoldController {
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
-        ...snakeToCamelCase(product1),
-        ...snakeToCamelCase(product2),
+        ...product1,
+        ...product2,
         ...rest,
         createDate: rest?.createDate
           ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD')
@@ -122,8 +127,8 @@ export class MoldController {
   }
 
   @Post('/update')
-  async update(@Body() updateMoldDto: UpdateMoldDto) {
-    const res = await this.moldService.update(updateMoldDto);
+  async update(@Body() mold: Mold) {
+    const res = await this.moldService.update(mold);
     return returnData(res);
   }
 

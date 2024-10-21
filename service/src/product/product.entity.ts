@@ -1,21 +1,19 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Common } from '../common/common.entity';
+import { Entity, Column } from 'typeorm';
 
 @Entity()
-export class Product {
-  @PrimaryGeneratedColumn()
-  id?: number;
+export class Product extends Common {
+  @Column({ name: 'customer_id' })
+  customerId: number;
 
-  @Column()
-  customer_id: number;
+  @Column({ name: 'product_image' })
+  productImage: string;
 
-  @Column()
-  product_image: string;
+  @Column({ name: 'product_no' })
+  productNo: string;
 
-  @Column()
-  product_no: string;
-
-  @Column()
-  order_no?: string;
+  @Column({ name: 'order_no' })
+  orderNo?: string;
 
   @Column()
   ptype: string; // 产品类型
@@ -29,76 +27,72 @@ export class Product {
   @Column()
   color: string; // 颜色
 
-  @Column()
-  material_hardness: string;
+  @Column({ name: 'material_hardness' })
+  materialHardness: string;
 
-  @Column()
-  tensile_strength: string; // 拉伸强度
+  @Column({ name: 'tensile_strength' })
+  tensileStrength: string; // 拉伸强度
 
-  @Column()
-  stretch_elongation_rate: string; // 拉伸率
+  @Column({ name: 'stretch_elongation_rate' })
+  stretchElongationRate: string; // 拉伸率
 
-  @Column()
-  test_strength: string; // 检测强度
+  @Column({ name: 'test_strength' })
+  testStrength: string; // 检测强度
 
-  @Column()
-  test_hardness: string; // 检测硬度
+  @Column({ name: 'test_hardness', comment: '检测强度' })
+  testHardness: string; // 检测硬度
 
-  @Column()
-  test_elongation_rate: string // 检测延长率
+  @Column({ name: 'test_elongation_rate', comment: '检测延长率' })
+  testElongationRate: string; // 检测延长率
 
-  @Column({ nullable: true, comment: '撕裂强度' })
-  tear_strength: string
+  @Column({ name: 'tear_strength', nullable: true, comment: '撕裂强度' })
+  tearStrength: string;
 
-  @Column({ nullable: true, comment: '检测拉断' })
-  test_tear: string; // 检测拉断
+  @Column({ name: 'test_tear', nullable: true, comment: '检测拉断' })
+  testTear: string; // 检测拉断
 
   @Column()
   size1: string; // 关键尺寸1
 
-  @Column()
-  size1_top: string
+  @Column({ name: 'size1_top' })
+  size1Top: string;
 
-  @Column({ nullable: true })
-  size1_down?: string
+  @Column({ name: 'size1_down', nullable: true })
+  size1Down?: string;
 
   @Column()
   size2: string; // 关键尺寸2
 
-  @Column()
-  size2_top: string
+  @Column({ name: 'size2_top' })
+  size2Top: string;
 
-  @Column({ nullable: true })
-  size2_down?: string 
+  @Column({ name: 'size2_down', nullable: true })
+  size2Down?: string;
 
   @Column({ nullable: true })
   size3?: string; // 关键尺寸1
 
-  @Column({ nullable: true })
-  size3_top?: string
+  @Column({ name: 'size3_top', nullable: true })
+  size3Top?: string;
 
-  @Column({ nullable: true })
-  size3_down?: string 
+  @Column({ name: 'size3_down', nullable: true })
+  size3Down?: string;
 
-  @Column({ nullable: true })
-  real_size1_top?: string
+  @Column({ name: 'real_size1_top', nullable: true })
+  realSize1Top?: string;
 
-  @Column({ nullable: true })
-  real_size1_down?: string 
+  @Column({ name: 'real_size1_down', nullable: true })
+  realSize1Down?: string;
 
-  @Column({ nullable: true })
-  real_size2_top?: string
+  @Column({ name: 'real_size2_top', nullable: true })
+  realSize2Top?: string;
 
-  @Column({ nullable: true })
-  real_size2_down?: string 
+  @Column({ name: 'real_size2_down', nullable: true })
+  realSize2Down?: string;
 
-  @Column({ nullable: true })
-  real_size3_top?: string
+  @Column({ name: 'real_size3_top', nullable: true })
+  realSize3Top?: string;
 
-  @Column({ nullable: true })
-  real_size3_down?: string 
-
-
-  @Column({ default: 0, comment: '是否删除 0 否 1 是' })
-  is_deleted?: number
+  @Column({ name:'real_size3_down',nullable: true })
+  realSize3Down?: string;
 }

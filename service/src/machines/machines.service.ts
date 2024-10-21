@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Machines } from './machines.entity';
-import { CreateMachinesDto, UpdateMachinesDto } from './machines.dto';
+import { toJSON } from '../utils';
 
 @Injectable()
 export class MachinesService {
@@ -11,32 +11,37 @@ export class MachinesService {
     private readonly machinesResponsitory: Repository<Machines>,
   ) {}
 
-  async create(createOrderDto: CreateMachinesDto): Promise<Machines> {
-    const order = this.machinesResponsitory.create(createOrderDto);
-    return await this.machinesResponsitory.save(order);
+  async create(machine: Machines): Promise<Machines> {
+    return await this.machinesResponsitory.save(machine);
   }
 
-  async findAll(): Promise<Machines[]> {
-    return await this.machinesResponsitory.find({ where: { is_deleted: 0 } });
+  async findAll() {
+    const res = await this.machinesResponsitory
+    .createQueryBuilder('machines')
+    .leftJoinAndSelect('machines.orders', 'sortinfo')
+    .where('machines.isDeleted = :isDeleted', { isDeleted: 0 })
+    .orderBy('sortinfo.position', 'ASC') 
+    .getMany();
+
+    return res
   }
 
-  async findOne(id: string): Promise<Machines> {
+  async findOne(id: number): Promise<Machines> {
     return await this.machinesResponsitory.findOneBy({ id });
   }
 
   /** 更新订单 */
-  async update(updateOrderDto: UpdateMachinesDto): Promise<Machines> {
-    await this.machinesResponsitory.update(updateOrderDto.id, updateOrderDto);
-    return await this.findOne(updateOrderDto.id);
+  async update(machine: Machines) {
+    return await this.machinesResponsitory.update(machine.id, machine);
   }
 
   /** 标记删除订单 */
-  async remove(id: string): Promise<void> {
-    await this.machinesResponsitory.update(id, { is_deleted: 1 });
+  async remove(id: number): Promise<void> {
+    await this.machinesResponsitory.update(id, { isDeleted: 1 });
   }
 
   /** 更新指定机器 */
-  async updateTargetMachineOrders(machine: UpdateMachinesDto) {
-    return await this.machinesResponsitory.update(machine?.id, machine)
+  async updateTargetMachineOrders(machine: Machines) {
+    return await this.machinesResponsitory.update(machine?.id, machine);
   }
 }
