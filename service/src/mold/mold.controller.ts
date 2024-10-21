@@ -1,7 +1,12 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
 import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import { ObjToArray, renderDataToDocx, returnData, snakeToCamelCase } from '../utils';
+import {
+  ObjToArray,
+  renderDataToDocx,
+  returnData,
+  snakeToCamelCase,
+} from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import * as fs from 'fs';
@@ -32,11 +37,19 @@ export class MoldController {
   }
 
   @Get('/list')
-  findAll(@Query() query: { type: 'enum' | 'options' }) {
+  async findAll(@Query() query: { type: 'enum' | 'options' }) {
+    const res = await this.moldService.findAll();
     if (query.type === 'enum') {
-      return returnData(MOLD_TYPE_MAP);
+      return returnData(
+        res.reduce((target, item) => {
+          target[item.id] = item.produce_name;
+          return target;
+        }, {}),
+      );
     }
-    return returnData(ObjToArray(MOLD_TYPE_MAP));
+    return returnData(
+      res.map((item) => ({ label: item.produce_name, value: item.id })),
+    );
   }
 
   @Post('/createWord')
@@ -47,12 +60,12 @@ export class MoldController {
     /** 获取对应的原料信息 */
     const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
     if (!feedstockInfo) {
-      return returnData(null, '原料信息获取失败')
+      return returnData(null, '原料信息获取失败');
     }
     /** 获取对应的模具信息 */
     const templateInfo = await this.moldService.findByTemplateNo(templateNos);
     if (!feedstockInfo) {
-      return returnData(null, '模具信息获取失败')
+      return returnData(null, '模具信息获取失败');
     }
 
     const product2Params = feedstockInfo?.[1] || feedstockInfo[0];
@@ -82,7 +95,7 @@ export class MoldController {
     if (!fs.existsSync(filePath)) {
       return returnData(null, '文件不存在');
     }
-    return returnData(fileName)
+    return returnData(fileName);
   }
 
   @Get('/download')
@@ -117,6 +130,6 @@ export class MoldController {
   @Get('/del')
   async remove(@Query() query: { id: number }) {
     const res = await this.moldService.remove(query.id);
-    return returnData(res)
+    return returnData(res);
   }
 }

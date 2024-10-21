@@ -144,20 +144,21 @@ export function assignNewOrderToMachines(newOrder, machines) {
         (machine) => machine.id === position?.mechineId,
     );
   }
-  // console.log('targetMachine:', targetMachine);
-  // console.log('newOrder:', newOrder);
+  console.log('targetMachine:', targetMachine);
+  console.log('newOrder:', newOrder);
   if(!targetMachine){
     msg = "执行失败，未找到合适位置。";
   }
   return {
-    code:1,
+    code: 1,
     msg,
-    content:{
+    data: {
       machine: targetMachine,
       position,
     }
   };
 }
+
 /** 将新订单插入到指定机器的对应位置 */
 export const insertOrderToMachine = ({machine, position, newOrder }) => {
   let orders = machine?.orders && machine.orders?.length > 0

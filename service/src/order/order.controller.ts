@@ -3,15 +3,17 @@ import { OrderService } from './order.service';
 import { CreateOrderDto, FindAllDto, UpdateOrderDto } from './order.dto';
 import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
 import { MachinesService } from '../machines/machines.service';
-import * as dayjs from 'dayjs';
+import { MoldService } from '../mold/mold.service';
 import { ObjToArray, returnData, snakeToCamelCase, toJSON, toString } from '../utils';
 import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
+import * as dayjs from 'dayjs';
 
 @Controller('/order')
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,
     private readonly machinesService: MachinesService,
+    private readonly moldService: MoldService,
   ) {}
 
   @Get('/list')
@@ -40,6 +42,7 @@ export class OrderController {
         // 假设 orderService.findById 返回的是单个订单对象，你可能需要根据实际情况调整
         orders.push(orderList);
       }
+      item.mold = snakeToCamelCase(await this.moldService?.findOne(item.mold))
       item.orders = orders;
       item.type = toJSON(item.type);
     }
@@ -77,13 +80,13 @@ export class OrderController {
 
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
-    if (machineInfo.machine) {
+    if (machineInfo.data.machine && machineInfo.data.machine.length) {
       /** 找到可以生产的机器然后创建订单 */
       const res = await this.orderService.create(data);
       /** 为什么要这样做, 因为插入机器需要订单ID */
       /** 更新机器订单信息  */
       const targetLine = insertOrderToMachine({
-        ...machineInfo,
+        ...machineInfo.data,
         newOrder: res,
       });
       if (res) {
@@ -121,10 +124,10 @@ export class OrderController {
     }
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);
-    if (machineInfo.machine) {
+    if (machineInfo.data.machine && machineInfo.data.machine.length) {
       await this.orderService.update(body);
       const targetMachine = insertOrderToMachine({
-        ...machineInfo,
+        ...machineInfo.data,
         newOrder: body,
       });
       return returnData(await this.updateTargetMachine(targetMachine));
