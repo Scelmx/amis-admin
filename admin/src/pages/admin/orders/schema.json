@@ -63,7 +63,7 @@
                     "label": "模具类型",
                     "id": "u:c98fc2f2de19",
                     "row": 1,
-                    "source": "/api/molds/types?type=options"
+                    "source": "/api/molds/list?type=options"
                   },
                   {
                     "type": "select",
@@ -268,7 +268,7 @@
                         "label": "模具类型",
                         "id": "u:c98fc2f2de19",
                         "row": 1,
-                        "source": "/api/molds/types?type=options"
+                        "source": "/api/molds/list?type=options"
                       },
                       {
                         "type": "select",
