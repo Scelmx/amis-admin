@@ -1,7 +1,8 @@
 import { Common } from '../common/common.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, ManyToOne } from 'typeorm';
+import { Machines } from '../machines/machines.entity';
 
-enum STATUS_ENUM {
+export enum STATUS_ENUM {
   /** 等待中 */
   'wait' = 'wait',
   /** 生产中 */
@@ -10,9 +11,10 @@ enum STATUS_ENUM {
   'finish' = 'finish',
 }
 
-@Entity()
+@Entity({ name: 'sortinfo' })
 export class SortInfo extends Common {
   @Column({ name: 'machine_id', comment: '机器id' })
+  @ManyToOne(() => Machines, (machine) => machine.id)
   machineId: number;
 
   @Column({ name: 'order_id', comment: '订单id' })

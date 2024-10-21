@@ -1,5 +1,6 @@
+import { SortInfo } from '../sortInfo/sortInfo.entity';
 import { Common } from '../common/common.entity';
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Machines extends Common {
@@ -20,5 +21,6 @@ export class Machines extends Common {
     comment: '关联订单',
     nullable: true,
   })
+  @OneToMany(() => SortInfo, (sort) => sort.machineId)
   orders: string;
 }

@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SortInfo } from './sortInfo.entity';
 import { Repository } from 'typeorm';
-import { SortInfoDto, FindSortInfoAllDto } from './sortInfo.dto';
-import { genWhereObj } from '../utils';
+import {
+  SortInfoDto,
+  FindSortInfoAllDto,
+  UpdateSortInfoDto,
+} from './sortInfo.dto';
 
 @Injectable()
 export class SortInfoService {
@@ -12,44 +15,39 @@ export class SortInfoService {
     private SortInfoRepository: Repository<SortInfo>,
   ) {}
 
-  /** 不需要分页 */
-  async list(query: FindSortInfoAllDto) {
-    return await this.SortInfoRepository.find({ where: query })
-  }
-  
-  /** 删除订单排序信息 */
-  async remove(params: SortInfoDto) {
+  async findOne(params: SortInfoDto) {
     const {
       id = undefined,
       machineId = undefined,
       orderId = undefined,
     } = params;
-    return await this.SortInfoRepository.update(
-      {
+    return await this.SortInfoRepository.findOne({
+      where: {
         id,
         machineId,
         orderId,
       },
-      { isDeleted: 1 },
-    );
+    });
+  }
+
+  /** 不需要分页 */
+  async list(query: FindSortInfoAllDto) {
+    return await this.SortInfoRepository.find({ where: query });
+  }
+
+  /** 删除订单排序信息 */
+  async remove(orderId: number) {
+    return await this.SortInfoRepository.update(orderId, { isDeleted: 1 });
   }
 
   /** 添加订单排序信息 */
-  async add(data: SortInfo): Promise<SortInfo> {
+  async add(data: UpdateSortInfoDto): Promise<SortInfo> {
     return await this.SortInfoRepository.save(data);
   }
 
   /** 更新订单排序信息 */
-  async update(params: SortInfoDto) {
-    const {
-        id = undefined,
-        machineId = undefined,
-        orderId = undefined,
-      } = params;
-    return await this.SortInfoRepository.update({
-        id,
-        machineId,
-        orderId,
-      }, params);
+  async updateByOrderId(params: UpdateSortInfoDto) {
+    const { orderId } = params;
+    return await this.SortInfoRepository.update({ orderId }, params);
   }
 }

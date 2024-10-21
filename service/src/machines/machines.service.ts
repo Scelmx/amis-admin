@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Machines } from './machines.entity';
+import { toJSON } from '../utils';
 
 @Injectable()
 export class MachinesService {
@@ -14,8 +15,16 @@ export class MachinesService {
     return await this.machinesResponsitory.save(machine);
   }
 
-  async findAll(): Promise<Machines[]> {
-    return await this.machinesResponsitory.find({ where: { isDeleted: 0 } });
+  async findAll() {
+    const res = await this.machinesResponsitory
+      .createQueryBuilder('machines')
+      .leftJoinAndSelect('machines.orders', 'sortinfo')
+      .where('machines.isDeleted = :isDeleted', { isDeleted: 0 })
+      .getMany();
+    return res.map(item => {
+      item.type = toJSON(item.type)
+      return item
+    });
   }
 
   async findOne(id: number): Promise<Machines> {
@@ -23,7 +32,7 @@ export class MachinesService {
   }
 
   /** 更新订单 */
-  async update(machine: Machines){
+  async update(machine: Machines) {
     return await this.machinesResponsitory.update(machine.id, machine);
   }
 
@@ -34,6 +43,6 @@ export class MachinesService {
 
   /** 更新指定机器 */
   async updateTargetMachineOrders(machine: Machines) {
-    return await this.machinesResponsitory.update(machine?.id, machine)
+    return await this.machinesResponsitory.update(machine?.id, machine);
   }
 }

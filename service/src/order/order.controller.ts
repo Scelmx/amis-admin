@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { FindAllDto } from './order.dto';
-import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
+import { assignNewOrderToMachines } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
 import {
@@ -13,6 +13,7 @@ import {
 import { PRODUCT_TYPE_MAP, RAW_TYPE_MAP } from '../utils/const';
 import { SortInfoService } from '../sortInfo/sortInfo.service';
 import { Order } from './order.entity';
+import { STATUS_ENUM } from '../sortInfo/sortInfo.entity';
 
 @Controller('/order')
 export class OrderController {
@@ -36,27 +37,13 @@ export class OrderController {
 
   @Get('/machines')
   async getMachines() {
-    return returnData(await this.getMachinesOrders());
-  }
-
-  async getMachinesOrders() {
-    const machineList: any = await this.machinesService.findAll();
-    for (const item of machineList) {
-      const orders = [];
-      for (const orderJson of toJSON(item?.orders || '[]')) {
-        const orderList = await this.orderService.findOne(orderJson); // 等待这个异步操作完成
-        // 假设 orderService.findById 返回的是单个订单对象，你可能需要根据实际情况调整
-        orders.push(orderList);
-      }
-      item.orders = orders;
-      item.type = toJSON(item.type);
-    }
-    return machineList;
+    const res = await this.machinesService.findAll();
+    return returnData(res);
   }
 
   /** 查找符合条件的机器 */
   async findTargetMachine(body) {
-    const machineList = await this.getMachinesOrders();
+    const machineList = await this.machinesService.findAll();
     /** 找到对应业务线 */
     const result = assignNewOrderToMachines(
       body,
@@ -85,17 +72,21 @@ export class OrderController {
 
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
-    if (machineInfo.machine) {
+    if (machineInfo?.machine) {
       /** 找到可以生产的机器然后创建订单 */
-      const res = await this.orderService.create(data);
+      const order = await this.orderService.create(data);
+      /** 创建订单排序信息 */
+      const sortInfo = await this.sortInfoService.add({
+        machineId: machineInfo.machine.id,
+        orderId: order.id,
+        position: machineInfo.position.index,
+        status: machineInfo.position.index === 0 ? STATUS_ENUM.process : STATUS_ENUM.wait,
+        isBlack: 0,
+      })
       /** 为什么要这样做, 因为插入机器需要订单ID */
       /** 更新机器订单信息  */
-      const targetLine = insertOrderToMachine({
-        ...machineInfo,
-        newOrder: res,
-      });
-      if (res) {
-        return returnData(await this.updateTargetMachine(targetLine));
+      if (order && sortInfo) {
+        return returnData(order);
       }
       return returnData(null, '订单创建失败');
     }
@@ -118,28 +109,29 @@ export class OrderController {
 
   @Post('/update')
   async update(@Body() body: Order) {
-    if (body.status === 'finish') {
-
-    }
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);
     if (machineInfo.machine) {
-      await this.orderService.update(body);
-      const targetMachine = insertOrderToMachine({
-        ...machineInfo,
-        newOrder: body,
-      });
-      return returnData(await this.updateTargetMachine(targetMachine));
+      const order = await this.orderService.update(body);
+      const sortInfo = await this.sortInfoService.updateByOrderId({
+        machineId: machineInfo.machine.id,
+        orderId: body.id,
+        position: machineInfo.position.index,
+      })
+
+      if (sortInfo && order) {
+        return returnData(sortInfo);
+      }
+      return returnData(null, '自动排班或者订单更新失败')
     }
     return returnData(null, '业务线查找失败');
   }
 
   @Get('/del')
   async remove(@Query() query: { id: number }) {
-    await this.orderService.remove(query.id);
-    await this.sortInfoService.remove({
-      orderId: query.id,
-    });
+    await this.sortInfoService.remove(query.id);
+    const res = await this.orderService.remove(query.id);
+    return returnData(res);
   }
 
   @Get('/rawType')

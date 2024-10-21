@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from './customer.entity';
 import { FindManyOptions, Like, Repository } from 'typeorm';
 import { addCustomerDto } from './customer.dto';
+import { genWhereObj } from '../utils';
 
 @Injectable()
 export class CustomerService {
@@ -12,16 +13,10 @@ export class CustomerService {
   ) {}
 
   /** 获取全部客户列表 */
-  async getCustomerList(where): Promise<Customer[]> {
-    const { page, pageSize, ctName } = where;
-    const skip = page > 0 ? (page - 1) * pageSize : 0;
-    const options: FindManyOptions<Customer> = {
-      where: { ctName: ctName ? Like(`%${ctName}%`) : undefined, isDeleted: 0 },
-      order: { id: 'DESC' },
-      skip,
-      take: pageSize,
-    };
-    return await this.customerRepository.find(options);
+  async getCustomerList(params): Promise<Customer[]> {
+    const { ctName, ...otherParams } = params;
+    const where: FindManyOptions<Customer> = genWhereObj(otherParams, { ctName: ctName ? Like(`%${ctName}%`) : undefined })
+    return await this.customerRepository.find(where);
   }
 
   /** 通过Id查找客户 */

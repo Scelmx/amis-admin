@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Like, Repository } from 'typeorm';
 import { Mold } from './mold.entity';
-import { CreateMoldDto, UpdateMoldDto } from './mold.dto';
 import { ListDto } from '../common/common.dto';
 import { genWhereObj } from '../utils';
 
@@ -51,7 +50,7 @@ export class MoldService {
    * @returns
    */
   async update(mold: Mold) {
-    await this.moldRepository.update(mold.id, mold);
+    return await this.moldRepository.update(mold.id, mold);
   }
 
   /** 删除指定 ID 的模具 */
