@@ -60,7 +60,7 @@
                   {
                     "type": "select",
                     "name": "requireMold",
-                    "label": "模具类型",
+                    "label": "指定模具",
                     "id": "u:c98fc2f2de19",
                     "row": 1,
                     "source": "/api/molds/list?type=options"
@@ -174,7 +174,7 @@
         },
         {
           "name": "requireMold",
-          "label": "模具类型",
+          "label": "指定模具",
           "type": "map",
           "id": "u:0988a64ec07f",
           "source": "/api/molds/types?type=enum"
@@ -265,7 +265,7 @@
                       {
                         "type": "select",
                         "name": "requireMold",
-                        "label": "模具类型",
+                        "label": "指定模具",
                         "id": "u:c98fc2f2de19",
                         "row": 1,
                         "source": "/api/molds/list?type=options"
