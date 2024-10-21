@@ -23,7 +23,7 @@
           "type": "map",
           "id": "u:15bd7295d1da",
           "placeholder": "-",
-          "source": "/api/molds/list?type=enum"
+          "source": "/api/molds/types?type=enum"
         },
         {
           "name": "templateNo",
@@ -112,7 +112,7 @@
                         "id": "u:ee1d3853c1e4",
                         "placeholder": "-",
                         "type": "select",
-                        "source": "/api/molds/list?type=options"
+                        "source": "/api/molds/types?type=options"
                       },
                       {
                         "name": "templateNo",
@@ -266,7 +266,7 @@
                     "name": "produceName",
                     "label": "产品名称",
                     "id": "u:7df512bdd7ec",
-                    "source": "/api/molds/list?type=options"
+                    "source": "/api/molds/types?type=options"
                   },
                   {
                     "type": "input-text",

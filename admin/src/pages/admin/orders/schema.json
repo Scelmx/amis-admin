@@ -63,7 +63,7 @@
                     "label": "模具类型",
                     "id": "u:c98fc2f2de19",
                     "row": 1,
-                    "source": "/api/molds/list?type=options"
+                    "source": "/api/molds/types?type=options"
                   },
                   {
                     "type": "select",
@@ -177,7 +177,7 @@
           "label": "模具类型",
           "type": "map",
           "id": "u:0988a64ec07f",
-          "source": "/api/molds/list?type=enum"
+          "source": "/api/molds/types?type=enum"
         },
         {
           "name": "rawType",
@@ -268,7 +268,7 @@
                         "label": "模具类型",
                         "id": "u:c98fc2f2de19",
                         "row": 1,
-                        "source": "/api/molds/list?type=options"
+                        "source": "/api/molds/types?type=options"
                       },
                       {
                         "type": "select",
