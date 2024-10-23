@@ -22,6 +22,33 @@ export class SortInfo extends Common {
 
   @Column({ name: 'position', comment: '位置' })
   position: number;
+  
+  @Column({ 
+    name: 'duration_time', 
+    comment: '订单持续时间' 
+  })
+  durationTime: number;
+
+  @Column({ 
+    name: 'latest_start_time', 
+    comment: '最晚开始时间' ,
+    type: 'bigint'
+  })
+  latestStartTime: number;
+
+  @Column({ 
+    name: 'start_time', 
+    comment: '订单开始时间' ,
+    type: 'bigint'
+  })
+  startTime: number;
+
+  @Column({ 
+    name: 'end_time', 
+    comment: '订单开始时间' ,
+    type: 'bigint'
+  })
+  endTime: number;
 
   @Column({
     name: 'is_black',

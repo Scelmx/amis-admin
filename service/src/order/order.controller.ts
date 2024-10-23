@@ -47,7 +47,7 @@ export class OrderController {
         const order = await this.orderService.findById(orderIds);
         item.orders = item.orders.map((item, index) => ({
           ...item,
-          ...order[index],
+          ...order.find((orderItem) => orderItem.id === item.orderId),
         }));
       }
       item.mold = await this.moldService?.findOne(item.mold);
@@ -81,18 +81,20 @@ export class OrderController {
       deliveryAt: body.deliveryAt * 1,
       priority: body?.priority || 2,
     };
-
+    const order = await this.orderService.create(data);
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
-    if (machineInfo.data.machine && machineInfo.data.machine.length) {
+    if (machineInfo.data.machine) {
       /** 找到可以生产的机器然后创建订单 */
-      const order = await this.orderService.create(data);
-
       /** 创建订单排序信息 */
       const sortInfo = await this.sortInfoService.add({
         machineId: machineInfo.data.machine.id,
         orderId: order.id,
         position: machineInfo.data.position.index,
+        latestStartTime:machineInfo.data.position.newOrder.latestStartTime,
+        startTime:machineInfo.data.position.endTime,
+        endTime:dayjs(machineInfo.data.position.endTime).add(machineInfo.data.position.newOrder.durationTime,"hour").valueOf(),
+        durationTime:machineInfo.data.position.newOrder.durationTime,
         status:
           machineInfo.data.position.index === 0
             ? STATUS_ENUM.process
@@ -102,11 +104,11 @@ export class OrderController {
 
       /** 为什么要这样做, 因为插入机器需要订单ID */
       /** 更新机器订单信息  */
-      const res = insertOrderToMachine({
-        ...machineInfo.data,
-        newOrder: order,
-      });
-      await this.sortInfoService.updateMany(res.orders);
+      // const res = insertOrderToMachine({
+      //   ...machineInfo.data,
+      //   newOrder: order,
+      // });
+      await this.sortInfoService.updateMany(machineInfo.data.position.nOrder);
 
       if (order && sortInfo) {
         return returnData(order);
@@ -135,13 +137,14 @@ export class OrderController {
     /** 先查找机器信息 */
     const machineInfo = await this.findTargetMachine(body);
     console.log(machineInfo, '----');
-    if (machineInfo.data.machine && machineInfo.data.machine.length) {
+    if (machineInfo.data.machine) {
       const order = await this.orderService.update(body);
 
       const res = insertOrderToMachine({
         ...machineInfo.data,
         newOrder: order,
       });
+
       await this.sortInfoService.updateMany(res.orders);
 
       // const sortInfo = await this.sortInfoService.updateByOrderId({

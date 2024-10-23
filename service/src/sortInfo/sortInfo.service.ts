@@ -54,8 +54,16 @@ export class SortInfoService {
   async updateMany(order: UpdateSortInfoDto[]) {
     const ids = order.map(item => item.id);
     const query = `UPDATE sortinfo SET position = CASE id 
-    ${order.map((item) => `WHEN ${item.id} THEN ${item.position}`).join(' ')}
-    END WHERE id IN (${ids.join(',')})`
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.position}`).join(' ')} END ,
+    duration_time = CASE id 
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.durationTime}`).join(' ')} END ,
+    latest_start_time = CASE id 
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.latestStartTime}`).join(' ')} END ,
+    start_time = CASE id 
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.startTime}`).join(' ')} END ,
+    end_time = CASE id 
+    ${order.map((item) => `WHEN ${item.id} THEN ${item.endTime}`).join(' ')} END 
+    WHERE id IN (${ids.join(',')})`
     return await this.SortInfoRepository.query(query);
   }
 }

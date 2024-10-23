@@ -14,6 +14,10 @@ export interface UpdateSortInfoDto {
   machineId?: number;
   orderId: number;
   position?: number;
+  durationTime: number;
+  latestStartTime: number;
+  startTime: number;
+  endTime: number;
   status?: string;
   isBlack?: number;
 }
