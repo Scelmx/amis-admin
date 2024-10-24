@@ -36,7 +36,7 @@ export function getOrderPositions(obj, arr) {
       index.push(-1);
     }
 
-    // 往各个订单后面插入订单
+    // 往各个订单后面插入订单1
     let indexs = orders.reduce(
       (acc,order,index) => {
         if(dayjs(order.endTime).add(obj.durationTime).valueOf() < obj.latestStartTime){
@@ -63,7 +63,7 @@ export function getOrderPositions(obj, arr) {
             // 如果等于index+1，则将新订单插入,并用nOrder的前一个订单即j-1来计算新订单的开始时间和结束时间
             let startTime = j!=0?nOrder[j-1].endTime:dayjs().valueOf();
             let endTime = dayjs(parseInt(startTime)).add(addOrder.durationTime,"hour").valueOf()
-            if(endTime >addOrder.deliveryAt){
+            if(endTime > addOrder.deliveryAt){
               break;
             }
             nOrder.push({
@@ -83,6 +83,7 @@ export function getOrderPositions(obj, arr) {
         });
       }
     }
+    index = [];
   });
   return result;
 }
@@ -109,6 +110,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
     // 需要更换模具，则将更换模具的时间算入订单执行时间，交付时间向前提1.5小时
     // 正常优先级，如果有相同模具的机器，则选择最早开始，如果没有则选择最晚结束的订单后
     if (newOrder.priority == 2) {
+      debugger
       // 找到生产这类产品，模具相同的机器
       let moldTargetMachines = allTargetMachines.filter(
           (machine) => machine.mold.templateNo === newOrder.requireMold,
@@ -125,7 +127,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
         newOrder.isChangeMold = true;
         //选择最晚开始的机器
         let positions = getOrderPositions(newOrder, allTargetMachines).filter((item)=>{
-          return (dayjs(item.endTime).get("hour") > getBlackHour() && dayjs(item.endTime).get("hour") < getWhiteHour() )
+          return (dayjs(parseInt(item.endTime)).get("hour") > getBlackHour() && dayjs(parseInt(item.endTime)).get("hour") < getWhiteHour() )
         });
         position = positions.sort((a, b) => b.index - a.index)[0];
       }
@@ -148,7 +150,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
         // newOrder.deliveryTime = dayjs(newOrder.deliveryTime).subtract(1.5*60,"minutes").valueOf();
         newOrder.isChangeMold = true;
         let positions = getOrderPositions(newOrder, allTargetMachines).filter((item)=>{
-          return (dayjs(item.endTime).get("hour") > getBlackHour() && dayjs(item.endTime).get("hour") < getWhiteHour() )
+          return (dayjs(parseInt(item.endTime)).get("hour") > getBlackHour() && dayjs(parseInt(item.endTime)).get("hour") < getWhiteHour() )
         });
         position = positions.sort((a, b) => b.index - a.index)[0];
       }
@@ -158,9 +160,8 @@ export function assignNewOrderToMachines(newOrder, machines) {
       // newOrder.deliveryTime = dayjs(newOrder.deliveryTime).subtract(1.5*60,"minutes").valueOf();
       newOrder.isChangeMold = true;
       let positions = getOrderPositions(newOrder, allTargetMachines).filter((item)=>{
-        return (dayjs(item.endTime).get("hour") > getBlackHour() && dayjs(item.endTime).get("hour") < getWhiteHour() )
+        return (dayjs(parseInt(item.endTime)).get("hour") > getBlackHour() && dayjs(parseInt(item.endTime)).get("hour") < getWhiteHour() )
       });
-      debugger
       position = positions.sort((a, b) => a.index - b.index)[0];
     }
     // console.log('目标机器和位置：', position);
