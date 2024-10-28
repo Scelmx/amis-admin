@@ -93,6 +93,6 @@ export class Product extends Common {
   @Column({ name: 'real_size3_top', nullable: true })
   realSize3Top?: string;
 
-  @Column({ name:'real_size3_down',nullable: true })
+  @Column({ name: 'real_size3_down', nullable: true })
   realSize3Down?: string;
 }

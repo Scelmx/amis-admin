@@ -13,10 +13,12 @@ export class CustomerService {
   ) {}
 
   /** 获取全部客户列表 */
-  async getCustomerList(params): Promise<Customer[]> {
+  async getCustomerList(params): Promise<{ count: number, data: Customer[]}> {
     const { ctName, ...otherParams } = params;
     const where: FindManyOptions<Customer> = genWhereObj(otherParams, { ctName: ctName ? Like(`%${ctName}%`) : undefined })
-    return await this.customerRepository.find(where);
+    const count = await this.customerRepository.count(where)
+    const data = await this.customerRepository.find(where);
+    return { count, data };
   }
 
   /** 通过Id查找客户 */

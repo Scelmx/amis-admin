@@ -15,7 +15,7 @@ export class ProductService {
     /** 获取产品列表 */
     async getProductList(query: getProductListDto): Promise<{ count, data: Product[] }> {
         const { customerId, ...otherParams } = query;
-        const where = genWhereObj(otherParams, { customerId })
+        const where = genWhereObj(otherParams, customerId ? { customerId } : undefined)
         const count = await this.productRepository.count(where);
         const data = await this.productRepository.find(where);
         return { count, data }
