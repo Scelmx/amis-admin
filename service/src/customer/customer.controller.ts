@@ -14,7 +14,7 @@ export class CustomerController {
     return returnData(
       query.isList
         ? res
-        : res?.map((item: Customer) => {
+        : res.data?.map((item: Customer) => {
             return {
               label: item.ctName,
               value: item.id,
