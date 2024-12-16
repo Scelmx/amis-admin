@@ -75,10 +75,10 @@ export function ProduceDispatch() {
     }
     
     const updateOrder = async (order: any) => {
-        const res = await request({ url: '/api/order/update', method: 'post', data: {
+        const res = await request({ url: '/api/order/update/status', method: 'post', data: {
             id: order.id,
+            orderNo: order.orderId,
             status: "finish",
-            machineId: order.machineId
         } })
         if (res.data) {
             getMachines();
