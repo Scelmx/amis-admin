@@ -1,8 +1,6 @@
 import * as dayjs from "dayjs";
-import durition from 'dayjs/plugin/duration'
-import { toJSON, toString } from "../utils";
-import {sailings, getWhiteHour, getBlackHour,getNextWhiteHour} from "../utils/sailings";
-
+import { toJSON } from "../utils";
+import { getWhiteHour, getBlackHour, getNextWhiteHour } from "../utils/sailings";
 
 /**
  * 获取对象在每个item的orders数组中，根据time和duration属性计算最晚开始时间后的位置下标
@@ -65,7 +63,7 @@ export function getOrderPositions(obj, arr) {
             // (dayjs(parseInt(item.endTime)).get("hour") > getBlackHour() && dayjs(parseInt(item.endTime)).get("hour") < getWhiteHour() )
             let startTime = j!=0?nOrder[j-1].endTime:
             (dayjs().get("hour") > getBlackHour() && dayjs().get("hour") < getWhiteHour() ? 
-            dayjs().valueOf() : getNextWhiteHour().valueOf());
+            dayjs().valueOf() : getNextWhiteHour?.().valueOf());
             let endTime = dayjs(parseInt(startTime)).add(addOrder.durationTime,"hour").valueOf()
             if(endTime > addOrder.deliveryAt){
               break;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { FindAllDto } from './order.dto';
 import { genWhereObj } from '../utils';
