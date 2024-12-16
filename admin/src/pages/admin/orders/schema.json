@@ -173,11 +173,10 @@
           "source": "/api/machines/list?type=enum"
         },
         {
-          "name": "requireMold",
+          "name": "requireMoldName",
           "label": "指定模具",
-          "type": "map",
-          "id": "u:0988a64ec07f",
-          "source": "/api/molds/types?type=enum"
+          "type": "text",
+          "id": "u:0988a64ec07f"
         },
         {
           "name": "rawType",

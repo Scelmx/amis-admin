@@ -75,11 +75,13 @@ export class OrderController {
 
   @Post('/add')
   async create(@Body() body: Order) {
+    const mold = await this.moldService.findOne(body.requireMold);
     const data = {
       ...body,
       createdAt: dayjs().valueOf(),
       deliveryAt: body.deliveryAt * 1,
       priority: body?.priority || 2,
+      requireMoldName: mold.templateNo
     };
     const order = await this.orderService.create(data);
     /** 先找到机器 */
