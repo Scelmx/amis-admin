@@ -5,7 +5,7 @@ import { ObjToArray, renderDataToDocx, returnData } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import { Mold } from './mold.entity';
-import { MOLD_TYPE_MAP } from '../utils/const';
+import { MOLD_TYPE_MAP, PRODUCT_TYPE_MAP } from '../utils/const';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
@@ -52,9 +52,9 @@ export class MoldController {
   @Get('/types')
   async getTypes(@Query() query: { type: 'enum' | 'options' }) {
     if (query.type === 'enum') {
-      return returnData(MOLD_TYPE_MAP);
+      return returnData(PRODUCT_TYPE_MAP);
     }
-    return returnData(ObjToArray(MOLD_TYPE_MAP));
+    return returnData(ObjToArray(PRODUCT_TYPE_MAP));
   }
 
   @Post('/createWord')
