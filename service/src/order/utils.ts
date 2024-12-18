@@ -114,7 +114,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
     if (newOrder.priority == 2) {
       // 找到生产这类产品，模具相同的机器
       let moldTargetMachines = allTargetMachines.filter(
-          (machine) => machine.mold.templateNo === newOrder.requireMold,
+          (machine) => machine.mold.requireMoldName === newOrder.requireMold,
       );
       // console.log('moldTargetMachines:', moldTargetMachines);
       if (moldTargetMachines.length > 0) {
@@ -137,7 +137,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
     if (newOrder.priority == 3) {
       // 找到生产这类产品，模具相同的机器
       let moldTargetMachines = allTargetMachines.filter(
-          (machine) => machine.mold.templateNo === newOrder.requireMold,
+          (machine) => machine.mold.requireMoldName === newOrder.requireMold,
       );
       // 如果moldTargetMachines>0 说明有相同模具的机器
       // 最低优先级，在有相同模具的机器内选最晚开始的位置
