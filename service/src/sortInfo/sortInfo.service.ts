@@ -46,7 +46,7 @@ export class SortInfoService {
   }
 
   /** 更新订单排序信息 */
-  async updateByOrderId(params: UpdateSortInfoDto) {
+  async updateByOrderId(params: any) {
     const { orderId } = params;
     return await this.SortInfoRepository.update({ orderId }, params);
   }

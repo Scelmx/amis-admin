@@ -45,10 +45,13 @@ export class OrderController {
       const orderIds = item.orders.map((sortInfo) => sortInfo.orderId);
       if (orderIds && orderIds.length) {
         const order = await this.orderService.findById(orderIds);
-        item.orders = item.orders.map((item, index) => ({
-          ...item,
-          ...order.find((orderItem) => orderItem.id === item.orderId),
-        }));
+        item.orders = item.orders.map((item, index) => {
+          if (item.status !== 'finish') {}
+          return {
+            ...item,
+            ...order.find((orderItem) => orderItem.id === item.orderId),
+          };
+        });
       }
       item.mold = await this.moldService?.findOne(item.mold);
       item.type = toJSON(item.type);
@@ -93,10 +96,12 @@ export class OrderController {
         machineId: machineInfo.data.machine.id,
         orderId: order.id,
         position: machineInfo.data.position.index,
-        latestStartTime:machineInfo.data.position.newOrder.latestStartTime,
-        startTime:machineInfo.data.position.endTime,
-        endTime:dayjs(machineInfo.data.position.endTime).add(machineInfo.data.position.newOrder.durationTime,"hour").valueOf(),
-        durationTime:machineInfo.data.position.newOrder.durationTime,
+        latestStartTime: machineInfo.data.position.newOrder.latestStartTime,
+        startTime: machineInfo.data.position.endTime,
+        endTime: dayjs(machineInfo.data.position.endTime)
+          .add(machineInfo.data.position.newOrder.durationTime, 'hour')
+          .valueOf(),
+        durationTime: machineInfo.data.position.newOrder.durationTime,
         status:
           machineInfo.data.position.index === 0
             ? STATUS_ENUM.process
@@ -134,33 +139,14 @@ export class OrderController {
     return returnData(await this.orderService.findOne(query.id));
   }
 
-  @Post('/update')
+  @Post('/update/status')
   async update(@Body() body: Order) {
-    /** 先查找机器信息 */
-    const machineInfo = await this.findTargetMachine(body);
-    console.log(machineInfo, '----');
-    if (machineInfo.data.machine) {
-      const order = await this.orderService.update(body);
+    const order = await this.orderService.update(body);
+    const res = await this.sortInfoService.updateByOrderId({
+      orderId: body.orderNo,
+    });
 
-      const res = insertOrderToMachine({
-        ...machineInfo.data,
-        newOrder: order,
-      });
-
-      await this.sortInfoService.updateMany(res.orders);
-
-      // const sortInfo = await this.sortInfoService.updateByOrderId({
-      //   machineId: machineInfo.data.machine.id,
-      //   orderId: body.id,
-      //   position: machineInfo.data.position.index,
-      // });
-
-      if (order) {
-        return returnData(order);
-      }
-      return returnData(null, '自动排班或者订单更新失败');
-    }
-    return returnData(null, '业务线查找失败');
+    return returnData(res, '业务线查找失败');
   }
 
   @Get('/del')
