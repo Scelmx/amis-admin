@@ -89,21 +89,25 @@ export class OrderController {
     const order = await this.orderService.create(data);
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
+    if(machineInfo.data.machine==null||machineInfo.data.machine.length==0){
+      await this.orderService.remove(order.id);
+      return returnData(null, machineInfo.msg);
+    }
+    const index = machineInfo.data.position.index;
+    const nOrder = machineInfo.data.position.nOrder;
     if (machineInfo.data.machine) {
       /** 找到可以生产的机器然后创建订单 */
       /** 创建订单排序信息 */
       const sortInfo = await this.sortInfoService.add({
         machineId: machineInfo.data.machine.id,
         orderId: order.id,
-        position: machineInfo.data.position.index,
-        latestStartTime: machineInfo.data.position.newOrder.latestStartTime,
-        startTime: machineInfo.data.position.endTime,
-        endTime: dayjs(machineInfo.data.position.endTime)
-          .add(machineInfo.data.position.newOrder.durationTime, 'hour')
-          .valueOf(),
-        durationTime: machineInfo.data.position.newOrder.durationTime,
+        position: index,
+        latestStartTime: nOrder[index].latestStartTime,
+        startTime: index==0?nOrder[index].startTime:nOrder[index-1].endTime,
+        endTime: nOrder[index].endTime,
+        durationTime: nOrder[index].durationTime,
         status:
-          machineInfo.data.position.index === 0
+          index === 0
             ? STATUS_ENUM.process
             : STATUS_ENUM.wait,
         isBlack: 0,

@@ -31,3 +31,6 @@ export const getNextWhiteHour=()=>{
     now.setHours(parseInt(sailings.black.split(":")[0], 10),parseInt(sailings.black.split(":")[1], 10),parseInt(sailings.black.split(":")[2], 10));
     return now;
 }
+export const isWhiteHour=(hour:number)=>{
+    return hour <= getWhiteHour() && hour > getBlackHour()
+}
