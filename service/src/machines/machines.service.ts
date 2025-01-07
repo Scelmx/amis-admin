@@ -18,10 +18,12 @@ export class MachinesService {
   async findAll() {
     const res = await this.machinesResponsitory
     .createQueryBuilder('machines')
-    .leftJoinAndSelect('machines.orders', 'sortinfo')
+    .leftJoinAndSelect('machines.orders', 'sortinfo','sortinfo.status != :status',{ status: 'finish' })
     .where('machines.isDeleted = :isDeleted', { isDeleted: 0 })
-    .orderBy('sortinfo.position', 'ASC') 
+    .orderBy('machines.id', 'ASC')
+    .addOrderBy('sortinfo.position', 'ASC')
     .getMany();
+    
 
     return res
   }
