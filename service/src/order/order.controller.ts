@@ -148,6 +148,7 @@ export class OrderController {
     const order = await this.orderService.update(body);
     const res = await this.sortInfoService.updateByOrderId({
       orderId: body.orderNo,
+      status: body.status
     });
 
     return returnData(res, '业务线查找失败');
