@@ -17,10 +17,11 @@ export class OrderService {
   }
 
   async findAll(query: FindAllDto): Promise<{ count; data: Order[] }> {
-    const { customerId, status, ...rest } = query;
+    const { customerId, status, id, ...rest } = query;
     const options = genWhereObj(rest, {
       customerId: customerId || undefined,
       status: status || undefined,
+      id: id || undefined,
     });
     const count = await this.orderRepository.count(options);
     const data = await this.orderRepository.find(options);

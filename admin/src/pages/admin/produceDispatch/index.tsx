@@ -120,7 +120,8 @@ export function ProduceDispatch() {
                                 key={child.id}
                                 title={
                                     <div className="flex">
-                                        <span>订单信息</span>
+                                        <span>订单ID</span>
+                                        <a href={`/produce-plan/orders?id=${child.orderId}`}>{child.orderId}</a>
                                     </div>
                                 }>
                                 <div>客户名称：{customer?.[child?.customerId]}</div>

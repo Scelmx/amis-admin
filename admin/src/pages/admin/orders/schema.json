@@ -157,10 +157,29 @@
       "perPageAvailable": [10],
       "messages": {},
       "perPageField": "pageSize",
+      "filter": {
+        "id": "u:9f2c07ec640d",
+        "feat": "Insert",
+        "body": [
+          {
+            "type": "input-text",
+            "label": "订单ID",
+            "name": "id",
+            "value": "${id}",
+            "id": "u:710c09f72cc6"
+          }
+        ]
+      },
       "columns": [
         {
           "name": "id",
           "label": "ID",
+          "type": "text",
+          "id": "u:884583b1759b"
+        },
+        {
+          "name": "orderNo",
+          "label": "订单编号",
           "type": "text",
           "id": "u:884583b1759b"
         },
@@ -185,6 +204,18 @@
           "id": "u:76d4c0f8f55c",
           "placeholder": "-",
           "source": "/api/order/rawType?type=enum"
+        },
+        {
+          "name": "status",
+          "label": "状态",
+          "type": "map",
+          "id": "u:76d4c0f8f55c",
+          "placeholder": "-",
+          "map": {
+            "finish": "已完成",
+            "process": "生产中",
+            "wait": "未开始"
+          }
         },
         {
           "name": "deliveryAt",
