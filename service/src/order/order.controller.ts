@@ -84,9 +84,11 @@ export class OrderController {
       createdAt: dayjs().valueOf(),
       deliveryAt: body.deliveryAt * 1,
       priority: body?.priority || 2,
-      requireMoldName: mold.templateNo
+      requireMoldName: mold.templateNo,
+      mold:mold
     };
     const order = await this.orderService.create(data);
+    
     /** 先找到机器 */
     const machineInfo = await this.findTargetMachine(data);
     if(machineInfo.data.machine==null||machineInfo.data.machine.length==0){

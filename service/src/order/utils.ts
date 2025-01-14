@@ -14,9 +14,11 @@ export function getOrderPositions(obj, arr, priority) {
   let index =[];
   arr.forEach((item) => {
     const { orders: orderList = [] } = item;
+
+    let mold = obj.mold;
     let orders = toJSON(orderList);
     // 计算每小时的产量
-    let hourNums = item.mold.halfDayNums * 2 / 24 / 60;
+    let hourNums = mold.halfDayNums * 2 / 24 / 60;
     // 初始化新订单信息
     /** 版产量/24 得到每小时的产量，再用订单总数/每小时产量，得到需要多少个小时*/
     obj.durationTime = obj.nums / hourNums;
