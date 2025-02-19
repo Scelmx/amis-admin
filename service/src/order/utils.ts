@@ -12,72 +12,48 @@ import { getWhiteHour, getBlackHour, getNextWhiteHour, isWhiteHour } from "../ut
 export function getOrderPositions(obj, arr, priority) {
   const result = [];
   let index =[];
+  const bindex = [];
+
   arr.forEach((item) => {
     const { orders: orderList = [] } = item;
 
     let mold = obj.mold;
     let orders = toJSON(orderList);
-    // 计算每小时的产量
+    // 每分钟生产产品量
     let hourNums = mold.halfDayNums * 2 / 24 / 60;
-    // 初始化新订单信息
-    /** 版产量/24 得到每小时的产量，再用订单总数/每小时产量，得到需要多少个小时*/
+    // 需要的时间（分钟）
     obj.durationTime = obj.nums / hourNums;
-    // 计算新订单的最晚开始时间
-    obj.latestStartTime = dayjs(parseInt(obj.deliveryAt))
+    // 最晚开始时间 多算了两天
+    obj.latestStartTime = dayjs(Number(obj.deliveryAt))
         .subtract(obj.durationTime, 'minute').subtract(2,'day')
         .valueOf();
-
-    // 机器订单表为空
+    // 计算能插入的位置
     if(orders.length == 0){
       index.push(0);
     }
-    // 机器订单表不为空，判断首位以及其他位置是否适合插入
     else{
-      // 首位是否适合插入
-      let now = dayjs();
-      if(!isWhiteHour(now.get('hour'))){
-        now = dayjs(getNextWhiteHour());
-      }
+      let objEndTime = dayjs();
       if(item.mold.id != obj.requireMold){
-        now = now.add(1.5,"hour");
+        if(!isWhiteHour(objEndTime.get("hour"))){
+          objEndTime = dayjs(getNextWhiteHour());
+        }
+        objEndTime = objEndTime.add(1.5,"hour");
       }
-      // if(now.valueOf() < orderList[0].latestStartTime){
-      //   index.push(0);
-      // }
-      let bindex = [];
-      // 先找到相同优先级的位置
-      // if(priority == 1){
-      //   priIndexs = orders.findIndex((order) => order.priority === 1);
-      // }else if(priority == 2){
-      //   priIndexs = orders.findIndex((order) => order.priority === 2);
-      // }else{
-      //   priIndexs = orders.findIndex((order) => order.priority === 3);
-      // }
+      objEndTime = objEndTime.add(obj.durationTime,"minute")
+      if(objEndTime.valueOf() < orders[0].latestStartTime){
+        if(orders[0].priority == priority){
+          bindex.push(0);
+        }
+      }
       orders.reduce(
           (acc,order,index) => {
-            if(index == 0){
-              let objEndTime = dayjs();
-              if(item.mold.id != obj.requireMold){
-                if(!isWhiteHour(objEndTime.get("hour"))){
-                  objEndTime = dayjs(getNextWhiteHour());
-                }
-                objEndTime = objEndTime.add(1.5,"hour");
-              }
-              objEndTime = objEndTime.add(obj.durationTime,"minute")
-              if(objEndTime.valueOf() < order.latestStartTime){
-                if(order.priority == priority){
-                  bindex.push(0);
-                }
-              }
-            }
-            let objEndTime = dayjs(parseInt(order.endTime));
+            let objEndTime = dayjs(Number(order.endTime));
             if(order.requireMold != obj.requireMold){
               if(!isWhiteHour(objEndTime.get("hour"))){
                 objEndTime = dayjs(getNextWhiteHour());
               }
               objEndTime = objEndTime.add(1.5,"hour");
             }
-            objEndTime = objEndTime.add(obj.durationTime,"minute")
             if(objEndTime.valueOf() < obj.latestStartTime){
               if(order.priority == priority){
                 bindex.push(index+1);
@@ -90,44 +66,59 @@ export function getOrderPositions(obj, arr, priority) {
         index = index.concat(bindex);
       }
     }
+    // 验证插入位置是否能让后面订单满足条件
     if (index.length > 0) {
       for (let i = 0; i < index.length; i++) {
+        // 新订单列表
         let nOrder = [];
+        // 为了防止修改原数组，使用深拷贝
         let oldOrders = JSON.parse(JSON.stringify(orders));
+        // 当前插入位置需要更换模具次数
         let changeTimes = 0;
+        
+
+        // 机器订单为空
         if(orders.length == 0){
           if(item.mold.id != obj.requireMold){
               obj.durationTime = obj.durationTime + 1.5*60;
               obj.isChangeMold = 1;
               changeTimes += 1;
           }
-          obj.startTime = isWhiteHour(dayjs().get("hour")) ? dayjs().valueOf() : getNextWhiteHour?.().valueOf();
-          obj.endTime = dayjs(parseInt(obj.startTime)).add(obj.durationTime,"minute").valueOf();
+          obj.startTime = isWhiteHour(dayjs().get("hour")) ? dayjs().valueOf() : dayjs(getNextWhiteHour()).valueOf();
+          obj.endTime = dayjs(Number(obj.startTime)).add(obj.durationTime,"minute").valueOf();
           obj.position = 0;
           nOrder.push(obj);
         }else{
+
+          // 机器订单不为空
           nOrder = nOrder.concat(oldOrders.slice(0,index[i]));
           oldOrders.splice(index[i],0,obj);
           for (let j = index[i]; j < oldOrders.length; j++) {
             oldOrders[j].startTime = nOrder.length!=0?nOrder[nOrder.length-1].endTime: dayjs().valueOf();
+            // 订单为第一个时，计算开始时间需要和机器已安装模具进行对比。
             if(j==0 && (oldOrders[j].requireMold != item.mold.id)){
               if(!isWhiteHour(dayjs().get("hour"))){
                 oldOrders[j].startTime = getNextWhiteHour()?.valueOf();
               }
-              oldOrders[j].startTime = dayjs(parseInt(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
-            }
-            if(j!=0 && (oldOrders[j].requireMold != nOrder[nOrder.length-1].requireMold)){
-              if(!isWhiteHour(dayjs(parseInt(nOrder[nOrder.length-1].endTime)).get("hour"))){
-                oldOrders[j].startTime = getNextWhiteHour()?.valueOf();
-              }
-              oldOrders[j].startTime = dayjs(parseInt(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
+              oldOrders[j].startTime = dayjs(Number(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
               oldOrders[j].isChangeMold = 1;
               changeTimes += 1;
             }
-            oldOrders[j].endTime = dayjs(parseInt(oldOrders[j].startTime)).add(oldOrders[j].durationTime,"minute").valueOf();
+            // 订单不为第一个时，计算开始时间需要和上一个订单进行对比。
+            if(j!=0 && (oldOrders[j].requireMold != nOrder[nOrder.length-1].requireMold)){
+              if(!isWhiteHour(dayjs(Number(nOrder[nOrder.length-1].endTime)).get("hour"))){
+                oldOrders[j].startTime = getNextWhiteHour()?.valueOf();
+              }
+              oldOrders[j].startTime = dayjs(Number(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
+              oldOrders[j].isChangeMold = 1;
+              changeTimes += 1;
+            }
+            oldOrders[j].endTime = dayjs(Number(oldOrders[j].startTime)).add(oldOrders[j].durationTime,"minute").valueOf();
+            // 判断结束时间是否小于等于交货时间
             if(oldOrders[j].endTime > oldOrders[j].deliveryAt){
               break;
             }
+            // 判断上一个订单的结束后的时间是否小于当前订单的最晚开始时间
             if(nOrder.length!=0 &&nOrder[nOrder.length-1].endTime > oldOrders[j].latestStartTime){
               break;
             }
@@ -137,6 +128,7 @@ export function getOrderPositions(obj, arr, priority) {
             });
           }
         }
+        // 新订单长度不能小于老订单
         if(nOrder.length >= oldOrders.length){
           result.push({
             mechineId: item.id,
@@ -149,6 +141,7 @@ export function getOrderPositions(obj, arr, priority) {
       }
       index = [];
     }
+    bindex.length = 0;
   });
   return result;
 }
@@ -183,7 +176,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
       if(positions.length > 0){
         position = positions.sort((a,b) => a.changeTimes - b.changeTimes)[0];
         positions = positions.filter((item) => item.changeTimes == position.changeTimes);
-        position = positions.sort((a,b) => b.startTime - a.startTime)[0];
+        position = positions.sort((a,b) => a.startTime - b.startTime)[0];
       }else{
         positions = getOrderPositions(newOrder, allTargetMachines, 2);
         if(positions.length > 0){
@@ -206,7 +199,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
         // 取需要更换模具最少的队列
         position = positions.sort((a,b) => a.changeTimes - b.changeTimes)[0];
         positions = positions.filter((item) => item.changeTimes == position.changeTimes);
-        position = positions.sort((a,b) => b.startTime - a.startTime)[0];
+        position = positions.sort((a,b) => a.startTime - b.startTime)[0];
       }else{
         // 在一般优先级找
         positions = getOrderPositions(newOrder, allTargetMachines,1);
@@ -234,7 +227,7 @@ export function assignNewOrderToMachines(newOrder, machines) {
         // 取需要更换模具最少的队列
         position = positions.sort((a,b) => a.changeTimes - b.changeTimes)[0];
         positions = positions.filter((item) => item.changeTimes == position.changeTimes);
-        position = positions.sort((a,b) => b.startTime - a.startTime)[0];
+        position = positions.sort((a,b) => a.startTime - b.startTime)[0];
       }else{
         // 在一般优先级找
         positions = getOrderPositions(newOrder, allTargetMachines,2);

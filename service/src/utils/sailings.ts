@@ -27,7 +27,7 @@ export const getBlackHour=()=>{
 }
 export const getNextWhiteHour=()=>{
     let now = new Date();
-    now.setDate(now.getDate()+1);
+    now.setDate(now.getHours() < 7 ? now.getDate() : now.getDate() + 1);
     now.setHours(parseInt(sailings.black.split(":")[0], 10),parseInt(sailings.black.split(":")[1], 10),parseInt(sailings.black.split(":")[2], 10));
     return now;
 }

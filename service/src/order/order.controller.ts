@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { FindAllDto } from './order.dto';
-import { assignNewOrderToMachines, insertOrderToMachine } from './utils';
+import { assignNewOrderToMachines } from './utils';
 import { MachinesService } from '../machines/machines.service';
 import * as dayjs from 'dayjs';
 import { ObjToArray, returnData, toJSON, toString } from '../utils';
@@ -44,6 +44,7 @@ export class OrderController {
     for await (const item of machineList) {
       const orderIds = item.orders.map((sortInfo) => sortInfo.orderId);
       if (orderIds && orderIds.length) {
+        // 订单筛选，完成时间在今日之后的
         const order = await this.orderService.findById(orderIds);
         item.orders = item.orders.map((item, index) => {
           if (item.status !== 'finish') {}
