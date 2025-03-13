@@ -125,6 +125,11 @@ export function ProduceDispatch() {
                                     </div>
                                 }>
                                 <div>客户名称：{customer?.[child?.customerId]}</div>
+                                <div>模具：{child.requireMoldName}</div>
+                                <div>持续时间：{Math.ceil(child.durationTime/60/24)}天</div>
+                                
+                                <div>最晚开始时间：{dayjs(child.latestStartTime * 1).format('YYYY-MM-DD')}</div>
+                                <div>完成时间：{dayjs(child.endTime * 1).format('YYYY-MM-DD')}</div>
                                 <div className="mb-16px mt-4px">交付时间：{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</div>
                                 <div className="card-col_tag-row">
                                     <Tag color={orderStatusColorMap[child.status]}>状态：{orderStatusMap[child.status]}</Tag>
