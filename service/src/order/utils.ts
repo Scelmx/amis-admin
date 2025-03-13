@@ -86,6 +86,9 @@ export function getOrderPositions(obj, arr, priority) {
           }
           obj.startTime = isWhiteHour(dayjs().get("hour")) ? dayjs().valueOf() : dayjs(getNextWhiteHour()).valueOf();
           obj.endTime = dayjs(Number(obj.startTime)).add(obj.durationTime,"minute").valueOf();
+          if(obj.endTime > obj.deliveryAt){
+            break;
+          }
           obj.position = 0;
           nOrder.push(obj);
         }else{
