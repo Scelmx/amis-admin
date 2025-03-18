@@ -35,7 +35,7 @@ export function getOrderPositions(obj, arr, priority) {
       let objEndTime = dayjs();
       if(item.mold.id != obj.requireMold){
         if(!isWhiteHour(objEndTime.get("hour"))){
-          objEndTime = dayjs(getNextWhiteHour());
+          objEndTime = dayjs(getNextWhiteHour(objEndTime.valueOf()));
         }
         objEndTime = objEndTime.add(1.5,"hour");
       }
@@ -47,10 +47,11 @@ export function getOrderPositions(obj, arr, priority) {
       }
       orders.reduce(
           (acc,order,index) => {
+            // 是否需要和当前时间进行比较
             let objEndTime = dayjs(Number(order.endTime));
             if(order.requireMold != obj.requireMold){
               if(!isWhiteHour(objEndTime.get("hour"))){
-                objEndTime = dayjs(getNextWhiteHour());
+                objEndTime = dayjs(getNextWhiteHour(objEndTime.valueOf()));
               }
               objEndTime = objEndTime.add(1.5,"hour");
             }
@@ -84,7 +85,7 @@ export function getOrderPositions(obj, arr, priority) {
               obj.isChangeMold = 1;
               changeTimes += 1;
           }
-          obj.startTime = isWhiteHour(dayjs().get("hour")) ? dayjs().valueOf() : dayjs(getNextWhiteHour()).valueOf();
+          obj.startTime = isWhiteHour(dayjs().get("hour")) ? dayjs().valueOf() : dayjs(getNextWhiteHour(dayjs().valueOf())).valueOf();
           obj.endTime = dayjs(Number(obj.startTime)).add(obj.durationTime,"minute").valueOf();
           if(obj.endTime > obj.deliveryAt){
             break;
@@ -101,7 +102,7 @@ export function getOrderPositions(obj, arr, priority) {
             // 订单为第一个时，计算开始时间需要和机器已安装模具进行对比。
             if(j==0 && (oldOrders[j].requireMold != item.mold.id)){
               if(!isWhiteHour(dayjs().get("hour"))){
-                oldOrders[j].startTime = getNextWhiteHour()?.valueOf();
+                oldOrders[j].startTime = getNextWhiteHour(oldOrders[j].startTime)?.valueOf();
               }
               oldOrders[j].startTime = dayjs(Number(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
               oldOrders[j].isChangeMold = 1;
@@ -110,7 +111,7 @@ export function getOrderPositions(obj, arr, priority) {
             // 订单不为第一个时，计算开始时间需要和上一个订单进行对比。
             if(j!=0 && (oldOrders[j].requireMold != nOrder[nOrder.length-1].requireMold)){
               if(!isWhiteHour(dayjs(Number(nOrder[nOrder.length-1].endTime)).get("hour"))){
-                oldOrders[j].startTime = getNextWhiteHour()?.valueOf();
+                oldOrders[j].startTime = getNextWhiteHour(oldOrders[j].startTime)?.valueOf();
               }
               oldOrders[j].startTime = dayjs(Number(oldOrders[j].startTime)).add(1.5,"hour").valueOf();
               oldOrders[j].isChangeMold = 1;

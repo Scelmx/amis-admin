@@ -106,7 +106,7 @@ export class OrderController {
         orderId: order.id,
         position: index,
         latestStartTime: nOrder[index].latestStartTime,
-        startTime: index==0?nOrder[index].startTime:nOrder[index-1].endTime,
+        startTime: nOrder[index].startTime,
         endTime: nOrder[index].endTime,
         durationTime: nOrder[index].durationTime,
         status:
