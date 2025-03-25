@@ -1,13 +1,16 @@
 import { Controller, Get, Post, Body, Query, Res } from '@nestjs/common';
 import { MoldService } from './mold.service';
-import { CreateMoldDto, CreateWordDto, UpdateMoldDto } from './mold.dto';
-import { renderDataToDocx, snakeToCamelCase } from '../utils';
+import { CreateWordDto } from './mold.dto';
+import { ObjToArray, renderDataToDocx, returnData } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
+import { Mold } from './mold.entity';
+import { MOLD_TYPE_MAP, PRODUCT_TYPE_MAP } from '../utils/const';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
 import * as dayjs from 'dayjs';
+
 
 @Controller('/molds')
 export class MoldController {
@@ -17,56 +20,104 @@ export class MoldController {
   ) {}
 
   @Post('/add')
-  create(@Body() createMoldDto: CreateMoldDto) {
-    return this.moldService.create(createMoldDto);
+  async create(@Body() mold: Mold) {
+    const res = await this.moldService.create(mold);
+    return returnData(res);
+  }
+
+  @Get('/page')
+  async page(
+    @Query() query: { page: number; pageSize: number; templateModel: string },
+  ) {
+    const res = await this.moldService.page(query);
+    return returnData(res);
   }
 
   @Get('/list')
-  findAll(
-    @Query() query: { page: number; pageSize: number; templateModel: string },
-  ) {
-    return this.moldService.findAll(query);
+  async findAll(@Query() query: { type: 'enum' | 'options'; search?: string }) {
+    const res = await this.moldService.findAll();
+    console.log(res, '????');
+    // 支持模糊搜索
+    let filteredRes = res;
+    if (query.search) {
+      const searchLower = query.search.toLowerCase();
+      filteredRes = res.filter(item => 
+        item.templateNo.toLowerCase().includes(searchLower) ||
+        item.templateModel.toLowerCase().includes(searchLower) ||
+        item.produceName.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    if (query.type === 'enum') {
+      return returnData(
+        filteredRes.reduce((target, item) => {
+          target[item.templateNo] = item.templateModel;
+          return target;
+        }, {}),
+      );
+    }
+    
+    // 在返回值中组合显示模具型号和产品名称
+    return returnData(
+      filteredRes.map((item) => ({ 
+        label: `${item.templateModel} (${MOLD_TYPE_MAP[item.produceName] || item.produceName})`, 
+        value: item.id 
+      })),
+    );
+  }
+
+  @Get('/types')
+  async getTypes(@Query() query: { type: 'enum' | 'options' }) {
+    if (query.type === 'enum') {
+      return returnData(PRODUCT_TYPE_MAP);
+    }
+    return returnData(ObjToArray(PRODUCT_TYPE_MAP));
   }
 
   @Post('/createWord')
   async createWord(@Body() body: CreateWordDto) {
     const { templateNo, feedstockId, ...rest } = body;
     const templateNos = templateNo.split(',');
-    const feedstockIds = feedstockId.split(',');
+    const feedstockIds = feedstockId.split(',') as unknown as number[];
     /** 获取对应的原料信息 */
     const feedstockInfo = await this.feedstockService.findByIds(feedstockIds);
     if (!feedstockInfo) {
-      return {
-        data: '原料信息获取失败',
-      };
+      return returnData(null, '原料信息获取失败');
     }
     /** 获取对应的模具信息 */
     const templateInfo = await this.moldService.findByTemplateNo(templateNos);
     if (!feedstockInfo) {
-      return {
-        data: '模具信息获取失败',
-      };
+      return returnData(null, '模具信息获取失败');
     }
 
-    const product2Params = feedstockInfo?.[1] || feedstockInfo[0]
-    const product1 = createBaseNameObj('product1', { ...feedstockInfo[0], ...templateInfo[0], count: templateInfo[0].hole * templateInfo[0].mode })
-    const product2 = createBaseNameObj('product2', { ...product2Params, ...templateInfo?.[1], count: templateInfo?.[1]?.hole * templateInfo?.[1]?.mode })
+    const product2Params = feedstockInfo?.[1] || feedstockInfo[0];
+    const product1 = createBaseNameObj('product1', {
+      ...feedstockInfo[0],
+      ...templateInfo[0],
+      count: templateInfo[0].hole * templateInfo[0].mode,
+    });
+    const product2 = createBaseNameObj('product2', {
+      ...product2Params,
+      ...templateInfo?.[1],
+      count: templateInfo?.[1]?.hole * templateInfo?.[1]?.mode,
+    });
     const { filePath, fileName } = renderDataToDocx(
       path.join(__dirname, `./assets/template/mold.docx`),
       {
-        ...snakeToCamelCase(product1),
-        ...snakeToCamelCase(product2),
+        ...product1,
+        ...product2,
         ...rest,
-        createDate: rest?.createDate ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD') : '',
-        sailings: rest.sailings === '0'
+        createDate: rest?.createDate
+          ? dayjs(Number(rest?.createDate) * 1000).format('YYYY-MM-DD')
+          : '',
+        sailings: rest.sailings === '0',
       },
     );
 
     if (!fs.existsSync(filePath)) {
-      return '文件不存在';
+      return returnData(null, '文件不存在');
     }
-
-    return { data: fileName }
+    return returnData(fileName);
   }
 
   @Get('/download')
@@ -75,25 +126,32 @@ export class MoldController {
     @Res() response: Response,
   ) {
     const { filename } = query;
-    const filePath = path.join(__dirname, '../dist/assets/output/', `${filename}.docx`);
+    const filePath = path.join(
+      __dirname,
+      '../dist/assets/output/',
+      `${filename}.docx`,
+    );
     if (!fs.existsSync(filePath)) {
-      return '下载失败';
+      return { msg: '下载失败' };
     }
     response.download(filePath);
   }
 
   @Get('/find')
-  findOne(@Query() query: { id: number }) {
-    return this.moldService.findOne(query.id);
+  async findOne(@Query() query: { id: number }) {
+    const res = await this.moldService.findOne(query.id);
+    return returnData(res);
   }
 
   @Post('/update')
-  update(@Body() updateMoldDto: UpdateMoldDto) {
-    return this.moldService.update(updateMoldDto);
+  async update(@Body() mold: Mold) {
+    const res = await this.moldService.update(mold);
+    return returnData(res);
   }
 
   @Get('/del')
-  remove(@Query() query: { id: number }) {
-    return this.moldService.remove(query.id);
+  async remove(@Query() query: { id: number }) {
+    const res = await this.moldService.remove(query.id);
+    return returnData(res);
   }
 }

@@ -8,7 +8,7 @@
       "syncLocation": false,
       "api": {
         "method": "get",
-        "url": "/api/molds/list"
+        "url": "/api/molds/page"
       },
       "columns": [
         {
@@ -20,9 +20,10 @@
         {
           "name": "produceName",
           "label": "产品名称",
-          "type": "text",
+          "type": "map",
           "id": "u:15bd7295d1da",
-          "placeholder": "-"
+          "placeholder": "-",
+          "source": "/api/molds/types?type=enum"
         },
         {
           "name": "templateNo",
@@ -111,20 +112,7 @@
                         "id": "u:ee1d3853c1e4",
                         "placeholder": "-",
                         "type": "select",
-                        "options": [
-                          {
-                            "label": "皮碗",
-                            "value": "pw"
-                          },
-                          {
-                            "label": "O型圈",
-                            "value": "oxq"
-                          },
-                          {
-                            "label": "Y型圈",
-                            "value": "yxq"
-                          }
-                        ]
+                        "source": "/api/molds/types?type=options"
                       },
                       {
                         "name": "templateNo",
@@ -278,20 +266,7 @@
                     "name": "produceName",
                     "label": "产品名称",
                     "id": "u:7df512bdd7ec",
-                    "options": [
-                      {
-                        "label": "皮碗",
-                        "value": "pw"
-                      },
-                      {
-                        "label": "O型圈",
-                        "value": "oxq"
-                      },
-                      {
-                        "label": "Y型圈",
-                        "value": "yxq"
-                      }
-                    ]
+                    "source": "/api/molds/types?type=options"
                   },
                   {
                     "type": "input-text",
@@ -419,9 +394,10 @@
                     "multiple": true,
                     "searchable": true,
                     "source": {
-                      "url": "/api/molds/list",
+                      "url": "/api/molds/page",
                       "method": "get",
-                      "adaptor": "return payload.data.data"
+                      "adaptor": "return payload.data.data",
+                      "requestAdaptor": "api.url = api.query.term ? api.url + '?templateModel=' + api.query.term : api.url; return api;"
                     },
                     "labelField": "templateNo",
                     "valueField": "templateNo",
@@ -492,7 +468,7 @@
                         "ignoreError": false,
                         "actionType": "url",
                         "args": {
-                          "url": "/api/molds/download?filename=${event.data.result.data.data}"
+                          "url": "/api/molds/download?filename=${event.data.result.data}"
                         }
                       }
                     ]

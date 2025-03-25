@@ -18,17 +18,6 @@ const schema = {
           "&": "$$"
         }
       },
-      "footerToolbar": [
-        {
-          "type": "switch-per-page"
-        },
-        {
-          "type": "statistics"
-        },
-        {
-          "type": "pagination"
-        }
-      ],
       "columns": [
         {
           "label": "客户名称",
@@ -651,8 +640,7 @@ const schema = {
         10
       ],
       "messages": {},
-      "showFooter": false,
-      "alwaysShowPagination": true,
+      "perPageField": "pageSize",
       "header": {
         "type": "flex",
         "id": "u:92f8142e3b30",
@@ -1185,7 +1173,7 @@ const schema = {
         "url": "/api/customer/list",
         "method": "get",
         "requestAdaptor": "",
-        "adaptor": "return payload.data.map((item) => ({ label: item.label, to: `?customerId=${item.value}`, target: '_self', id: item.value }))",
+        "adaptor": "const companyList = payload.data.map((item) => ({ label: item.label, to: `?customerId=${item.value}`, target: '_self', id: item.value })); return [{ label: '全部', to: `?customerId=`, target: '_self', 'active': true }, ...companyList]",
         "messages": {}
       }
     }

@@ -1,7 +1,8 @@
 import { Button } from "amis-ui";
 import { Form, Input, Select, Modal } from "antd"
 import { request } from "../../../utils/requestInterceptor";
-import { FC, useRef, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
+import { multiply } from "lodash";
 
 interface AddMachineProps {
     edit?: boolean;
@@ -13,6 +14,36 @@ interface AddMachineProps {
 export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText = '添加机器 +', initialValues = undefined, confirmCallback }) => {
     const [visible, setVisible] = useState(false);
     const [form] = Form.useForm();
+    const [moldOptions, setMoldOptions] = useState([]);
+    const [machinesTypeOptions, setMachinesTypeOptions] = useState([]);
+
+    const getMoldList = async () => {
+        const { data: res }: any = await request({
+            url: '/api/molds/list?type=options',
+            method: 'get'
+        })
+        if (res.data) {
+            setMoldOptions(res.data)
+        }
+    }
+
+    const getMachinesType = async () => {
+        const { data: res }: any = await request({
+            url: '/api/machines/list?type=options',
+            method: 'get'
+        })
+        if (res.data) {
+            setMachinesTypeOptions(res.data)
+        }
+    }
+
+    useEffect(() => {
+        const init = async () => {
+            await getMoldList()
+            await getMachinesType()
+        }
+        init();
+    }, [])
 
     const handleOk = () => {
         form.submit();
@@ -27,36 +58,21 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
         label: '机器名称',
         type: 'input'
     }, {
-        key: 'hole',
-        label: '孔数',
-        type: 'input'
-    }, {
-        key: 'mode',
-        label: '额定模数',
-        type: 'input'
+        key: 'mold',
+        label: '关联模具',
+        type: 'select',
+        options: moldOptions,
     }, {
         key: 'type',
         label: '产线类型',
         type: 'select',
-        options: [{
-            label: 'A+B',
-            value: 'A+B'
-        }, {
-            label: 'A+C',
-            value: 'A+C'
-        }]
+        mode: 'multiple',
+        options: machinesTypeOptions
     }]
 
     const getFormItem = () => {
         if (edit) {
-            return [...items, {
-                key: 'type',
-                label: '产线类型',
-                type: 'select',
-                showSearch: true,
-                multiply: true,
-                options: []
-            }]
+            return [...items]
         }
         return items
     }
@@ -72,7 +88,7 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                 cursor: 'pointer',
             } : undefined}
             onClick={() => setVisible(true)}>
-                {buttonText}
+            {buttonText}
         </div>
         {visible ? <Modal
             title={edit ? '编辑机器' : "添加机器"}
@@ -93,8 +109,7 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                         data: {
                             ...value,
                             id: edit ? initialValues.id : undefined,
-                            hole: value.hole * 1,
-                            mode: value.mode * 1
+                            mold: value.mold
                         }
                     })
                     if (res) {
@@ -103,11 +118,17 @@ export const AddMachine: FC<AddMachineProps> = ({ edit = undefined, buttonText =
                     }
                 }}
             >
-                {getFormItem().map((item: any) => {
+                {getFormItem()?.map((item: any) => {
                     const { type, key, label } = item
                     return <Form.Item name={key} label={label}>
-                        {type === 'input' ? <Input /> : null}
-                        {type === 'select' ? <Select options={item?.options ?? []} showSearch={item?.showSearch} /> : null}
+                        {type === 'input' ? <Input allowClear /> : null}
+                        {type === 'select' ? <Select
+                            allowClear
+                            options={item?.options ?? []}
+                            mode={item?.mode}
+                            showSearch={item?.showSearch}
+                            
+                        /> : null}
                     </Form.Item>
                 })}
             </Form>

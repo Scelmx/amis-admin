@@ -1,7 +1,4 @@
-import { snakeToCamelCase } from "../utils";
 import { ProductDto } from "./product.dto";
-import { Product } from "./product.entity";
-
 export function createObjectWithBaseName(baseName: string, array: any[]) {
   if (!array) return undefined; 
   const result = {};

@@ -23,13 +23,14 @@ import { FeedStocksModule } from './feedstock/feedstock.module';
     MulterModule.register(getMulterConfig()),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
+      host: 'wangyuanlong.top',
+      port: 13306,
       username: 'root',
-      password: '12345678',
+      password: '568956',
       database: 'autodocx',
       autoLoadEntities: true, // 自动链接被 forFeature 注册的实体
       synchronize: true,
+      logging: true
     }),
     CustomerModule,
     ProductModule,
