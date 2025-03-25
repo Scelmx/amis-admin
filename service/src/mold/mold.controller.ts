@@ -34,18 +34,35 @@ export class MoldController {
   }
 
   @Get('/list')
-  async findAll(@Query() query: { type: 'enum' | 'options' }) {
+  async findAll(@Query() query: { type: 'enum' | 'options'; search?: string }) {
     const res = await this.moldService.findAll();
+    console.log(res, '????');
+    // 支持模糊搜索
+    let filteredRes = res;
+    if (query.search) {
+      const searchLower = query.search.toLowerCase();
+      filteredRes = res.filter(item => 
+        item.templateNo.toLowerCase().includes(searchLower) ||
+        item.templateModel.toLowerCase().includes(searchLower) ||
+        item.produceName.toLowerCase().includes(searchLower)
+      );
+    }
+    
     if (query.type === 'enum') {
       return returnData(
-        res.reduce((target, item) => {
-          target[item.produceName] = item.produceName;
+        filteredRes.reduce((target, item) => {
+          target[item.templateNo] = item.templateModel;
           return target;
         }, {}),
       );
     }
+    
+    // 在返回值中组合显示模具型号和产品名称
     return returnData(
-      res.map((item) => ({ label: item.templateNo, value: item.id })),
+      filteredRes.map((item) => ({ 
+        label: `${item.templateModel} (${MOLD_TYPE_MAP[item.produceName] || item.produceName})`, 
+        value: item.id 
+      })),
     );
   }
 

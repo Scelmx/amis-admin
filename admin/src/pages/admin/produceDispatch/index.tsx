@@ -3,7 +3,7 @@ import { AddMachine } from "./AddMachine";
 import { useEffect, useState } from "react";
 import { request } from "@/utils/requestInterceptor";
 import DropdownButton from "antd/es/dropdown/dropdown-button";
-import { Button, Modal } from "antd";
+import { Button, Descriptions, Modal, Tooltip, Typography } from "antd";
 import dayjs from "dayjs";
 import { orderStatusColorMap, orderStatusMap } from "./const";
 
@@ -12,6 +12,23 @@ export function ProduceDispatch() {
     const [showTwin, setShowTwin] = useState<boolean>(false);
     const [active, setActive] = useState<any>({});
     const [customer, setCustomer] = useState<any>({});
+    const [machinesTypeMap, setMachinesTypeMap] = useState({});
+    const [moldTypeMap, setMoldTypeMap] = useState({});
+
+    const getMoldTypeMap = async () => {
+        const res: any = await request({ url: '/api/molds/list?type=enum', method: 'get' })
+        console.log(res, '????');
+        if (res) {
+            setMoldTypeMap(res.data.data)
+        }
+    }
+
+    const getMachinesType = async () => {
+        const res: any = await request({ url: '/api/machines/list?type=enum', method: 'get' })
+        if (res) {
+            setMachinesTypeMap(res.data.data)
+        }
+    }
 
     const getMachines = async () => {
         const res: any = await request({ url: '/api/order/machines', method: 'get' })
@@ -31,8 +48,13 @@ export function ProduceDispatch() {
     }
 
     useEffect(() => {
-        getCustemers();
-        getMachines();
+        const init = async () => {
+            await getMoldTypeMap();
+            await getMachinesType();
+            await getCustemers();
+            await getMachines();
+        }
+        init();
     }, [])
 
     const items = [
@@ -52,7 +74,7 @@ export function ProduceDispatch() {
                 buttonText="编辑"
                 initialValues={{ ...active, mold: active.mold?.id }}
                 edit={true}
-                confirmCallback={getMachines}>    
+                confirmCallback={getMachines}>
             </AddMachine>
         }, {
             key: '3',
@@ -67,19 +89,21 @@ export function ProduceDispatch() {
         }
     ]
 
-    const updateOrderInMachine = async (machineId: number) => {
+    const updateMachine= async (machineId: number) => {
         const res = await request({ url: `/api/machine/update?id=${active.id}&machineId=${machineId}`, method: 'get' })
         if (res.data) {
             getMachines();
         }
     }
-    
+
     const updateOrder = async (order: any) => {
-        const res = await request({ url: '/api/order/update/status', method: 'post', data: {
-            id: order.id,
-            orderNo: order.orderId,
-            status: "finish",
-        } })
+        const res = await request({
+            url: '/api/order/update/status', method: 'post', data: {
+                id: order.id,
+                orderNo: order.orderId,
+                status: "finish",
+            }
+        })
         if (res.data) {
             getMachines();
         }
@@ -97,7 +121,19 @@ export function ProduceDispatch() {
                     <div key={item.id} className="card-col">
                         {/** 机器标题区 */}
                         <div className="card-col_header flex mb-16px">
-                            <Tag className="card-col_tag" processing>{item.name || '机器' + index}</Tag>
+                            <div className="flex items-center">
+                                <Tag className="card-col_tag" processing>{item.name || '机器' + index}</Tag>
+                                {
+                                    item.type &&
+                                    <span className="machine-type" style={{ maxWidth: 180 }}>
+                                        <Typography.Text ellipsis={{ tooltip: item.type.map((type: any) => machinesTypeMap?.[type]).join(',') }}>
+                                            {
+                                                item.type.map((type: any) => machinesTypeMap?.[type]).join(',')
+                                            }
+                                        </Typography.Text>
+                                    </span>
+                                }
+                            </div>
                             <DropdownButton
                                 trigger={["click"]}
                                 align={{
@@ -124,13 +160,15 @@ export function ProduceDispatch() {
                                         <a href={`/produce-plan/orders?id=${child.orderId}`}>{child.orderId}</a>
                                     </div>
                                 }>
-                                <div>客户名称：{customer?.[child?.customerId]}</div>
-                                <div>模具：{child.requireMoldName}</div>
-                                <div>持续时间：{Math.ceil(child.durationTime/60/24)}天</div>
-                                
-                                <div>最晚开始时间：{dayjs(child.latestStartTime * 1).format('YYYY-MM-DD')}</div>
-                                <div>完成时间：{dayjs(child.endTime * 1).format('YYYY-MM-DD')}</div>
-                                <div className="mb-16px mt-4px">交付时间：{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</div>
+                                <Descriptions column={1} labelStyle={{ width: 100 }} size="small">
+                                    <Descriptions.Item label="客户名称">{customer?.[child?.customerId]}</Descriptions.Item>
+                                    <Descriptions.Item label="模具">{child.requireMoldName}—{moldTypeMap?.[child.requireMoldName] || ''}</Descriptions.Item>
+                                    <Descriptions.Item label="生产数量">{child.nums || '-'}</Descriptions.Item>
+                                    <Descriptions.Item label="持续时间">{Math.ceil(child.durationTime / 60 / 24 / 2)}班</Descriptions.Item>
+                                    <Descriptions.Item label="最晚开始时间">{dayjs(child.latestStartTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
+                                    <Descriptions.Item label="完成时间">{dayjs(child.endTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
+                                    <Descriptions.Item label="交付时间">{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</Descriptions.Item>
+                                </Descriptions>
                                 <div className="card-col_tag-row">
                                     <Tag color={orderStatusColorMap[child.status]}>状态：{orderStatusMap[child.status]}</Tag>
                                     <Button onClick={(value: any) => updateOrder({ ...child, machineId: item.id })} type="primary" size="small">完成</Button>

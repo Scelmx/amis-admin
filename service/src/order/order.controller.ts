@@ -10,6 +10,7 @@ import { SortInfoService } from '../sortInfo/sortInfo.service';
 import { Order } from './order.entity';
 import { STATUS_ENUM } from '../sortInfo/sortInfo.entity';
 import { MoldService } from '../mold/mold.service';
+import { CustomerService } from '../customer/customer.service';
 
 @Controller('/order')
 export class OrderController {
@@ -18,15 +19,62 @@ export class OrderController {
     private readonly machinesService: MachinesService,
     private readonly moldService: MoldService,
     private readonly sortInfoService: SortInfoService,
+    private readonly customerService: CustomerService,
   ) {}
 
   @Get('/list')
   async findAll(@Query() query: FindAllDto) {
     const res = await this.orderService.findAll(query);
+    
+    // 获取所有需要的客户ID
+    const customerIds = res.data.map(item => item.customerId).filter(id => id);
+    
+    // 获取所有模具ID
+    const moldIds = res.data.map(item => item.requireMold).filter(id => id);
+    
+    // 获取客户信息
+    const customers = {};
+    if (customerIds.length > 0) {
+      const customerPromises = customerIds.map(id => this.customerService.getCustomerById(id));
+      const customerList = await Promise.all(customerPromises);
+      customerList.forEach(customer => {
+        if (customer) {
+          customers[customer.id] = customer.ctName;
+        }
+      });
+    }
+    
+    // 获取模具信息
+    const molds = {};
+    if (moldIds.length > 0) {
+      const moldList = await this.moldService.findByIds(moldIds);
+      moldList.forEach(mold => {
+        molds[mold.id] = { 
+          type: mold.produceName,
+          name: mold.templateModel
+        };
+      });
+    }
+    
     return returnData({
       ...res,
       data: res.data?.map((item) => {
         item.deliveryAt /= 1000;
+        
+        // 添加客户名称
+        if (item.customerId && customers[item.customerId]) {
+          // 使用一个临时对象扩展Order
+          const extendedItem = item as any;
+          extendedItem.customerName = customers[item.customerId];
+        }
+        
+        // 添加模具类型
+        if (item.requireMold && molds[item.requireMold]) {
+          // 使用一个临时对象扩展Order
+          const extendedItem = item as any;
+          extendedItem.moldType = molds[item.requireMold].type;
+        }
+        
         return item;
       }),
     });

@@ -10,7 +10,15 @@ export class CustomerController {
 
   @Get('/list')
   async getCustomerList(@Query() query) {
-    const res = await this.customerService.getCustomerList(query);
+    // 确保query参数包含客户名称搜索条件
+    const searchParams = { ...query };
+    
+    // 如果有search参数，则使用它作为ctName的模糊搜索条件
+    if (query.search) {
+      searchParams.ctName = query.search;
+    }
+    
+    const res = await this.customerService.getCustomerList(searchParams);
     return returnData(
       query.isList
         ? res

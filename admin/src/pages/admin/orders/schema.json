@@ -41,6 +41,7 @@
                     "id": "u:544630ede405",
                     "row": 0,
                     "multiple": false,
+                    "searchable": true,
                     "source": {
                       "method": "get",
                       "url": "/api/customer/list",
@@ -63,7 +64,15 @@
                     "label": "指定模具",
                     "id": "u:c98fc2f2de19",
                     "row": 1,
-                    "source": "/api/molds/list?type=options"
+                    "searchable": true,
+                    "source": {
+                      "method": "get",
+                      "url": "/api/molds/list",
+                      "data": {
+                        "type": "options"
+                      },
+                      "requestAdaptor": "api.url = api.url + '?type=options' + (api.query.term ? '&search=' + api.query.term : ''); return api;"
+                    }
                   },
                   {
                     "type": "select",
@@ -184,6 +193,12 @@
           "id": "u:884583b1759b"
         },
         {
+          "name": "customerName",
+          "label": "客户名称",
+          "type": "text",
+          "id": "u:customer001"
+        },
+        {
           "name": "productType",
           "label": "产品类型",
           "type": "map",
@@ -196,6 +211,14 @@
           "label": "指定模具",
           "type": "text",
           "id": "u:0988a64ec07f"
+        },
+        {
+          "name": "moldType",
+          "label": "模具类型",
+          "type": "map",
+          "id": "u:moldtype001",
+          "placeholder": "-",
+          "source": "/api/machines/list?type=enum"
         },
         {
           "name": "rawType",
@@ -276,6 +299,7 @@
                         "id": "u:544630ede405",
                         "row": 0,
                         "multiple": false,
+                        "searchable": true,
                         "source": {
                           "method": "get",
                           "url": "/api/customer/list",
@@ -298,7 +322,15 @@
                         "label": "指定模具",
                         "id": "u:c98fc2f2de19",
                         "row": 1,
-                        "source": "/api/molds/list?type=options"
+                        "searchable": true,
+                        "source": {
+                          "method": "get",
+                          "url": "/api/molds/list",
+                          "data": {
+                            "type": "options"
+                          },
+                          "requestAdaptor": "api.url = api.url + '?type=options' + (api.query.term ? '&search=' + api.query.term : ''); return api;"
+                        }
                       },
                       {
                         "type": "select",

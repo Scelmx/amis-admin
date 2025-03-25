@@ -57,4 +57,13 @@ export class MoldService {
   async remove(id: number) {
     return await this.moldRepository.update(id, { isDeleted: 1 });
   }
+
+  /** 根据ID数组查找模具 */
+  async findByIds(ids: number[]): Promise<Mold[]> {
+    const where = {
+      id: In(ids),
+      isDeleted: 0,
+    };
+    return await this.moldRepository.find({ where });
+  }
 }

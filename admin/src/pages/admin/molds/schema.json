@@ -396,7 +396,8 @@
                     "source": {
                       "url": "/api/molds/page",
                       "method": "get",
-                      "adaptor": "return payload.data.data"
+                      "adaptor": "return payload.data.data",
+                      "requestAdaptor": "api.url = api.query.term ? api.url + '?templateModel=' + api.query.term : api.url; return api;"
                     },
                     "labelField": "templateNo",
                     "valueField": "templateNo",
