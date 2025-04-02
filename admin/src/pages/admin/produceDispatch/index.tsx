@@ -164,7 +164,7 @@ export function ProduceDispatch() {
                                     <Descriptions.Item label="客户名称">{customer?.[child?.customerId]}</Descriptions.Item>
                                     <Descriptions.Item label="模具">{child.requireMoldName}—{moldTypeMap?.[child.requireMoldName] || ''}</Descriptions.Item>
                                     <Descriptions.Item label="生产数量">{child.nums || '-'}</Descriptions.Item>
-                                    <Descriptions.Item label="持续时间">{Math.ceil(child.durationTime / 60 / 24 / 2)}班</Descriptions.Item>
+                                    <Descriptions.Item label="持续时间">{Math.ceil(child.durationTime / 60 / 24 * 2)}班</Descriptions.Item>
                                     <Descriptions.Item label="最晚开始时间">{dayjs(child.latestStartTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
                                     <Descriptions.Item label="完成时间">{dayjs(child.endTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
                                     <Descriptions.Item label="交付时间">{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</Descriptions.Item>
