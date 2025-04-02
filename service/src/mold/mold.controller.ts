@@ -5,11 +5,12 @@ import { ObjToArray, renderDataToDocx, returnData } from '../utils';
 import { FeedStockService } from '../feedstock/feedstock.service';
 import { Response } from 'express';
 import { Mold } from './mold.entity';
-import { MOLD_TYPE_MAP, PRODUCT_TYPE_MAP } from '../utils/const';
+import { PRODUCT_TYPE_MAP } from '../utils/const';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createBaseNameObj } from './utils';
 import * as dayjs from 'dayjs';
+import { ListDto } from 'src/common/common.dto';
 
 
 @Controller('/molds')
@@ -27,7 +28,7 @@ export class MoldController {
 
   @Get('/page')
   async page(
-    @Query() query: { page: number; pageSize: number; templateModel: string },
+    @Query() query: ListDto & {templateNo: string; templateModel: string },
   ) {
     const res = await this.moldService.page(query);
     return returnData(res);
@@ -36,7 +37,7 @@ export class MoldController {
   @Get('/list')
   async findAll(@Query() query: { type: 'enum' | 'options'; search?: string }) {
     const res = await this.moldService.findAll();
-    console.log(res, '????');
+
     // 支持模糊搜索
     let filteredRes = res;
     if (query.search) {
@@ -60,7 +61,7 @@ export class MoldController {
     // 在返回值中组合显示模具型号和产品名称
     return returnData(
       filteredRes.map((item) => ({ 
-        label: `${item.templateModel} (${MOLD_TYPE_MAP[item.produceName] || item.produceName})`, 
+        label: `${item.templateNo}—${item.templateModel}`, 
         value: item.id 
       })),
     );

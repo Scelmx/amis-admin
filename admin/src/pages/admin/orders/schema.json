@@ -209,8 +209,11 @@
         {
           "name": "requireMoldName",
           "label": "指定模具",
-          "type": "text",
-          "id": "u:0988a64ec07f"
+          "type": "link",
+          "id": "u:0988a64ec07f",
+          "body": "${requireMoldName}",
+          "href": "/molds/index?templateNo=${requireMoldName}",
+          "blank": false
         },
         {
           "name": "moldType",

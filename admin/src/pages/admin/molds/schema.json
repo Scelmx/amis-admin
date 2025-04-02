@@ -523,6 +523,14 @@
         "body": [
           {
             "type": "input-text",
+            "label": "模具编号",
+            "name": "templateNo",
+            "id": "u:761ab531b636",
+            "size": "sm",
+            "value": "${templateNo}"
+          },
+          {
+            "type": "input-text",
             "label": "模具型号",
             "name": "templateModel",
             "id": "u:761ab531b636",

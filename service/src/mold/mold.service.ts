@@ -21,11 +21,12 @@ export class MoldService {
   }
 
   async page(
-    params?: ListDto & { templateModel: string },
+    params?: ListDto & { templateModel: string; templateNo: string },
   ): Promise<{ count; data: Mold[] }> {
-    const { templateModel = undefined, ...otherParams } = params ?? {};
+    const { templateModel = undefined, templateNo = undefined, ...otherParams } = params ?? {};
     const where = genWhereObj(otherParams as ListDto, {
       templateModel: templateModel ? Like(`%${templateModel}%`) : undefined,
+      templateNo: templateNo ? Like(`%${templateNo}%`) : undefined,
     });
     const count = await this.moldRepository.count(where);
     const data = await this.moldRepository.find(where);
