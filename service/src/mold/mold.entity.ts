@@ -12,7 +12,7 @@ export class Mold extends Common {
   /**
    * 模具编号
    */
-  @Column({ name: 'template_no', comment: '模具编号' })
+  @Column({ name: 'template_no', comment: '模具编号', unique: true })
   templateNo: string;
 
   /**

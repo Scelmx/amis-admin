@@ -14,6 +14,14 @@ export function ProduceDispatch() {
     const [customer, setCustomer] = useState<any>({});
     const [machinesTypeMap, setMachinesTypeMap] = useState({});
     const [moldTypeMap, setMoldTypeMap] = useState({});
+    const [rawTypeEnum, setRawTypeEnum] = useState({});
+
+    const getRawTypeEnum = async () => {
+        const res: any = await request({ url: '/api/order/rawType?type=enum', method: 'get' })
+        if (res) {
+            setRawTypeEnum(res.data.data)
+        }
+    }
 
     const getMoldTypeMap = async () => {
         const res: any = await request({ url: '/api/molds/list?type=enum', method: 'get' })
@@ -49,6 +57,7 @@ export function ProduceDispatch() {
 
     useEffect(() => {
         const init = async () => {
+            await getRawTypeEnum();
             await getMoldTypeMap();
             await getMachinesType();
             await getCustemers();
@@ -89,7 +98,7 @@ export function ProduceDispatch() {
         }
     ]
 
-    const updateMachine= async (machineId: number) => {
+    const updateMachine = async (machineId: number) => {
         const res = await request({ url: `/api/machine/update?id=${active.id}&machineId=${machineId}`, method: 'get' })
         if (res.data) {
             getMachines();
@@ -162,9 +171,13 @@ export function ProduceDispatch() {
                                 }>
                                 <Descriptions column={1} labelStyle={{ width: 100 }} size="small">
                                     <Descriptions.Item label="客户名称">{customer?.[child?.customerId]}</Descriptions.Item>
-                                    <Descriptions.Item label="模具">{child.requireMoldName}—{moldTypeMap?.[child.requireMoldName] || ''}</Descriptions.Item>
-                                    <Descriptions.Item label="生产数量">{child.nums || '-'}</Descriptions.Item>
-                                    <Descriptions.Item label="持续时间">{Math.ceil(child.durationTime / 60 / 24 / 2)}班</Descriptions.Item>
+                                    <Descriptions.Item label="模具">
+                                        <a href={`/molds/index?templateNo=${child.requireMoldName}`} target="_self">
+                                            {child.requireMoldName}—{moldTypeMap?.[child.requireMoldName] || ''}
+                                        </a>
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="生产数量">{child.nums || '-'} ({rawTypeEnum[child.rawType]})</Descriptions.Item>
+                                    <Descriptions.Item label="持续时间">{Math.ceil(child.durationTime / 60 / 24 * 2)}班</Descriptions.Item>
                                     <Descriptions.Item label="最晚开始时间">{dayjs(child.latestStartTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
                                     <Descriptions.Item label="完成时间">{dayjs(child.endTime * 1).format('YYYY-MM-DD')}</Descriptions.Item>
                                     <Descriptions.Item label="交付时间">{dayjs(child.deliveryAt * 1).format('YYYY-MM-DD')}</Descriptions.Item>
