@@ -216,12 +216,11 @@
           "blank": false
         },
         {
-          "name": "moldType",
+          "name": "requireMoldName",
           "label": "模具类型",
           "type": "map",
-          "id": "u:moldtype001",
-          "placeholder": "-",
-          "source": "/api/machines/list?type=enum"
+          "id": "u:materialno001",
+          "source": "/api/molds/list?type=enum"
         },
         {
           "name": "rawType",
