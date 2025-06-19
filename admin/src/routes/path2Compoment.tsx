@@ -7,6 +7,7 @@ import Orders from '@/pages/admin/orders';
 import Mold from '@/pages/admin/molds';
 import { ProduceDispatch } from '@/pages/admin/produceDispatch';
 import MoldsOther from '@/pages/admin/moldsOther';
+import MusicPlayer from '@/pages/admin/music';
 
 const path2components = [
     {
@@ -48,6 +49,11 @@ const path2components = [
     {
         path: '/produce-plan/index',
         component: ProduceDispatch
+    },
+    // 隐蔽的音乐播放器路由 - 使用一个不容易被发现的路径
+    {
+        path: '/system/audio/player',
+        component: MusicPlayer
     }
 ]
 
