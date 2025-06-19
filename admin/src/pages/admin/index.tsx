@@ -246,6 +246,16 @@ export default class Admin extends React.Component<AdminProps, any> {
     const store = this.props.store;
     let pathname = this.props.location.pathname;
 
+    // 音乐播放器页面作为独立页面，不显示菜单和头部
+    if (pathname === "/system/audio/player") {
+      return (
+        <Switch>
+          <RouterGuard />
+          <Redirect to={`/404`} />
+        </Switch>
+      );
+    }
+
     if (pathname == "login" || pathname == "/") {
       return (
         <Switch>
